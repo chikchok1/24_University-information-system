@@ -11,4 +11,5 @@
         <maven.compiler.target>21</maven.compiler.target>
         <exec.mainClass>cse.oop5.mavenproject1.Mavenproject1</exec.mainClass>
     </properties>
+    <name>Universal</name>
 </project>
