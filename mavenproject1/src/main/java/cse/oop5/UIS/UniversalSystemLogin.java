@@ -48,7 +48,7 @@ public class UniversalSystemLogin extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        id = new javax.swing.JLabel();
+        UserId = new javax.swing.JLabel();
         ID_input = new javax.swing.JTextField();
         password = new javax.swing.JLabel();
         Login = new javax.swing.JButton();
@@ -63,7 +63,7 @@ public class UniversalSystemLogin extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        id.setText("아이디");
+        UserId.setText("아이디");
 
         ID_input.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -91,7 +91,7 @@ public class UniversalSystemLogin extends javax.swing.JFrame {
                         .addGap(12, 12, 12)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(password)
-                            .addComponent(id))
+                            .addComponent(UserId))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(ID_input)
@@ -107,7 +107,7 @@ public class UniversalSystemLogin extends javax.swing.JFrame {
                 .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ID_input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(id))
+                    .addComponent(UserId))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(password)
@@ -246,7 +246,7 @@ public class UniversalSystemLogin extends javax.swing.JFrame {
     private javax.swing.JButton Login;
     private javax.swing.JPasswordField PW_input;
     private javax.swing.JButton SignUpPage;
-    private javax.swing.JLabel id;
+    private javax.swing.JLabel UserId;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel password;
