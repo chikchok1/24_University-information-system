@@ -54,6 +54,7 @@ public class UniversalSystemLogin extends javax.swing.JFrame {
         password = new javax.swing.JLabel();
         Login = new javax.swing.JButton();
         PW_input = new javax.swing.JPasswordField();
+        SignUpPage = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -117,18 +118,27 @@ public class UniversalSystemLogin extends javax.swing.JFrame {
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
+        SignUpPage.setText("회원가입페이지 이동");
+        SignUpPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SignUpPageActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(92, 92, 92)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(SignUpPage)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(92, 92, 92)
+                            .addComponent(jLabel1))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(44, 44, 44)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(36, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -138,7 +148,9 @@ public class UniversalSystemLogin extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(SignUpPage)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         pack();
@@ -186,6 +198,12 @@ public class UniversalSystemLogin extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_LoginActionPerformed
 
+    private void SignUpPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpPageActionPerformed
+        // TODO add your handling code here:
+        SignUp signUpPage = new SignUp();
+        signUpPage.setVisible(true);
+    }//GEN-LAST:event_SignUpPageActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -228,6 +246,7 @@ public class UniversalSystemLogin extends javax.swing.JFrame {
     private javax.swing.JTextField ID_input;
     private javax.swing.JButton Login;
     private javax.swing.JPasswordField PW_input;
+    private javax.swing.JButton SignUpPage;
     private javax.swing.JLabel id;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;

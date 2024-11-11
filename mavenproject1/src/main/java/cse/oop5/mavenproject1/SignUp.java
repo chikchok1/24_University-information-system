@@ -11,14 +11,12 @@ import javax.swing.JOptionPane;
  * @author YangJinWon
  */
 public class SignUp extends javax.swing.JFrame {
- 
     /**
      * Creates new form Membership
      */
     public SignUp() {
         initComponents();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -169,6 +167,7 @@ public class SignUp extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "저장 중 오류가 발생했습니다.");
         e.printStackTrace();
     }
+    
     }//GEN-LAST:event_SignUpButtonActionPerformed
 
     private void PW_inputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PW_inputActionPerformed
