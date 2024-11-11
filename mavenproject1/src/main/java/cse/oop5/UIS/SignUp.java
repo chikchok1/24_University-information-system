@@ -146,6 +146,7 @@ public class SignUp extends javax.swing.JFrame {
 
     private void ID_inputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ID_inputActionPerformed
         // TODO add your handling code here:
+        SignUpButton.doClick(); // 아이디 입력 후 Enter를 눌렀을 때 회원가입 버튼 클릭
     }//GEN-LAST:event_ID_inputActionPerformed
 
     private void SignUpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpButtonActionPerformed
@@ -177,7 +178,10 @@ public class SignUp extends javax.swing.JFrame {
 
     private void CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelActionPerformed
         // TODO add your handling code here:
-        dispose(); // 창을 닫음
+       int confirm = JOptionPane.showConfirmDialog(this, "정말로 취소하시겠습니까?", "취소", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+        dispose();
+}
     }//GEN-LAST:event_CancelActionPerformed
 
     /**
@@ -205,6 +209,12 @@ public class SignUp extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(SignUp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
