@@ -9,7 +9,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <exec.mainClass>cse.oop5.UIS.UniversalSystemLogin</exec.mainClass>
+        <exec.mainClass>cse.oop5.UIS.UniversitySystemLogin</exec.mainClass>
     </properties>
     <name>Universal</name>
 </project>
