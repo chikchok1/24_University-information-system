@@ -8,12 +8,12 @@ package cse.oop5.mavenproject1;
  *
  * @author YangJinWon
  */
-public class UniversalSystem extends javax.swing.JFrame {
+public class UniversalSystemLogin extends javax.swing.JFrame {
 
     /**
      * Creates new form NewJFrame
      */
-    public UniversalSystem() {
+    public UniversalSystemLogin() {
     initComponents(); // GUI 구성 요소 초기화
 
     // ID 입력 필드에 KeyListener 추가
@@ -186,21 +186,23 @@ public class UniversalSystem extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UniversalSystem.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UniversalSystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UniversalSystem.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UniversalSystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UniversalSystem.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UniversalSystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UniversalSystem.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UniversalSystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UniversalSystem().setVisible(true);
+                new UniversalSystemLogin().setVisible(true);
             }
         });
     }
