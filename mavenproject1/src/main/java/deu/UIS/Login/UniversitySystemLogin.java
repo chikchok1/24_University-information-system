@@ -2,21 +2,41 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package cse.oop5.UIS;
-import java.io.FileWriter;
+package deu.UIS.Login;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 /**
  *
  * @author YangJinWon
  */
-public class SignUp extends javax.swing.JFrame {
+public class UniversitySystemLogin extends javax.swing.JFrame {
+
     /**
-     * Creates new form Membership
+     * Creates new form NewuJFrame
      */
-    public SignUp() {
-        initComponents();
-    }
+    public UniversitySystemLogin() {
+    initComponents(); // GUI 구성 요소 초기화
+
+    // ID 입력 필드에 KeyListener 추가
+    ID_input.addKeyListener(new java.awt.event.KeyAdapter() {
+        @Override
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                Login.doClick(); // 엔터 키 누르면 로그인 버튼 클릭
+            }
+        }
+    });
+
+    // PW 입력 필드에 KeyListener 추가
+    PW_input.addKeyListener(new java.awt.event.KeyAdapter() {
+        @Override
+        public void keyPressed(java.awt.event.KeyEvent evt) {
+            if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                Login.doClick(); // 엔터 키 누르면 로그인 버튼 클릭
+            }
+        }
+    });
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -31,14 +51,15 @@ public class SignUp extends javax.swing.JFrame {
         UserId = new javax.swing.JLabel();
         ID_input = new javax.swing.JTextField();
         password = new javax.swing.JLabel();
-        SignUpButton = new javax.swing.JButton();
-        Cancel = new javax.swing.JButton();
+        Login = new javax.swing.JButton();
         PW_input = new javax.swing.JPasswordField();
-        jLabel2 = new javax.swing.JLabel();
-
-        jLabel1.setText("jLabel1");
+        SignUpPage = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
+        jLabel1.setText("대학 정보 시스템");
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -52,25 +73,11 @@ public class SignUp extends javax.swing.JFrame {
 
         password.setText("비밀번호");
 
-        SignUpButton.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        SignUpButton.setText("회원가입");
-        SignUpButton.addActionListener(new java.awt.event.ActionListener() {
+        Login.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        Login.setText("로그인");
+        Login.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SignUpButtonActionPerformed(evt);
-            }
-        });
-
-        Cancel.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        Cancel.setText("취소");
-        Cancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CancelActionPerformed(evt);
-            }
-        });
-
-        PW_input.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PW_inputActionPerformed(evt);
+                LoginActionPerformed(evt);
             }
         });
 
@@ -79,7 +86,7 @@ public class SignUp extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(12, 12, 12)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -87,14 +94,12 @@ public class SignUp extends javax.swing.JFrame {
                             .addComponent(UserId))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(ID_input, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                            .addComponent(PW_input)))
+                            .addComponent(ID_input)
+                            .addComponent(PW_input, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addComponent(SignUpButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
-                        .addComponent(Cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(44, Short.MAX_VALUE))
+                        .addGap(82, 82, 82)
+                        .addComponent(Login, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,37 +113,43 @@ public class SignUp extends javax.swing.JFrame {
                     .addComponent(password)
                     .addComponent(PW_input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(SignUpButton)
-                    .addComponent(Cancel))
+                .addComponent(Login)
                 .addContainerGap(36, Short.MAX_VALUE))
         );
 
-        jLabel2.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
-        jLabel2.setText("회원가입 페이지");
+        SignUpPage.setText("회원가입페이지 이동");
+        SignUpPage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SignUpPageActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(85, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(69, 69, 69))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(123, 123, 123))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(SignUpPage)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(92, 92, 92)
+                            .addComponent(jLabel1))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(44, 44, 44)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(jLabel2)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(SignUpPage)
+                .addContainerGap(28, Short.MAX_VALUE))
         );
 
         pack();
@@ -146,43 +157,51 @@ public class SignUp extends javax.swing.JFrame {
 
     private void ID_inputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ID_inputActionPerformed
         // TODO add your handling code here:
-        SignUpButton.doClick(); // 아이디 입력 후 Enter를 눌렀을 때 회원가입 버튼 클릭
     }//GEN-LAST:event_ID_inputActionPerformed
 
-    private void SignUpButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpButtonActionPerformed
-    // 아이디와 비밀번호 입력 필드에서 텍스트를 가져옴
-    String id = ID_input.getText();
-    String password = new String(PW_input.getPassword());
+    private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
+   // 입력된 ID와 비밀번호 가져오기
+    String enteredId = ID_input.getText();
+    String enteredPassword = new String(PW_input.getPassword());
 
-    // 값이 비어있는지 확인
-    if (id.isEmpty() || password.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "아이디와 비밀번호를 입력해주세요.");
+    boolean loginSuccess = false; // 로그인 성공 여부를 추적할 변수
+
+    // 파일에서 ID와 비밀번호를 읽어와 일치 여부 확인
+    try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader("user_data.txt"))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            // 파일의 각 줄에서 ID와 비밀번호를 추출
+            String[] parts = line.split(", ");
+            if (parts.length == 2) {
+                String fileId = parts[0].substring(4); // "ID: " 부분을 제거하고 ID만 가져오기
+                String filePassword = parts[1].substring(10); // "Password: " 부분을 제거하고 비밀번호만 가져오기
+
+                // 입력한 ID와 비밀번호가 파일의 값과 일치하는지 확인
+                if (enteredId.equals(fileId) && enteredPassword.equals(filePassword)) {
+                    loginSuccess = true;
+                    break;
+                }
+            }
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "로그인 데이터 파일을 읽는 중 오류가 발생했습니다.");
+        e.printStackTrace();
         return;
     }
 
-    // 파일에 아이디와 비밀번호를 저장
-    try (FileWriter writer = new FileWriter("user_data.txt", true)) { // append 모드로 파일에 쓰기
-        writer.write("ID: " + id + ", Password: " + password + "\n");
-        JOptionPane.showMessageDialog(this, "회원가입이 완료되었습니다.");
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "저장 중 오류가 발생했습니다.");
-        e.printStackTrace();
+    // 로그인 성공 여부에 따른 메시지 표시
+    if (loginSuccess) {
+        JOptionPane.showMessageDialog(this, "로그인 성공");
+    } else {
+        JOptionPane.showMessageDialog(this, "로그인 실패. 아이디와 비밀번호를 확인하세요.");
     }
-    
-    }//GEN-LAST:event_SignUpButtonActionPerformed
+    }//GEN-LAST:event_LoginActionPerformed
 
-    private void PW_inputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PW_inputActionPerformed
+    private void SignUpPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpPageActionPerformed
         // TODO add your handling code here:
-        SignUpButton.doClick(); // 회원가입 버튼을 클릭한 것처럼 동작하도록 함
-    }//GEN-LAST:event_PW_inputActionPerformed
-
-    private void CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CancelActionPerformed
-        // TODO add your handling code here:
-       int confirm = JOptionPane.showConfirmDialog(this, "정말로 취소하시겠습니까?", "취소", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-        dispose();
-}
-    }//GEN-LAST:event_CancelActionPerformed
+        SignUp signUpPage = new SignUp();
+        signUpPage.setVisible(true);
+    }//GEN-LAST:event_SignUpPageActionPerformed
 
     /**
      * @param args the command line arguments
@@ -201,13 +220,13 @@ public class SignUp extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SignUp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UniversitySystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SignUp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UniversitySystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SignUp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UniversitySystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SignUp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UniversitySystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -221,19 +240,18 @@ public class SignUp extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new SignUp().setVisible(true);
+                new UniversitySystemLogin().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Cancel;
     private javax.swing.JTextField ID_input;
+    private javax.swing.JButton Login;
     private javax.swing.JPasswordField PW_input;
-    private javax.swing.JButton SignUpButton;
+    private javax.swing.JButton SignUpPage;
     private javax.swing.JLabel UserId;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel password;
     // End of variables declaration//GEN-END:variables
