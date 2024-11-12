@@ -182,7 +182,9 @@ public class SignUp extends javax.swing.JFrame {
         // TODO add your handling code here:
        int confirm = JOptionPane.showConfirmDialog(this, "정말로 취소하시겠습니까?", "취소", JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-        dispose();
+            // 로그인 창 열기
+        new Login().setVisible(true);  // 로그인 창을 보이도록 함
+        dispose();// 현재 회원가입 창 닫기
 }
     }//GEN-LAST:event_CancelActionPerformed
 
