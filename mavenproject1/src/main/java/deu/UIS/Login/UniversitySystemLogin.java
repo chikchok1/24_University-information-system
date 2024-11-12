@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
  * @author YangJinWon
  */
 public class UniversitySystemLogin extends javax.swing.JFrame {
-
+//dddd
     /**
      * Creates new form NewuJFrame
      */
