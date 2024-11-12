@@ -199,6 +199,7 @@ public class UniversitySystemLogin extends javax.swing.JFrame {
 
     private void SignUpPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpPageActionPerformed
         // TODO add your handling code here:
+        dispose();
         SignUp signUpPage = new SignUp();
         signUpPage.setVisible(true);
     }//GEN-LAST:event_SignUpPageActionPerformed
