@@ -3,20 +3,26 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package deu.UIS.Login;
+import deu.UIS.AcademicManager.Academic_Management;
+import deu.UIS.ClassManager.Class_Management;
+import deu.UIS.Professor.P_Main;
+import deu.UIS.Student.S_Main;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 /**
  *
  * @author YangJinWon
  */
-public class UniversitySystemLogin extends javax.swing.JFrame {
-//dddd
+public class Login extends javax.swing.JFrame {
+
     /**
      * Creates new form NewuJFrame
      */
-    public UniversitySystemLogin() {
+    public Login() {
     initComponents(); // GUI 구성 요소 초기화
-
+     setupListeners(); // 리스너 설정 메소드 호출
+}
+    private void setupListeners() {
     // ID 입력 필드에 KeyListener 추가
     ID_input.addKeyListener(new java.awt.event.KeyAdapter() {
         @Override
@@ -183,15 +189,31 @@ public class UniversitySystemLogin extends javax.swing.JFrame {
                 }
             }
         }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "로그인 데이터 파일을 읽는 중 오류가 발생했습니다.");
-        e.printStackTrace();
-        return;
-    }
+   } catch (IOException e) {
+    JOptionPane.showMessageDialog(this, "로그인 데이터 파일을 읽는 중 오류가 발생했습니다. 다시 시도해 주세요.");
+    return;
+}
 
     // 로그인 성공 여부에 따른 메시지 표시
     if (loginSuccess) {
         JOptionPane.showMessageDialog(this, "로그인 성공");
+         // 아이디가 'S'로 시작하는지 확인
+        if (enteredId.startsWith("S")) { //학생 학사 관리 페이지로 이동
+            this.dispose(); // 현재 Login 창을 닫음
+            new S_Main().setVisible(true); // 새로운 Student_Management 창을 열음
+        }
+        else if (enteredId.startsWith("P")) { //교수 학사 관리 페이지로 이동
+            this.dispose(); // 현재 Login 창을 닫음
+            new P_Main().setVisible(true); // 새로운 Professor_Management 창을 열음
+        }
+        else if (enteredId.startsWith("H")) { //학사 담당자의 학사 관리 페이지로 이동
+            this.dispose(); // 현재 Login 창을 닫음
+            new Academic_Management().setVisible(true); // 새로운 Academic_Management 창을 열음
+        }
+        else if (enteredId.startsWith("G")) { //수업 담당자의 수업 관리 페이지로 이동
+            this.dispose(); // 현재 Login 창을 닫음
+            new Class_Management().setVisible(true); // 새로운 Class_Management 창을 열음
+        }
     } else {
         JOptionPane.showMessageDialog(this, "로그인 실패. 아이디와 비밀번호를 확인하세요.");
     }
@@ -221,14 +243,22 @@ public class UniversitySystemLogin extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UniversitySystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UniversitySystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UniversitySystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UniversitySystemLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -241,7 +271,7 @@ public class UniversitySystemLogin extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UniversitySystemLogin().setVisible(true);
+                new Login().setVisible(true);
             }
         });
     }

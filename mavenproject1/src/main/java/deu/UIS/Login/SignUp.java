@@ -34,7 +34,6 @@ public class SignUp extends javax.swing.JFrame {
         SignUpButton = new javax.swing.JButton();
         Cancel = new javax.swing.JButton();
         PW_input = new javax.swing.JPasswordField();
-        Select = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
 
         jLabel1.setText("jLabel1");
@@ -75,13 +74,6 @@ public class SignUp extends javax.swing.JFrame {
             }
         });
 
-        Select.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "학생", "교수", "직원" }));
-        Select.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SelectActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -101,10 +93,7 @@ public class SignUp extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(ID_input, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                            .addComponent(PW_input)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(13, 13, 13)
-                                .addComponent(Select, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                            .addComponent(PW_input))))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -118,13 +107,11 @@ public class SignUp extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(password)
                     .addComponent(PW_input, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(Select, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(SignUpButton)
                     .addComponent(Cancel))
-                .addContainerGap())
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jLabel2.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
@@ -177,11 +164,13 @@ public class SignUp extends javax.swing.JFrame {
     try (FileWriter writer = new FileWriter("user_data.txt", true)) { // append 모드로 파일에 쓰기
         writer.write("ID: " + id + ", Password: " + password + "\n");
         JOptionPane.showMessageDialog(this, "회원가입이 완료되었습니다.");
+        // 로그인 창을 열고 회원가입 창을 닫음
+        new Login().setVisible(true); // 로그인 창 열기
+        dispose(); // 회원가입 창 닫기
     } catch (IOException e) {
         JOptionPane.showMessageDialog(this, "저장 중 오류가 발생했습니다.");
         e.printStackTrace();
     }
-    
     }//GEN-LAST:event_SignUpButtonActionPerformed
 
     private void PW_inputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PW_inputActionPerformed
@@ -196,10 +185,6 @@ public class SignUp extends javax.swing.JFrame {
         dispose();
 }
     }//GEN-LAST:event_CancelActionPerformed
-
-    private void SelectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SelectActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_SelectActionPerformed
 
     /**
      * @param args the command line arguments
@@ -247,7 +232,6 @@ public class SignUp extends javax.swing.JFrame {
     private javax.swing.JButton Cancel;
     private javax.swing.JTextField ID_input;
     private javax.swing.JPasswordField PW_input;
-    private javax.swing.JComboBox<String> Select;
     private javax.swing.JButton SignUpButton;
     private javax.swing.JLabel UserId;
     private javax.swing.JLabel jLabel1;
