@@ -98,6 +98,8 @@ public class A_Main extends javax.swing.JFrame {
 
     private void S_ManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_S_ManagementActionPerformed
         // TODO add your handling code here:
+        dispose();
+        new Academic_Management().setVisible(true);
     }//GEN-LAST:event_S_ManagementActionPerformed
 
     private void P_ManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_ManagementActionPerformed

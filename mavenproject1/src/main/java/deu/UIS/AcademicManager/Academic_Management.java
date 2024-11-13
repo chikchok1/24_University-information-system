@@ -3,7 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package deu.UIS.AcademicManager;
-
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import javax.swing.JOptionPane;
 /**
  *
  * @author YangJinWon
@@ -15,8 +20,43 @@ public class Academic_Management extends javax.swing.JFrame {
      */
     public Academic_Management() {
         initComponents();
+        loadStudentData(); // 프로그램 실행 시 메모장에서 데이터를 자동으로 불러옴
     }
+private void loadStudentData() {
+    StringBuilder data = new StringBuilder();
 
+    try (BufferedReader reader = new BufferedReader(new FileReader("student_info.txt"))) {
+        String line;
+        String department = "";
+        String studentNumber = "";
+        String name = "";
+
+        while ((line = reader.readLine()) != null) {
+            if (line.startsWith("학과: ")) {
+                department = line.substring(4); // "학과: " 이후의 문자열을 가져옵니다.
+            } else if (line.startsWith("학번: ")) {
+                studentNumber = line.substring(4); // "학번: " 이후의 문자열을 가져옵니다.
+            } else if (line.startsWith("이름: ")) {
+                name = line.substring(4); // "이름: " 이후의 문자열을 가져옵니다.
+            } else if (line.isEmpty()) {
+                // 데이터를 다 읽으면, 학과, 학번, 이름 정보를 한 줄로 추가하고 초기화합니다.
+                data.append("학과: ").append(department).append(", 학번: ").append(studentNumber).append(", 이름: ").append(name).append("\n");
+                department = "";
+                studentNumber = "";
+                name = "";
+            }
+        }
+
+        // 파일의 마지막 줄이 비어 있지 않다면 추가
+        if (!department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()) {
+            data.append("학과: ").append(department).append(", 학번: ").append(studentNumber).append(", 이름: ").append(name).append("\n");
+        }
+
+        S_list.setText(data.toString()); // S_list 텍스트 필드에 결과를 설정
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "파일 불러오기 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -26,32 +66,315 @@ public class Academic_Management extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Title = new javax.swing.JLabel();
+        title = new javax.swing.JLabel();
+        name = new javax.swing.JLabel();
+        S_number = new javax.swing.JLabel();
+        department = new javax.swing.JLabel();
+        grade = new javax.swing.JLabel();
+        birthdate = new javax.swing.JLabel();
+        phone = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        numberBox = new javax.swing.JComboBox<>();
+        Name = new javax.swing.JTextField();
+        S_Number = new javax.swing.JTextField();
+        Department = new javax.swing.JTextField();
+        Phone = new javax.swing.JTextField();
+        S_search = new javax.swing.JTextField();
+        gradeBox = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        search_button = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        S_list = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        jLabel1.setText("학사 담장자 메인 페이지");
+        Title.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        Title.setText("학생 학사 관리 페이지");
+
+        title.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
+        title.setText("학생 정보 입력");
+
+        name.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        name.setText("이름");
+
+        S_number.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        S_number.setText("학번");
+
+        department.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        department.setText("학과");
+
+        grade.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        grade.setText("학년");
+
+        birthdate.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        birthdate.setText("생년월일");
+
+        phone.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        phone.setText("휴대폰");
+
+        jLabel1.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
+        jLabel1.setText("학생 정보 검색");
+
+        numberBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "학번", "휴대폰" }));
+        numberBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                numberBoxActionPerformed(evt);
+            }
+        });
+
+        Name.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                NameActionPerformed(evt);
+            }
+        });
+
+        S_Number.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                S_NumberActionPerformed(evt);
+            }
+        });
+
+        Department.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DepartmentActionPerformed(evt);
+            }
+        });
+
+        Phone.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PhoneActionPerformed(evt);
+            }
+        });
+
+        S_search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                S_searchActionPerformed(evt);
+            }
+        });
+
+        gradeBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1학년", "2학년", "3학년", "4학년" }));
+        gradeBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                gradeBoxActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
+        jLabel2.setText("학생 정보");
+
+        search_button.setText("검색");
+        search_button.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                search_buttonActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
+        jLabel3.setText("학생 목록");
+
+        jButton1.setText("추가");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("취소");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        S_list.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                S_listActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(121, 121, 121)
-                .addComponent(jLabel1)
-                .addContainerGap(124, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(310, 310, 310)
+                        .addComponent(Title))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(title)
+                                        .addGap(144, 144, 144)
+                                        .addComponent(jLabel1))
+                                    .addComponent(department)
+                                    .addComponent(S_number)
+                                    .addComponent(name))
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(54, 54, 54)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                .addComponent(Department)
+                                                .addComponent(S_Number)
+                                                .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addComponent(gradeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(birthdate)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(jButton1)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jButton2))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(phone)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(Phone, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(grade))
+                                .addGap(37, 37, 37)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(S_list, javax.swing.GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE)
+                                    .addComponent(jLabel3)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(numberBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(S_search, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(search_button, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                .addGap(248, 248, 248))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addComponent(jLabel1)
-                .addContainerGap(256, Short.MAX_VALUE))
+                .addComponent(Title)
+                .addGap(59, 59, 59)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(title)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(name)
+                    .addComponent(numberBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(S_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(search_button))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(S_number)
+                    .addComponent(S_Number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(department)
+                            .addComponent(Department, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(5, 5, 5)
+                        .addComponent(jLabel3)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(grade)
+                            .addComponent(gradeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16)
+                        .addComponent(birthdate)
+                        .addGap(14, 14, 14)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(phone)
+                            .addComponent(Phone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(jButton2)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(S_list, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(95, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void NameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_NameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_NameActionPerformed
+
+    private void PhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PhoneActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PhoneActionPerformed
+
+    private void numberBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numberBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_numberBoxActionPerformed
+
+    private void gradeBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gradeBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_gradeBoxActionPerformed
+
+    private void S_NumberActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_S_NumberActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_S_NumberActionPerformed
+
+    private void DepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DepartmentActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DepartmentActionPerformed
+
+    private void S_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_S_searchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_S_searchActionPerformed
+
+    private void search_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_buttonActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_search_buttonActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+// 입력된 값을 가져옵니다.
+    String name = Name.getText();
+    String studentNumber = S_Number.getText();
+    String department = Department.getText();
+    String grade = (String) gradeBox.getSelectedItem();
+    String phone = Phone.getText();
+
+    // 메모장에 저장할 문자열을 구성합니다.
+    String studentInfo = "이름: " + name + "\n" +
+                         "학번: " + studentNumber + "\n" +
+                         "학과: " + department + "\n" +
+                         "학년: " + grade + "\n" +
+                         "휴대폰: " + phone + "\n\n";
+
+    // "student_info.txt" 파일에 저장합니다.
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter("student_info.txt", true))) {
+        writer.write(studentInfo);
+        writer.newLine();
+        JOptionPane.showMessageDialog(this, "학생 정보가 저장되었습니다.");
+        
+        // 새 데이터를 추가한 후 바로 메모장에서 데이터를 다시 불러옵니다.
+        loadStudentData();
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void S_listActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_S_listActionPerformed
+       
+    }//GEN-LAST:event_S_listActionPerformed
 
     /**
      * @param args the command line arguments
@@ -89,6 +412,27 @@ public class Academic_Management extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField Department;
+    private javax.swing.JTextField Name;
+    private javax.swing.JTextField Phone;
+    private javax.swing.JTextField S_Number;
+    private javax.swing.JTextField S_list;
+    private javax.swing.JLabel S_number;
+    private javax.swing.JTextField S_search;
+    private javax.swing.JLabel Title;
+    private javax.swing.JLabel birthdate;
+    private javax.swing.JLabel department;
+    private javax.swing.JLabel grade;
+    private javax.swing.JComboBox<String> gradeBox;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel name;
+    private javax.swing.JComboBox<String> numberBox;
+    private javax.swing.JLabel phone;
+    private javax.swing.JButton search_button;
+    private javax.swing.JLabel title;
     // End of variables declaration//GEN-END:variables
 }
