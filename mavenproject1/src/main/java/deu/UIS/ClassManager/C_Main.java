@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package deu.UIS.Student;
+package deu.UIS.ClassManager;
 
 import deu.UIS.Login.Login;
 
@@ -10,12 +10,12 @@ import deu.UIS.Login.Login;
  *
  * @author YangJinWon
  */
-public class S_Main extends javax.swing.JFrame {
+public class C_Main extends javax.swing.JFrame {
 
     /**
-     * Creates new form S_Main
+     * Creates new form C_Main
      */
-    public S_Main() {
+    public C_Main() {
         initComponents();
     }
 
@@ -29,18 +29,18 @@ public class S_Main extends javax.swing.JFrame {
     private void initComponents() {
 
         Title = new javax.swing.JLabel();
-        P_Course = new javax.swing.JButton();
+        C_Management = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        Title.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
-        Title.setText("학생 메인페이지");
+        Title.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        Title.setText("수업 담당자 메인 페이지");
 
-        P_Course.setText("수강 신청");
-        P_Course.addActionListener(new java.awt.event.ActionListener() {
+        C_Management.setText("수업관리");
+        C_Management.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                P_CourseActionPerformed(evt);
+                C_ManagementActionPerformed(evt);
             }
         });
 
@@ -55,44 +55,44 @@ public class S_Main extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(28, 207, Short.MAX_VALUE)
-                .addComponent(LogOut)
-                .addGap(41, 41, 41))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(79, 79, 79)
+                        .addGap(109, 109, 109)
                         .addComponent(Title))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(110, 110, 110)
-                        .addComponent(P_Course)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(139, 139, 139)
+                        .addComponent(C_Management)))
+                .addContainerGap(136, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(LogOut)
+                .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(19, 19, 19)
                 .addComponent(Title)
-                .addGap(62, 62, 62)
-                .addComponent(P_Course)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
+                .addGap(56, 56, 56)
+                .addComponent(C_Management)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
                 .addComponent(LogOut)
-                .addGap(33, 33, 33))
+                .addGap(26, 26, 26))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void P_CourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_CourseActionPerformed
+    private void C_ManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_C_ManagementActionPerformed
         // TODO add your handling code here:
-        dispose();
-        new Student_Management().setVisible(true);
-    }//GEN-LAST:event_P_CourseActionPerformed
+         dispose();
+        new Class_Management().setVisible(true);
+    }//GEN-LAST:event_C_ManagementActionPerformed
 
     private void LogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutActionPerformed
         // TODO add your handling code here:
-        dispose();
+         dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_LogOutActionPerformed
 
@@ -113,27 +113,27 @@ public class S_Main extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(S_Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(C_Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(S_Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(C_Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(S_Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(C_Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(S_Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(C_Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new S_Main().setVisible(true);
+                new C_Main().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton C_Management;
     private javax.swing.JButton LogOut;
-    private javax.swing.JButton P_Course;
     private javax.swing.JLabel Title;
     // End of variables declaration//GEN-END:variables
 }

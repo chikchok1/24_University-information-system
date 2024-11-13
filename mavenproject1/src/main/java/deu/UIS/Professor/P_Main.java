@@ -29,8 +29,6 @@ public class P_Main extends javax.swing.JFrame {
     private void initComponents() {
 
         Title = new javax.swing.JLabel();
-        P_Academic = new javax.swing.JButton();
-        P_Class = new javax.swing.JButton();
         P_Course = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
 
@@ -38,20 +36,6 @@ public class P_Main extends javax.swing.JFrame {
 
         Title.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
         Title.setText("교수 메인페이지");
-
-        P_Academic.setText("교수 학사 관리");
-        P_Academic.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                P_AcademicActionPerformed(evt);
-            }
-        });
-
-        P_Class.setText("수업 관리");
-        P_Class.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                P_ClassActionPerformed(evt);
-            }
-        });
 
         P_Course.setText("수강 관리");
         P_Course.addActionListener(new java.awt.event.ActionListener() {
@@ -77,42 +61,27 @@ public class P_Main extends javax.swing.JFrame {
                         .addGap(79, 79, 79)
                         .addComponent(Title))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(P_Academic)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(P_Class)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(LogOut)
-                            .addComponent(P_Course))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(228, 228, 228)
+                        .addComponent(LogOut))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(103, 103, 103)
+                        .addComponent(P_Course)))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(Title)
-                .addGap(61, 61, 61)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(P_Academic)
-                    .addComponent(P_Class)
-                    .addComponent(P_Course))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                .addGap(63, 63, 63)
+                .addComponent(P_Course)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
                 .addComponent(LogOut)
                 .addGap(35, 35, 35))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void P_ClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_ClassActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_P_ClassActionPerformed
-
-    private void P_AcademicActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_AcademicActionPerformed
-        // TODO add your handling code here:
-         new Professor_Management().setVisible(true);
-    }//GEN-LAST:event_P_AcademicActionPerformed
 
     private void P_CourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_CourseActionPerformed
         // TODO add your handling code here:
@@ -162,8 +131,6 @@ public class P_Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton LogOut;
-    private javax.swing.JButton P_Academic;
-    private javax.swing.JButton P_Class;
     private javax.swing.JButton P_Course;
     private javax.swing.JLabel Title;
     // End of variables declaration//GEN-END:variables

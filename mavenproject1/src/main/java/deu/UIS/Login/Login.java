@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package deu.UIS.Login;
-import deu.UIS.AcademicManager.Academic_Management;
+import deu.UIS.AcademicManager.A_Main;
 import deu.UIS.ClassManager.Class_Management;
 import deu.UIS.Professor.P_Main;
 import deu.UIS.Student.S_Main;
@@ -208,7 +208,7 @@ public class Login extends javax.swing.JFrame {
         }
         else if (enteredId.startsWith("H")) { //학사 담당자의 학사 관리 페이지로 이동
             this.dispose(); // 현재 Login 창을 닫음
-            new Academic_Management().setVisible(true); // 새로운 Academic_Management 창을 열음
+            new A_Main().setVisible(true); // 새로운 Academic_Management 창을 열음
         }
         else if (enteredId.startsWith("G")) { //수업 담당자의 수업 관리 페이지로 이동
             this.dispose(); // 현재 Login 창을 닫음

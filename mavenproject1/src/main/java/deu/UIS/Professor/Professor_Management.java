@@ -31,7 +31,7 @@ public class Professor_Management extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        jLabel1.setText("교수 학사 관리");
+        jLabel1.setText("교수 수강 관리");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
