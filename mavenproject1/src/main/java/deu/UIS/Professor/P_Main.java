@@ -4,6 +4,8 @@
  */
 package deu.UIS.Professor;
 
+import deu.UIS.Login.Login;
+
 /**
  *
  * @author YangJinWon
@@ -30,6 +32,7 @@ public class P_Main extends javax.swing.JFrame {
         P_Academic = new javax.swing.JButton();
         P_Class = new javax.swing.JButton();
         P_Course = new javax.swing.JButton();
+        LogOut = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -57,6 +60,13 @@ public class P_Main extends javax.swing.JFrame {
             }
         });
 
+        LogOut.setText("로그아웃");
+        LogOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LogOutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -72,7 +82,9 @@ public class P_Main extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(P_Class)
                         .addGap(18, 18, 18)
-                        .addComponent(P_Course)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(LogOut)
+                            .addComponent(P_Course))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -85,7 +97,9 @@ public class P_Main extends javax.swing.JFrame {
                     .addComponent(P_Academic)
                     .addComponent(P_Class)
                     .addComponent(P_Course))
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                .addComponent(LogOut)
+                .addGap(35, 35, 35))
         );
 
         pack();
@@ -103,6 +117,12 @@ public class P_Main extends javax.swing.JFrame {
     private void P_CourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_CourseActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_P_CourseActionPerformed
+
+    private void LogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        new Login().setVisible(true);
+    }//GEN-LAST:event_LogOutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -141,6 +161,7 @@ public class P_Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton LogOut;
     private javax.swing.JButton P_Academic;
     private javax.swing.JButton P_Class;
     private javax.swing.JButton P_Course;

@@ -4,6 +4,8 @@
  */
 package deu.UIS.Student;
 
+import deu.UIS.Login.Login;
+
 /**
  *
  * @author YangJinWon
@@ -29,6 +31,7 @@ public class S_Main extends javax.swing.JFrame {
         Title = new javax.swing.JLabel();
         P_Academic = new javax.swing.JButton();
         P_Course = new javax.swing.JButton();
+        LogOut = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -49,6 +52,13 @@ public class S_Main extends javax.swing.JFrame {
             }
         });
 
+        LogOut.setText("로그아웃");
+        LogOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                LogOutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -57,11 +67,13 @@ public class S_Main extends javax.swing.JFrame {
                 .addGap(79, 79, 79)
                 .addComponent(Title)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(P_Academic)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
-                .addComponent(P_Course)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(LogOut)
+                    .addComponent(P_Course))
                 .addGap(37, 37, 37))
         );
         layout.setVerticalGroup(
@@ -73,7 +85,9 @@ public class S_Main extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(P_Academic)
                     .addComponent(P_Course))
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 129, Short.MAX_VALUE)
+                .addComponent(LogOut)
+                .addGap(33, 33, 33))
         );
 
         pack();
@@ -87,6 +101,12 @@ public class S_Main extends javax.swing.JFrame {
     private void P_CourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_CourseActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_P_CourseActionPerformed
+
+    private void LogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        new Login().setVisible(true);
+    }//GEN-LAST:event_LogOutActionPerformed
 
     /**
      * @param args the command line arguments
@@ -124,6 +144,7 @@ public class S_Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton LogOut;
     private javax.swing.JButton P_Academic;
     private javax.swing.JButton P_Course;
     private javax.swing.JLabel Title;

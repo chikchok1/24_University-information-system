@@ -35,7 +35,10 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="P_Class" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="P_Course" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="LogOut" min="-2" max="-2" attributes="0"/>
+                          <Component id="P_Course" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
@@ -53,7 +56,9 @@
                   <Component id="P_Class" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="P_Course" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="185" max="32767" attributes="0"/>
+              <EmptySpace pref="127" max="32767" attributes="0"/>
+              <Component id="LogOut" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -89,6 +94,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="P_CourseActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="LogOut">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&#xb85c;&#xadf8;&#xc544;&#xc6c3;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="LogOutActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
