@@ -29,18 +29,19 @@ public class S_Main extends javax.swing.JFrame {
     private void initComponents() {
 
         Title = new javax.swing.JLabel();
-        P_Course = new javax.swing.JButton();
+        S_Course = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
+        S_Grade = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Title.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
         Title.setText("학생 메인페이지");
 
-        P_Course.setText("수강 신청");
-        P_Course.addActionListener(new java.awt.event.ActionListener() {
+        S_Course.setText("수강 신청");
+        S_Course.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                P_CourseActionPerformed(evt);
+                S_CourseActionPerformed(evt);
             }
         });
 
@@ -51,32 +52,43 @@ public class S_Main extends javax.swing.JFrame {
             }
         });
 
+        S_Grade.setText("성적 조회");
+        S_Grade.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                S_GradeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(28, 207, Short.MAX_VALUE)
-                .addComponent(LogOut)
-                .addGap(41, 41, 41))
-            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(79, 79, 79)
-                        .addComponent(Title))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(110, 110, 110)
-                        .addComponent(P_Course)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Title)
+                        .addGap(92, 92, 92))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(LogOut)
+                        .addGap(41, 41, 41))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(51, 51, 51)
+                .addComponent(S_Course)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addComponent(S_Grade)
+                .addGap(49, 49, 49))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(Title)
-                .addGap(62, 62, 62)
-                .addComponent(P_Course)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
+                .addGap(54, 54, 54)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(S_Course)
+                    .addComponent(S_Grade))
+                .addGap(136, 136, 136)
                 .addComponent(LogOut)
                 .addGap(33, 33, 33))
         );
@@ -84,17 +96,23 @@ public class S_Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void P_CourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_CourseActionPerformed
+    private void S_CourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_S_CourseActionPerformed
         // TODO add your handling code here:
         dispose();
-        new Student_Management().setVisible(true);
-    }//GEN-LAST:event_P_CourseActionPerformed
+        new Student_Management().setVisible(true); //수강신청페이지
+    }//GEN-LAST:event_S_CourseActionPerformed
 
     private void LogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutActionPerformed
         // TODO add your handling code here:
         dispose();
-        new Login().setVisible(true);
+        new Login().setVisible(true); //로그아웃
     }//GEN-LAST:event_LogOutActionPerformed
+
+    private void S_GradeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_S_GradeActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        new Student_GradeCheck().setVisible(true); //성적조회페이지
+    }//GEN-LAST:event_S_GradeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -133,7 +151,8 @@ public class S_Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton LogOut;
-    private javax.swing.JButton P_Course;
+    private javax.swing.JButton S_Course;
+    private javax.swing.JButton S_Grade;
     private javax.swing.JLabel Title;
     // End of variables declaration//GEN-END:variables
 }

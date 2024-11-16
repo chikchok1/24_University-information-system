@@ -24,33 +24,38 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="28" pref="207" max="32767" attributes="0"/>
-              <Component id="LogOut" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" attributes="0">
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
                       <Component id="Title" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="110" max="-2" attributes="0"/>
-                      <Component id="P_Course" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="LogOut" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
+              <Component id="S_Course" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="62" max="32767" attributes="0"/>
+              <Component id="S_Grade" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="Title" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
-              <Component id="P_Course" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="128" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="54" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="S_Course" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="S_Grade" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="136" max="-2" attributes="0"/>
               <Component id="LogOut" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
           </Group>
@@ -66,12 +71,12 @@
         <Property name="text" type="java.lang.String" value="&#xd559;&#xc0dd; &#xba54;&#xc778;&#xd398;&#xc774;&#xc9c0;"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="P_Course">
+    <Component class="javax.swing.JButton" name="S_Course">
       <Properties>
         <Property name="text" type="java.lang.String" value="&#xc218;&#xac15; &#xc2e0;&#xccad;"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="P_CourseActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="S_CourseActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="LogOut">
@@ -80,6 +85,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="LogOutActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="S_Grade">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="&#xc131;&#xc801; &#xc870;&#xd68c;"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="S_GradeActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
