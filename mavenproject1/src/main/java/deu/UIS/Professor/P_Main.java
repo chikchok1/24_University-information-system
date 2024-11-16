@@ -84,7 +84,10 @@ public class P_Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void P_CourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_CourseActionPerformed
-        // TODO add your handling code here:
+
+        // 교수 수강 관리 페이지로 이동
+        this.dispose();  // 현재 메인 페이지 창 닫기
+        new Professor_Management().setVisible(true);  // 교수 수강 관리 페이지 열기
     }//GEN-LAST:event_P_CourseActionPerformed
 
     private void LogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutActionPerformed
