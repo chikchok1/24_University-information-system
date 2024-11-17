@@ -12,8 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import java.util.List;
-import java.util.ArrayList;
+
 /**
  *
  * @author YangJinWon
@@ -31,11 +30,10 @@ public class Academic_Management extends javax.swing.JFrame {
     }
     // 학생 정보를 파일에서 불러와 테이블에 추가하는 메서드
 private void loadStudentInfo() {
-    String filePath = System.getProperty("user.home") + "/student_info.txt";
     DefaultTableModel model = (DefaultTableModel) S_list.getModel();
+    model.setRowCount(0); // 기존 데이터 초기화
 
-    // 기존 테이블 데이터 초기화
-    model.setRowCount(0);
+    String filePath = System.getProperty("user.home") + "/student_info.txt";
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
@@ -57,25 +55,19 @@ private void loadStudentInfo() {
             } else if (line.startsWith("휴대폰: ")) {
                 phone = line.substring(5);
             } else if (line.isEmpty()) {
-                // 중복 방지 로직
-                boolean isDuplicate = false;
-                for (int i = 0; i < model.getRowCount(); i++) {
-                    if (model.getValueAt(i, 1).equals(studentNumber)) {
-                        isDuplicate = true;
-                        break;
-                    }
-                }
-
-                if (!isDuplicate) {
+                // 데이터 유효성 검사: 모든 필드가 비어 있지 않은 경우에만 추가
+                if (!department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()
+                        && !grade.isEmpty() && !birthDate.isEmpty() && !phone.isEmpty()) {
                     model.addRow(new Object[]{name, studentNumber, department, grade, birthDate, phone});
                 }
+                // 데이터 초기화
+                department = studentNumber = name = grade = birthDate = phone = "";
             }
         }
     } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "파일을 읽는 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "학생 정보를 불러오는 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
-
 
 private void addMouseListenerToSList() {
     S_list.addMouseListener(new MouseAdapter() {
@@ -182,10 +174,11 @@ private void populateStudentDetails(String department, String studentNumber, Str
         S_info = new javax.swing.JTable();
         refresh = new javax.swing.JButton();
         save = new javax.swing.JButton();
+        info_refresh = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        Title.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        Title.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
         Title.setText("학생 학사 관리 페이지");
 
         title.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
@@ -244,7 +237,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
             }
         });
 
-        birth.setText("2000.01.01");
+        birth.setHorizontalAlignment(javax.swing.JTextField.LEFT);
         birth.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 birthActionPerformed(evt);
@@ -354,77 +347,83 @@ private void populateStudentDetails(String department, String studentNumber, Str
             }
         });
 
+        info_refresh.setText("새로고침");
+        info_refresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                info_refreshActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(310, 310, 310)
-                        .addComponent(Title))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addComponent(Add)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(Before))
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(phone)
-                                        .addComponent(birthdate))
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(birth, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(Phone, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(gradeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(Department, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(S_Number, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(grade)
-                            .addComponent(title)
-                            .addComponent(department)
-                            .addComponent(S_number)
-                            .addComponent(name))
-                        .addGap(37, 37, 37)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(numberBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(info_refresh)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(28, 28, 28)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addComponent(Add)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(Before))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(phone)
+                                            .addComponent(birthdate))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(S_search, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(search_button, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(birth, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(Phone, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(gradeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(Department, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(S_Number, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(grade)
+                                .addComponent(title)
+                                .addComponent(department)
+                                .addComponent(S_number)
+                                .addComponent(name))
+                            .addGap(37, 37, 37)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel1)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(numberBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(S_search, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(search_button, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
+                                .addGroup(layout.createSequentialGroup()
                                     .addComponent(modify)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(save)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(Delete))
-                                .addGroup(layout.createSequentialGroup()
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addComponent(jLabel3)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(refresh))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(20, 20, 20)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
-                        .addComponent(jLabel2))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(361, 361, 361)
+                        .addComponent(Title)))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(Title)
-                .addGap(59, 59, 59)
+                .addGap(53, 53, 53)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(title)
                     .addComponent(jLabel1)
@@ -476,8 +475,10 @@ private void populateStudentDetails(String department, String studentNumber, Str
                             .addComponent(save)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Delete)))
-                .addContainerGap(176, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(Delete)
+                            .addComponent(info_refresh))))
+                .addContainerGap(171, Short.MAX_VALUE))
         );
 
         pack();
@@ -513,47 +514,57 @@ private void populateStudentDetails(String department, String studentNumber, Str
 
     private void search_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_buttonActionPerformed
     String keyword = S_search.getText().trim(); // 검색 필드에서 키워드를 가져옵니다.
-if (keyword.isEmpty()) {
-    JOptionPane.showMessageDialog(this, "검색어를 입력해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
-    return;
-}
-String filePath = System.getProperty("user.home") + "/student_info.txt";
-DefaultTableModel model = (DefaultTableModel) S_list.getModel();
-model.setRowCount(0); // 테이블 초기화
+    String searchType = (String) numberBox.getSelectedItem(); // numberBox에서 선택된 값을 가져옵니다.
 
-try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-    String line;
-    String department = "", studentNumber = "", name = "";
-
-    while ((line = reader.readLine()) != null) {
-        line = line.trim();
-
-        if (line.startsWith("학과: ")) {
-            department = line.substring(4);
-        } else if (line.startsWith("학번: ")) {
-            studentNumber = line.substring(4);
-        } else if (line.startsWith("이름: ")) {
-            name = line.substring(4);
-        } else if (line.isEmpty() && !department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()) {
-            // 키워드로 검색 (이름, 학번, 학과에 대해 완전 일치 조건 추가)
-            if (keyword.equalsIgnoreCase(name) || keyword.equals(studentNumber) || keyword.equalsIgnoreCase(department)) {
-                model.addRow(new Object[]{name, studentNumber, department});
-            }
-            // 초기화
-            department = studentNumber = name = "";
-        }
+    if (keyword.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "검색어를 입력해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
+        return;
     }
-} catch (IOException e) {
-    JOptionPane.showMessageDialog(this, "학생 정보 검색 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
-}
 
-if (model.getRowCount() == 0) {
-    JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.", "검색", JOptionPane.INFORMATION_MESSAGE);
-}       
+    String filePath = System.getProperty("user.home") + "/student_info.txt";
+    DefaultTableModel model = (DefaultTableModel) S_list.getModel();
+    model.setRowCount(0); // 테이블 초기화
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        String line;
+        String department = "", studentNumber = "", name = "";
+
+        while ((line = reader.readLine()) != null) {
+            line = line.trim();
+
+            if (line.startsWith("학과: ")) {
+                department = line.substring(4);
+            } else if (line.startsWith("학번: ")) {
+                studentNumber = line.substring(4);
+            } else if (line.startsWith("이름: ")) {
+                name = line.substring(4);
+            } else if (line.isEmpty() && !department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()) {
+                // 검색 타입에 따라 검색
+                boolean matches = false;
+                if ("학번".equals(searchType)) {
+                    matches = keyword.equals(studentNumber); // 학번 검색
+                } else if ("이름".equals(searchType)) {
+                    matches = keyword.equalsIgnoreCase(name); // 이름 검색 (대소문자 무시)
+                }
+
+                if (matches) {
+                    model.addRow(new Object[]{name, studentNumber, department});
+                }
+                // 초기화
+                department = studentNumber = name = "";
+            }
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "학생 정보 검색 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    if (model.getRowCount() == 0) {
+        JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.", "검색", JOptionPane.INFORMATION_MESSAGE);
+    }
     }//GEN-LAST:event_search_buttonActionPerformed
 
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
-// 입력된 값을 가져옵니다.
+ // 입력된 값을 가져옵니다.
     String name = Name.getText();
     String studentNumber = S_Number.getText();
     String department = Department.getText();
@@ -563,11 +574,11 @@ if (model.getRowCount() == 0) {
 
     // 메모장에 저장할 문자열을 구성합니다.
     String studentInfo = "이름: " + name + "\n" +
-                     "학번: " + studentNumber + "\n" +
-                     "학과: " + department + "\n" +
-                     "학년: " + grade + "\n" +
-                     "생년월일: " + birthDate + "\n" +
-                     "휴대폰: " + phone + "\n\n";
+                         "학번: " + studentNumber + "\n" +
+                         "학과: " + department + "\n" +
+                         "학년: " + grade + "\n" +
+                         "생년월일: " + birthDate + "\n" +
+                         "휴대폰: " + phone + "\n\n";
 
     // "student_info.txt" 파일에 저장합니다.
     String filePath = System.getProperty("user.home") + "/student_info.txt";
@@ -585,6 +596,14 @@ if (model.getRowCount() == 0) {
 
     // 새로운 학생 정보가 추가되었으면, S_info 테이블도 새로 갱신
     loadStudentInfo();  // S_list 테이블을 갱신
+
+    // 입력 필드 초기화
+    Name.setText("");
+    S_Number.setText("");
+    Department.setText("");
+    gradeBox.setSelectedIndex(0);  // 콤보박스 초기화
+    Phone.setText("");
+    birth.setText("");
     }//GEN-LAST:event_AddActionPerformed
 
     private void BeforeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BeforeActionPerformed
@@ -599,17 +618,68 @@ if (model.getRowCount() == 0) {
     }//GEN-LAST:event_birthActionPerformed
 
     private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
-
-// S_list에서 선택된 행의 인덱스를 가져옵니다
+// S_list에서 선택된 행의 인덱스를 가져옵니다.
     int selectedRow = S_list.getSelectedRow();
-    
+
     if (selectedRow != -1) { // 선택된 행이 있을 경우
-        // 테이블 모델을 가져옵니다
+        // 테이블 모델을 가져옵니다.
         DefaultTableModel model = (DefaultTableModel) S_list.getModel();
-        
-        // 선택된 행을 모델에서 삭제합니다
+
+        // 선택된 행의 데이터를 가져옵니다.
+        String selectedStudentNumber = (String) model.getValueAt(selectedRow, 1); // 학번
+
+        // 파일 경로 설정
+        String filePath = System.getProperty("user.home") + "/student_info.txt";
+        StringBuilder updatedContent = new StringBuilder();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "";
+
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+
+                if (line.startsWith("학과: ")) {
+                    department = line.substring(4);
+                } else if (line.startsWith("학번: ")) {
+                    studentNumber = line.substring(4);
+                } else if (line.startsWith("이름: ")) {
+                    name = line.substring(4);
+                } else if (line.startsWith("학년: ")) {
+                    grade = line.substring(4);
+                } else if (line.startsWith("생년월일: ")) {
+                    birthDate = line.substring(6);
+                } else if (line.startsWith("휴대폰: ")) {
+                    phone = line.substring(5);
+                } else if (line.isEmpty()) {
+                    // 선택된 학번과 일치하지 않는 경우만 파일에 저장
+                    if (!studentNumber.equals(selectedStudentNumber)) {
+                        updatedContent.append("학과: ").append(department).append("\n");
+                        updatedContent.append("학번: ").append(studentNumber).append("\n");
+                        updatedContent.append("이름: ").append(name).append("\n");
+                        updatedContent.append("학년: ").append(grade).append("\n");
+                        updatedContent.append("생년월일: ").append(birthDate).append("\n");
+                        updatedContent.append("휴대폰: ").append(phone).append("\n\n");
+                    }
+                    // 데이터 초기화
+                    department = studentNumber = name = grade = birthDate = phone = "";
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 읽기 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 수정된 데이터를 파일에 저장
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write(updatedContent.toString());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        // 테이블에서 선택된 행 삭제
         model.removeRow(selectedRow);
-        
+
         // 삭제 완료 메시지
         JOptionPane.showMessageDialog(this, "선택된 학생 정보가 삭제되었습니다.");
     } else {
@@ -672,67 +742,121 @@ if (model.getRowCount() == 0) {
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
           // 학생 정보를 다시 불러와서 S_list 테이블을 새로 갱신합니다.
             loadStudentInfo();
-
     }//GEN-LAST:event_refreshActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-    int selectedRow = S_list.getSelectedRow();
+ int selectedRow = S_list.getSelectedRow();
     if (selectedRow == -1) {
         JOptionPane.showMessageDialog(this, "수정할 학생을 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
         return;
     }
 
-    // 수정된 값 가져오기
-    String updatedDepartment = Department.getText();
-    String updatedStudentNumber = S_Number.getText();
-    String updatedName = Name.getText();
+    // 입력 필드 값 가져오기
+    String updatedName = Name.getText().trim();
+    String updatedStudentNumber = S_Number.getText().trim();
+    String updatedDepartment = Department.getText().trim();
     String updatedGrade = (String) gradeBox.getSelectedItem();
-    String updatedPhone = Phone.getText();
-    String updatedBirthDate = birth.getText();
+    String updatedBirthDate = birth.getText().trim();
+    String updatedPhone = Phone.getText().trim();
 
-    // 기존 파일을 읽어서 모든 학생 데이터를 리스트에 담기
-    List<String> allStudentData = new ArrayList<>();
-    String filePath = System.getProperty("user.home") + "/student_info.txt";
-    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-        String line;
-        String studentData = "";  // String으로 변경
-        while ((line = reader.readLine()) != null) {
-            line = line.trim();
-            studentData += line + "\n";  // String에 데이터 추가
-
-            // 해당 학생의 정보를 수정하기
-            if (line.startsWith("이름: ") && line.substring(4).equals(updatedName)) {
-                // 수정된 정보로 업데이트
-                studentData = "학과: " + updatedDepartment + "\n"
-                        + "학번: " + updatedStudentNumber + "\n"
-                        + "이름: " + updatedName + "\n"
-                        + "학년: " + updatedGrade + "\n"
-                        + "생년월일: " + updatedBirthDate + "\n"
-                        + "휴대폰: " + updatedPhone + "\n\n";
-            }
-
-            allStudentData.add(studentData);  // 학생 정보를 추가
-            studentData = "";  // 다음 학생을 위한 초기화
-        }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "파일을 읽는 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+    // 입력 데이터 유효성 확인
+    if (updatedName.isEmpty() || updatedStudentNumber.isEmpty() || updatedDepartment.isEmpty()
+            || updatedGrade.isEmpty() || updatedBirthDate.isEmpty() || updatedPhone.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "모든 필드를 입력해야 합니다.", "Warning", JOptionPane.WARNING_MESSAGE);
+        return;
     }
 
-    // 수정된 데이터를 파일에 덮어쓰기
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-        for (String student : allStudentData) {
-            writer.write(student);
+    String filePath = System.getProperty("user.home") + "/student_info.txt";
+    StringBuilder updatedContent = new StringBuilder();
+    boolean isStudentFound = false;
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        String line;
+        String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "";
+
+        while ((line = reader.readLine()) != null) {
+            line = line.trim();
+
+            if (line.startsWith("학과: ")) {
+                department = line.substring(4);
+            } else if (line.startsWith("학번: ")) {
+                studentNumber = line.substring(4);
+            } else if (line.startsWith("이름: ")) {
+                name = line.substring(4);
+            } else if (line.startsWith("학년: ")) {
+                grade = line.substring(4);
+            } else if (line.startsWith("생년월일: ")) {
+                birthDate = line.substring(6);
+            } else if (line.startsWith("휴대폰: ")) {
+                phone = line.substring(5);
+            } else if (line.isEmpty()) {
+                // 수정 대상 행인지 확인
+                if (studentNumber.equals(S_list.getValueAt(selectedRow, 1))) {
+                    isStudentFound = true;
+
+                    // 수정된 데이터로 대체
+                    updatedContent.append("학과: ").append(updatedDepartment).append("\n");
+                    updatedContent.append("학번: ").append(updatedStudentNumber).append("\n");
+                    updatedContent.append("이름: ").append(updatedName).append("\n");
+                    updatedContent.append("학년: ").append(updatedGrade).append("\n");
+                    updatedContent.append("생년월일: ").append(updatedBirthDate).append("\n");
+                    updatedContent.append("휴대폰: ").append(updatedPhone).append("\n\n");
+                } else {
+                    // 기존 데이터 유지
+                    updatedContent.append("학과: ").append(department).append("\n");
+                    updatedContent.append("학번: ").append(studentNumber).append("\n");
+                    updatedContent.append("이름: ").append(name).append("\n");
+                    updatedContent.append("학년: ").append(grade).append("\n");
+                    updatedContent.append("생년월일: ").append(birthDate).append("\n");
+                    updatedContent.append("휴대폰: ").append(phone).append("\n\n");
+                }
+                department = studentNumber = name = grade = birthDate = phone = ""; // 초기화
+            }
+        }
+
+        if (!isStudentFound) {
+            JOptionPane.showMessageDialog(this, "선택된 학생 정보를 찾을 수 없습니다. 다시 시도해주세요.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
     } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "파일을 저장하는 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "파일을 읽는 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    // 수정된 데이터를 파일에 저장
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+        writer.write(updatedContent.toString());
+        JOptionPane.showMessageDialog(this, "학생 정보가 성공적으로 저장되었습니다.");
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "파일을 저장하는 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     // 테이블 갱신
-    loadStudentInfo(); // `S_list`를 갱신
-    JOptionPane.showMessageDialog(this, "학생 정보가 수정되었습니다.");
-    // 입력 필드 초기화
+    loadStudentInfo();
     clearInputFields();
     }//GEN-LAST:event_saveActionPerformed
+
+    private void info_refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_info_refreshActionPerformed
+     // S_list의 모델 가져오기
+    DefaultTableModel listModel = (DefaultTableModel) S_list.getModel();
+    DefaultTableModel infoModel = (DefaultTableModel) S_info.getModel();
+
+    // S_list가 비었는지 확인
+    if (listModel.getRowCount() == 0) {
+        // S_info를 초기화 (모든 행 제거)
+        infoModel.setRowCount(0);
+    } else {
+        // S_info 초기화 후 새롭게 갱신
+        infoModel.setRowCount(0);
+        for (int i = 0; i < listModel.getRowCount(); i++) {
+            Object[] rowData = new Object[listModel.getColumnCount()];
+            for (int j = 0; j < listModel.getColumnCount(); j++) {
+                rowData[j] = listModel.getValueAt(i, j);
+            }
+            infoModel.addRow(rowData);
+        }
+    }
+    }//GEN-LAST:event_info_refreshActionPerformed
 // 입력 필드를 초기화하는 메서드
 private void clearInputFields() {
     Name.setText("");           // 이름
@@ -742,7 +866,8 @@ private void clearInputFields() {
     Phone.setText("");          // 전화번호
     birth.setText("");          // 생년월일
 }
-    private void updateStudentInfoInFile(String updatedName, String updatedStudentNumber, String updatedDepartment, 
+
+private void updateStudentInfoInFile(String updatedName, String updatedStudentNumber, String updatedDepartment, 
                                      String updatedGrade, String updatedBirthDate, String updatedPhone) {
     String filePath = System.getProperty("user.home") + "/student_info.txt";
     StringBuilder updatedContent = new StringBuilder();
@@ -858,6 +983,7 @@ private void clearInputFields() {
     private javax.swing.JLabel department;
     private javax.swing.JLabel grade;
     private javax.swing.JComboBox<String> gradeBox;
+    private javax.swing.JButton info_refresh;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
