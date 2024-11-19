@@ -28,10 +28,19 @@ public class Student_Management extends javax.swing.JFrame {
 
         Title = new javax.swing.JLabel();
         Back = new javax.swing.JButton();
+        S_PreCourseTitle = new javax.swing.JLabel();
+        S_RequestTitle = new javax.swing.JLabel();
+        S_RequestTitle1 = new javax.swing.JLabel();
+        S_Request = new javax.swing.JScrollPane();
+        S_ReqInfo = new javax.swing.JTable();
+        S_PreCourse = new javax.swing.JScrollPane();
+        S_PreCouInfo = new javax.swing.JTable();
+        S_Timetable = new javax.swing.JScrollPane();
+        S_TimeInfo = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        Title.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        Title.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
         Title.setText("학생 수강신청 페이지");
 
         Back.setText("뒤로가기");
@@ -41,28 +50,125 @@ public class Student_Management extends javax.swing.JFrame {
             }
         });
 
+        S_PreCourseTitle.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        S_PreCourseTitle.setText("  수강 현황");
+
+        S_RequestTitle.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        S_RequestTitle.setText("  개설강좌");
+
+        S_RequestTitle1.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        S_RequestTitle1.setText("  시간표 현황");
+
+        S_ReqInfo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"", null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
+            },
+            new String [] {
+                "신청", "과목번호", "과목명", "학점/시간", "담당교수", "강의실(시간)", "원격여부"
+            }
+        ));
+        S_ReqInfo.setRowHeight(25);
+        S_ReqInfo.setShowHorizontalLines(true);
+        S_ReqInfo.setShowVerticalLines(true);
+        S_Request.setViewportView(S_ReqInfo);
+
+        S_PreCouInfo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "과목번호", "과목명", "학점/시간", "담당교수", "강의실(시간)", "원격여부"
+            }
+        ));
+        S_PreCouInfo.setRowHeight(25);
+        S_PreCouInfo.setShowHorizontalLines(true);
+        S_PreCouInfo.setShowVerticalLines(true);
+        S_PreCourse.setViewportView(S_PreCouInfo);
+
+        S_TimeInfo.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"1교시", null, null, null, null, null},
+                {"2교시", null, null, null, null, null},
+                {"3교시", null, null, null, null, null},
+                {"4교시", null, null, null, null, null},
+                {"5교시", null, null, null, null, null},
+                {"6교시", null, null, null, null, null},
+                {"7교시", null, null, null, null, null},
+                {"8교시", null, null, null, null, null},
+                {"9교시", null, null, null, null, null},
+                {"10교시", null, null, null, null, null}
+            },
+            new String [] {
+                "", "월요일", "화요일", "수요일", "목요일", "금요일"
+            }
+        ));
+        S_TimeInfo.setRowHeight(27);
+        S_TimeInfo.setShowGrid(true);
+        S_TimeInfo.setShowHorizontalLines(true);
+        S_Timetable.setViewportView(S_TimeInfo);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(139, Short.MAX_VALUE)
+                .addGap(37, 37, 37)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(S_PreCourse, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(S_RequestTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(S_Request, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
+                        .addComponent(S_PreCourseTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(340, 340, 340)
+                        .addComponent(Back))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(Title)
-                        .addGap(125, 125, 125))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(Back)
-                        .addGap(33, 33, 33))))
+                        .addGap(40, 40, 40)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(S_RequestTitle1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(S_Timetable, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))))
+                .addContainerGap(36, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(391, 391, 391)
+                .addComponent(Title, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addComponent(Title)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 200, Short.MAX_VALUE)
-                .addComponent(Back)
-                .addGap(35, 35, 35))
+                .addComponent(Title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(S_RequestTitle)
+                    .addComponent(S_RequestTitle1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(S_Request, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(S_PreCourseTitle)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(S_PreCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(S_Timetable, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Back)))
+                .addGap(19, 19, 19))
         );
 
         pack();
@@ -112,6 +218,15 @@ public class Student_Management extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
+    private javax.swing.JTable S_PreCouInfo;
+    private javax.swing.JScrollPane S_PreCourse;
+    private javax.swing.JLabel S_PreCourseTitle;
+    private javax.swing.JTable S_ReqInfo;
+    private javax.swing.JScrollPane S_Request;
+    private javax.swing.JLabel S_RequestTitle;
+    private javax.swing.JLabel S_RequestTitle1;
+    private javax.swing.JTable S_TimeInfo;
+    private javax.swing.JScrollPane S_Timetable;
     private javax.swing.JLabel Title;
     // End of variables declaration//GEN-END:variables
 }
