@@ -45,7 +45,7 @@ private void loadStudentInfo() {
             if (line.startsWith("학과: ")) {
                 department = line.substring(4);
             } else if (line.startsWith("교수번호: ")) {
-                studentNumber = line.substring(4);
+                studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
             }  else if (line.startsWith("생년월일: ")) {
@@ -102,7 +102,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
             if (line.startsWith("학과: ")) {
                 departmentFile = line.substring(4);
             } else if (line.startsWith("교수번호: ")) {
-                studentNumberFile = line.substring(4);
+                studentNumberFile = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 nameFile = line.substring(4);
             } else if (line.startsWith("생년월일: ")) {
@@ -196,7 +196,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
         jLabel1.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
         jLabel1.setText("교수 정보 검색");
 
-        numberBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "학번", "이름" }));
+        numberBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "교수번호", "이름" }));
         numberBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 numberBoxActionPerformed(evt);
@@ -376,10 +376,10 @@ private void populateStudentDetails(String department, String studentNumber, Str
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel1)
                                             .addGroup(layout.createSequentialGroup()
-                                                .addComponent(numberBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(numberBox, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(S_search, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                .addComponent(S_search, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(search_button, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(modify)
@@ -511,7 +511,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
             if (line.startsWith("학과: ")) {
                 department = line.substring(4);
             } else if (line.startsWith("교수번호: ")) {
-                studentNumber = line.substring(4);
+                studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
             } else if (line.isEmpty() && !department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()) {
@@ -615,7 +615,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
                 if (line.startsWith("학과: ")) {
                     department = line.substring(4);
                 } else if (line.startsWith("교수번호: ")) {
-                    studentNumber = line.substring(4);
+                    studentNumber = line.substring(6);
                 } else if (line.startsWith("이름: ")) {
                     name = line.substring(4);
                 } else if (line.startsWith("생년월일: ")) {
@@ -684,7 +684,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
             if (line.startsWith("학과: ")) {
                 department = line.substring(4);
             } else if (line.startsWith("교수번호: ")) {
-                studentNumber = line.substring(4);
+                studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
             } else if (line.startsWith("생년월일: ")) {
@@ -746,7 +746,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
             if (line.startsWith("학과: ")) {
                 department = line.substring(4);
             } else if (line.startsWith("교수번호: ")) {
-                studentNumber = line.substring(4);
+                studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
             }
@@ -845,7 +845,7 @@ private void updateStudentInfoInFile(String updatedName, String updatedStudentNu
             if (line.startsWith("학과: ")) {
                 department = line.substring(4);
             } else if (line.startsWith("교수번호: ")) {
-                studentNumber = line.substring(4);
+                studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
             }  else if (line.startsWith("생년월일: ")) {
@@ -913,6 +913,14 @@ private void updateStudentInfoInFile(String updatedName, String updatedStudentNu
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(P_Academic_Management.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
