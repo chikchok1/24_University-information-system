@@ -30,11 +30,8 @@
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="department" min="-2" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="birthdate" alignment="1" min="-2" max="-2" attributes="0"/>
-                                      <Component id="phone" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="birthdate" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  <Component id="phone" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -44,7 +41,6 @@
                                       <Component id="birthlast" max="32767" attributes="0"/>
                                   </Group>
                                   <Component id="Phone" min="-2" pref="160" max="-2" attributes="0"/>
-                                  <Component id="Department" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
                                   <Component id="Name" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
                               </Group>
                           </Group>
@@ -115,12 +111,7 @@
                           <Component id="name" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="Name" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="Department" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="department" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="99" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="birth" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="birthdate" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -178,7 +169,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="&#xb9d1;&#xc740; &#xace0;&#xb515;" size="18" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&#xad50;&#xc218; &#xd559;&#xc0ac; &#xad00;&#xb9ac; &#xd398;&#xc774;&#xc9c0;"/>
+        <Property name="text" type="java.lang.String" value="&#xc218;&#xc5c5;&#xb2f4;&#xb2f9;&#xc790; &#xad00;&#xb9ac; &#xd398;&#xc774;&#xc9c0;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="title">
@@ -186,7 +177,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="&#xb9d1;&#xc740; &#xace0;&#xb515;" size="16" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&#xad50;&#xc218; &#xc815;&#xbcf4; &#xc785;&#xb825;"/>
+        <Property name="text" type="java.lang.String" value="&#xc218;&#xc5c5;&#xb2f4;&#xb2f9;&#xc790; &#xc815;&#xbcf4; &#xc785;&#xb825;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="name">
@@ -195,14 +186,6 @@
           <Font name="&#xb9d1;&#xc740; &#xace0;&#xb515;" size="14" style="0"/>
         </Property>
         <Property name="text" type="java.lang.String" value="&#xc774;&#xb984;"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="department">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="&#xb9d1;&#xc740; &#xace0;&#xb515;" size="14" style="0"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="&#xd559;&#xacfc;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="birthdate">
@@ -226,7 +209,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="&#xb9d1;&#xc740; &#xace0;&#xb515;" size="16" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&#xad50;&#xc218; &#xc815;&#xbcf4; &#xac80;&#xc0c9;"/>
+        <Property name="text" type="java.lang.String" value="&#xc218;&#xc5c5;&#xb2f4;&#xb2f9;&#xc790; &#xc815;&#xbcf4; &#xac80;&#xc0c9;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JComboBox" name="numberBox">
@@ -248,11 +231,6 @@
     <Component class="javax.swing.JTextField" name="Name">
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NameActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JTextField" name="Department">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DepartmentActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="birth">
@@ -283,7 +261,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="&#xb9d1;&#xc740; &#xace0;&#xb515;" size="16" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&#xad50;&#xc218; &#xc815;&#xbcf4;"/>
+        <Property name="text" type="java.lang.String" value="&#xc218;&#xc5c5;&#xb2f4;&#xb2f9;&#xc790; &#xc815;&#xbcf4;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="search_button">
@@ -299,7 +277,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="&#xb9d1;&#xc740; &#xace0;&#xb515;" size="16" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&#xad50;&#xc218; &#xbaa9;&#xb85d;"/>
+        <Property name="text" type="java.lang.String" value="&#xc218;&#xc5c5;&#xb2f4;&#xb2f9;&#xc790; &#xbaa9;&#xb85d;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="Add">
@@ -328,19 +306,13 @@
         <Component class="javax.swing.JTable" name="S_list">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="3" rowCount="0">
+              <Table columnCount="2" rowCount="0">
                 <Column editable="true" title="&#xc774;&#xb984;" type="java.lang.String"/>
                 <Column editable="true" title="&#xad50;&#xc218;&#xbc88;&#xd638;" type="java.lang.String"/>
-                <Column editable="true" title="&#xd559;&#xacfc;" type="java.lang.String"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                   <Title/>
                   <Editor/>
@@ -386,21 +358,15 @@
         <Component class="javax.swing.JTable" name="S_info">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="5" rowCount="0">
+              <Table columnCount="4" rowCount="0">
                 <Column editable="true" title="&#xc774;&#xb984;" type="java.lang.String"/>
                 <Column editable="true" title="&#xad50;&#xc218;&#xbc88;&#xd638;" type="java.lang.String"/>
-                <Column editable="true" title="&#xd559;&#xacfc;" type="java.lang.String"/>
                 <Column editable="true" title="&#xc0dd;&#xb144;&#xc6d4;&#xc77c;" type="java.lang.String"/>
                 <Column editable="true" title="&#xd734;&#xb300;&#xd3f0;" type="java.lang.String"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="0">
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
                   <Title/>
                   <Editor/>

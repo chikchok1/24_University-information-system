@@ -159,9 +159,10 @@ public class SignUp extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "아이디와 비밀번호를 입력해주세요.");
         return;
     }
-
+    // 사용자 홈 디렉터리에 파일 저장 경로 설정
+    String filePath = System.getProperty("user.home") + "/user_data.txt";   
     // 파일에 아이디와 비밀번호를 저장
-    try (FileWriter writer = new FileWriter("user_data.txt", true)) { // append 모드로 파일에 쓰기
+    try (FileWriter writer = new FileWriter(filePath, true)) { // append 모드로 파일에 쓰기
         writer.write("ID: " + id + ", Password: " + password + "\n");
         JOptionPane.showMessageDialog(this, "회원가입이 완료되었습니다.");
         // 로그인 창을 열고 회원가입 창을 닫음
@@ -214,14 +215,7 @@ public class SignUp extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(SignUp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
+   
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {

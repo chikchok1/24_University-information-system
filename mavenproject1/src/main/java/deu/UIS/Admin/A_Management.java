@@ -2,7 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package deu.UIS.AcademicManager;
+package deu.UIS.Admin;
+import deu.UIS.AcademicManager.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
@@ -17,12 +18,12 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author YangJinWon
  */
-public class P_Ac extends javax.swing.JFrame {
+public class A_Management extends javax.swing.JFrame {
 
     /**
      * Creates new form Academic_Management
      */
-    public P_Ac() {
+    public A_Management() {
         initComponents();
         loadStudentInfo();  // 생성자에서 파일 데이터를 불러오는 메서드 호출
         addMouseListenerToSList(); // 테이블에 MouseListener 추가
@@ -33,18 +34,16 @@ private void loadStudentInfo() {
     DefaultTableModel model = (DefaultTableModel) S_list.getModel();
     model.setRowCount(0); // 기존 데이터 초기화
 
-    String filePath = System.getProperty("user.home") + "/professor_info.txt";
+    String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
-        String department = "", studentNumber = "", name = "", birthDate = "", phone = "";
+        String studentNumber = "", name = "", birthDate = "", phone = "";
 
         while ((line = reader.readLine()) != null) {
             line = line.trim();
 
-            if (line.startsWith("학과: ")) {
-                department = line.substring(4);
-            } else if (line.startsWith("교수번호: ")) {
+             if (line.startsWith("교수번호: ")) {
                 studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
@@ -54,12 +53,12 @@ private void loadStudentInfo() {
                 phone = line.substring(5);
             } else if (line.isEmpty()) {
                 // 데이터 유효성 검사: 모든 필드가 비어 있지 않은 경우에만 추가
-                if (!department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()
+                if (!studentNumber.isEmpty() && !name.isEmpty()
                         &&  !birthDate.isEmpty() && !phone.isEmpty()) {
-                    model.addRow(new Object[]{name, studentNumber, department, birthDate, phone});
+                    model.addRow(new Object[]{name, studentNumber, birthDate, phone});
                 }
                 // 데이터 초기화
-                department = studentNumber = name = birthDate = phone = "";
+                studentNumber = name = birthDate = phone = "";
             }
         }
     } catch (IOException e) {
@@ -75,33 +74,31 @@ private void addMouseListenerToSList() {
                 // 클릭된 행의 데이터 가져오기
                 String name = (String) S_list.getValueAt(selectedRow, 0);         // 이름
                 String studentNumber = (String) S_list.getValueAt(selectedRow, 1); // 교수번호
-                String department = (String) S_list.getValueAt(selectedRow, 2);    // 학과
+                
 
                 // 해당 학생의 정보를 S_info에 표시
-                populateStudentDetails(department, studentNumber, name);
+                populateStudentDetails(studentNumber, name);
             }
         }
     });
 }
 
-private void populateStudentDetails(String department, String studentNumber, String name) {
-    String filePath = System.getProperty("user.home") + "/professor_info.txt";
+private void populateStudentDetails(String studentNumber, String name) {
+    String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
 
     // S_info 테이블 모델을 새로 만들기
-    DefaultTableModel infoModel = new DefaultTableModel(new String[]{"이름", "교수번호", "학과", "생년월일", "휴대폰"}, 0);
+    DefaultTableModel infoModel = new DefaultTableModel(new String[]{"이름", "교수번호", "생년월일", "휴대폰"}, 0);
     S_info.setModel(infoModel);  // 테이블 모델 설정
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
-        String departmentFile = "", studentNumberFile = "", nameFile = "", birthDateFile = "", phoneFile = "";
+        String studentNumberFile = "", nameFile = "", birthDateFile = "", phoneFile = "";
 
         while ((line = reader.readLine()) != null) {
             line = line.trim();
 
             // 파일에서 학생 정보를 읽어서 매칭
-            if (line.startsWith("학과: ")) {
-                departmentFile = line.substring(4);
-            } else if (line.startsWith("교수번호: ")) {
+            if (line.startsWith("교수번호: ")) {
                 studentNumberFile = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 nameFile = line.substring(4);
@@ -112,19 +109,19 @@ private void populateStudentDetails(String department, String studentNumber, Str
             } 
 
             // 모든 정보가 채워졌을 때 입력된 학생 정보와 매칭
-            if (!departmentFile.isEmpty() && !studentNumberFile.isEmpty() && !nameFile.isEmpty() &&
+            if (!studentNumberFile.isEmpty() && !nameFile.isEmpty() &&
                 !birthDateFile.isEmpty() && !phoneFile.isEmpty()) {
 
-                if (departmentFile.equals(department) && studentNumberFile.equals(studentNumber) && nameFile.equals(name)) {
+                if ( studentNumberFile.equals(studentNumber) && nameFile.equals(name)) {
                     // S_info 테이블에 학생 정보 추가
                     infoModel.addRow(new Object[]{
-                        nameFile, studentNumberFile, departmentFile,birthDateFile, phoneFile
+                        nameFile, studentNumberFile,birthDateFile, phoneFile
                     });
                     break; // 필요한 교수 정보를 찾았으므로 루프 종료
                 }
 
                 // 정보 초기화
-                departmentFile = studentNumberFile = nameFile = birthDateFile = phoneFile ="";
+                studentNumberFile = nameFile = birthDateFile = phoneFile ="";
             }
         }
     } catch (IOException e) {
@@ -143,13 +140,11 @@ private void populateStudentDetails(String department, String studentNumber, Str
         Title = new javax.swing.JLabel();
         title = new javax.swing.JLabel();
         name = new javax.swing.JLabel();
-        department = new javax.swing.JLabel();
         birthdate = new javax.swing.JLabel();
         phone = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         numberBox = new javax.swing.JComboBox<>();
         Name = new javax.swing.JTextField();
-        Department = new javax.swing.JTextField();
         birth = new javax.swing.JTextField();
         birthlast = new javax.swing.JTextField();
         Phone = new javax.swing.JTextField();
@@ -172,16 +167,13 @@ private void populateStudentDetails(String department, String studentNumber, Str
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Title.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
-        Title.setText("교수 학사 관리 페이지");
+        Title.setText("학사담당자 관리 페이지");
 
         title.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
-        title.setText("교수 정보 입력");
+        title.setText("학사담당자 정보 입력");
 
         name.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
         name.setText("이름");
-
-        department.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        department.setText("학과");
 
         birthdate.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
         birthdate.setText("생년월일");
@@ -190,7 +182,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
         phone.setText("휴대폰");
 
         jLabel1.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
-        jLabel1.setText("교수 정보 검색");
+        jLabel1.setText("학사담당자 정보 검색");
 
         numberBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "교수번호", "이름" }));
         numberBox.addActionListener(new java.awt.event.ActionListener() {
@@ -202,12 +194,6 @@ private void populateStudentDetails(String department, String studentNumber, Str
         Name.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 NameActionPerformed(evt);
-            }
-        });
-
-        Department.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DepartmentActionPerformed(evt);
             }
         });
 
@@ -237,7 +223,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
         });
 
         jLabel2.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
-        jLabel2.setText("교수 정보");
+        jLabel2.setText("학사담당자 정보");
 
         search_button.setText("검색");
         search_button.addActionListener(new java.awt.event.ActionListener() {
@@ -247,7 +233,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
         });
 
         jLabel3.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
-        jLabel3.setText("교수 목록");
+        jLabel3.setText("학사담당자 목록");
 
         Add.setText("추가");
         Add.addActionListener(new java.awt.event.ActionListener() {
@@ -268,11 +254,11 @@ private void populateStudentDetails(String department, String studentNumber, Str
 
             },
             new String [] {
-                "이름", "교수번호", "학과"
+                "이름", "교수번호"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -300,11 +286,11 @@ private void populateStudentDetails(String department, String studentNumber, Str
 
             },
             new String [] {
-                "이름", "교수번호", "학과", "생년월일", "휴대폰"
+                "이름", "교수번호", "생년월일", "휴대폰"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -345,10 +331,8 @@ private void populateStudentDetails(String department, String studentNumber, Str
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(department)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(birthdate, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(phone)))
+                                    .addComponent(birthdate, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(phone))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
@@ -356,7 +340,6 @@ private void populateStudentDetails(String department, String studentNumber, Str
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addComponent(birthlast))
                                     .addComponent(Phone, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(Department, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addComponent(title)
                             .addComponent(name)
@@ -409,11 +392,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(name)
                             .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(38, 38, 38)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(Department, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(department))
-                        .addGap(38, 38, 38)
+                        .addGap(99, 99, 99)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(birth, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(birthdate)
@@ -460,17 +439,9 @@ private void populateStudentDetails(String department, String studentNumber, Str
         // TODO add your handling code here:
     }//GEN-LAST:event_NameActionPerformed
 
-    private void PhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PhoneActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_PhoneActionPerformed
-
     private void numberBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_numberBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_numberBoxActionPerformed
-
-    private void DepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DepartmentActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_DepartmentActionPerformed
 
     private void S_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_S_searchActionPerformed
         // TODO add your handling code here:
@@ -485,24 +456,22 @@ private void populateStudentDetails(String department, String studentNumber, Str
         return;
     }
 
-    String filePath = System.getProperty("user.home") + "/professor_info.txt";
+    String filePath = System.getProperty("user.home") +"\\data\\Academic_info.txt";
     DefaultTableModel model = (DefaultTableModel) S_list.getModel();
     model.setRowCount(0); // 테이블 초기화
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
-        String department = "", studentNumber = "", name = "";
+        String studentNumber = "", name = "";
 
         while ((line = reader.readLine()) != null) {
             line = line.trim();
 
-            if (line.startsWith("학과: ")) {
-                department = line.substring(4);
-            } else if (line.startsWith("교수번호: ")) {
+            if (line.startsWith("교수번호: ")) {
                 studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
-            } else if (line.isEmpty() && !department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()) {
+            } else if (line.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()) {
                 // 검색 타입에 따라 검색
                 boolean matches = false;
                 if ("교수번호".equals(searchType)) {
@@ -512,10 +481,10 @@ private void populateStudentDetails(String department, String studentNumber, Str
                 }
 
                 if (matches) {
-                    model.addRow(new Object[]{name, studentNumber, department});
+                    model.addRow(new Object[]{name, studentNumber});
                 }
                 // 초기화
-                department = studentNumber = name = "";
+                studentNumber = name = "";
             }
         }
     } catch (IOException e) {
@@ -530,7 +499,6 @@ private void populateStudentDetails(String department, String studentNumber, Str
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
   // 입력된 값을 가져옵니다.
     String name = Name.getText();
-    String department = Department.getText();
     String phone = Phone.getText();
     String birthFirst = birth.getText(); // 생년월일의 앞 6자리
     String birthLast = birthlast.getText(); // 생년월일의 뒤 7자리
@@ -545,7 +513,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
     }
 
     // "professor_info.txt" 파일에 저장할 문자열을 구성합니다.
-    String filePath = System.getProperty("user.home") + "/professor_info.txt";
+    String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
     
     // 현재 파일에서 가장 큰 교수번호를 찾습니다.
     int maxProfessorNumber = 0;
@@ -556,7 +524,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
             if (line.startsWith("교수번호: ")) {
                 try {
                     String professorNumberStr = line.substring(6).trim(); // "P001" 같은 형식
-                    if (professorNumberStr.matches("P\\d{3}")) { // 형식 검증
+                    if (professorNumberStr.matches("H\\d{3}")) { // 형식 검증
                         int professorNumber = Integer.parseInt(professorNumberStr.substring(1)); // 숫자 부분 추출
                         maxProfessorNumber = Math.max(maxProfessorNumber, professorNumber);
                     }
@@ -571,12 +539,11 @@ private void populateStudentDetails(String department, String studentNumber, Str
     }
 
     // 새로운 교수번호 생성
-    String studentNumber = String.format("P%03d", maxProfessorNumber + 1);
+    String studentNumber = String.format("H%03d", maxProfessorNumber + 1);
 
     // 메모장에 저장할 문자열을 구성합니다.
     String professorInfo = "이름: " + name + "\n" +
                            "교수번호: " + studentNumber + "\n" +
-                           "학과: " + department + "\n" +
                            "생년월일: " + birthDate + "\n" +
                            "휴대폰: " + phone + "\n\n";
 
@@ -591,11 +558,10 @@ private void populateStudentDetails(String department, String studentNumber, Str
 
     // 테이블에 데이터 추가
     DefaultTableModel model = (DefaultTableModel) S_list.getModel();
-    model.addRow(new Object[]{name, studentNumber, department});  // 이름, 교수번호, 학과 순으로 추가
+    model.addRow(new Object[]{name, studentNumber});  // 이름, 교수번호, 학과 순으로 추가
 
     // 입력 필드 초기화
     Name.setText("");
-    Department.setText("");
     Phone.setText("");
     birth.setText("");
     birthlast.setText("");
@@ -604,7 +570,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
     private void BeforeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BeforeActionPerformed
         // TODO add your handling code here:
         dispose();
-         new A_Main().setVisible(true);
+         new Admin_Main().setVisible(true);
     }//GEN-LAST:event_BeforeActionPerformed
 
     private void birthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_birthActionPerformed
@@ -623,19 +589,17 @@ private void populateStudentDetails(String department, String studentNumber, Str
         String selectedStudentNumber = (String) model.getValueAt(selectedRow, 1); // 학번
 
         // 파일 경로 설정
-        String filePath = System.getProperty("user.home") + "/professor_info.txt";
+        String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
         StringBuilder updatedContent = new StringBuilder();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-            String department = "", studentNumber = "", name = "", birthDate = "", phone = "";
+            String studentNumber = "", name = "", birthDate = "", phone = "";
 
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
 
-                if (line.startsWith("학과: ")) {
-                    department = line.substring(4);
-                } else if (line.startsWith("교수번호: ")) {
+               if (line.startsWith("교수번호: ")) {
                     studentNumber = line.substring(6);
                 } else if (line.startsWith("이름: ")) {
                     name = line.substring(4);
@@ -646,14 +610,13 @@ private void populateStudentDetails(String department, String studentNumber, Str
                 } else if (line.isEmpty()) {
                     // 선택된 학번과 일치하지 않는 경우만 파일에 저장
                     if (!studentNumber.equals(selectedStudentNumber)) {
-                        updatedContent.append("학과: ").append(department).append("\n");
                         updatedContent.append("교수번호: ").append(studentNumber).append("\n");
                         updatedContent.append("이름: ").append(name).append("\n");
                         updatedContent.append("생년월일: ").append(birthDate).append("\n");
                         updatedContent.append("휴대폰: ").append(phone).append("\n\n");
                     }
                     // 데이터 초기화
-                    department = studentNumber = name = birthDate = phone = "";
+                     studentNumber = name = birthDate = phone = "";
                 }
             }
         } catch (IOException e) {
@@ -680,7 +643,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
     }//GEN-LAST:event_DeleteActionPerformed
 
     private void modifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyActionPerformed
-         // 선택된 학생 정보가 없으면 경고 메시지
+       // 선택된 학생 정보가 없으면 경고 메시지
     int selectedRow = S_list.getSelectedRow();
     if (selectedRow == -1) {
         JOptionPane.showMessageDialog(this, "수정할 교수를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
@@ -690,21 +653,18 @@ private void populateStudentDetails(String department, String studentNumber, Str
     // 선택된 행에서 기본 정보를 가져옵니다.
     String selectedName = (String) S_list.getValueAt(selectedRow, 0);         // 이름
     String selectedStudentNumber = (String) S_list.getValueAt(selectedRow, 1); // 학번
-    String selectedDepartment = (String) S_list.getValueAt(selectedRow, 2);    // 학과
-
+    
     // 파일에서 선택된 학생의 세부 정보를 가져와서 입력 필드에 채웁니다.
-    String filePath = System.getProperty("user.home") + "/professor_info.txt";
+    String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
-        String department = "", studentNumber = "", name = "", birthDate = "", phone = "";
+        String studentNumber = "", name = "", birthDate = "", phone = "";
 
         while ((line = reader.readLine()) != null) {
             line = line.trim();
 
-            if (line.startsWith("학과: ")) {
-                department = line.substring(4);
-            } else if (line.startsWith("교수번호: ")) {
+             if (line.startsWith("교수번호: ")) {
                 studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
@@ -712,12 +672,21 @@ private void populateStudentDetails(String department, String studentNumber, Str
                 birthDate = line.substring(6);
             } else if (line.startsWith("휴대폰: ")) {
                 phone = line.substring(5);
-            } else if (line.isEmpty() && name.equals(selectedName) && studentNumber.equals(selectedStudentNumber) && department.equals(selectedDepartment)) {
+            } else if (line.isEmpty() && name.equals(selectedName) && studentNumber.equals(selectedStudentNumber)) {
                 // 선택된 학생과 일치하는 정보를 찾았을 때 입력 필드에 채우기
                 Name.setText(name);
-              //  S_Number.setText(studentNumber);
-                Department.setText(department);
-                birth.setText(birthDate);
+
+                // 주민등록번호를 앞 6자리와 뒤 7자리로 나눔
+                if (birthDate.length() == 14) { // 주민등록번호 형식 확인 (앞 6 + "-" + 뒤 7)
+                    String[] parts = birthDate.split("-");
+                    if (parts.length == 2) {
+                        birth.setText(parts[0]);     // 앞 6자리
+                        birthlast.setText(parts[1]); // 뒤 7자리
+                    }
+                } else {
+                    birth.setText(birthDate); // 형식이 맞지 않을 경우 전체 입력
+                }
+
                 Phone.setText(phone);
                 break;
             }
@@ -741,30 +710,32 @@ private void populateStudentDetails(String department, String studentNumber, Str
 
     // 입력 필드에서 수정된 데이터 가져오기
     String updatedName = Name.getText().trim();
-    String updatedDepartment = Department.getText().trim();
-    String updatedBirthDate = birth.getText().trim();
+    String updatedBirthDatePart1 = birth.getText().trim(); // 주민등록번호 앞 6자리
+    String updatedBirthDatePart2 = birthlast.getText().trim(); // 주민등록번호 뒤 7자리
     String updatedPhone = Phone.getText().trim();
     String existingProfessorNumber = (String) S_list.getValueAt(selectedRow, 1); // 선택된 교수번호
 
-    if (updatedName.isEmpty() || updatedDepartment.isEmpty() || updatedBirthDate.isEmpty() || updatedPhone.isEmpty()) {
+    // 주민등록번호를 다시 합침
+    String updatedBirthDate = updatedBirthDatePart1 + "-" + updatedBirthDatePart2;
+
+    if (updatedName.isEmpty() || updatedBirthDatePart1.isEmpty() || 
+        updatedBirthDatePart2.isEmpty() || updatedPhone.isEmpty()) {
         JOptionPane.showMessageDialog(this, "모든 필드를 입력해야 합니다.", "Warning", JOptionPane.WARNING_MESSAGE);
         return;
     }
 
-    String filePath = System.getProperty("user.home") + "/professor_info.txt";
+    String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
     StringBuilder updatedContent = new StringBuilder();
     boolean isProfessorFound = false;
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
-        String department = "", studentNumber = "", name = "", birthDate = "", phone = "";
+        String studentNumber = "", name = "", birthDate = "", phone = "";
 
         while ((line = reader.readLine()) != null) {
             line = line.trim();
 
-            if (line.startsWith("학과: ")) {
-                department = line.substring(4);
-            } else if (line.startsWith("교수번호: ")) {
+             if (line.startsWith("교수번호: ")) {
                 studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
@@ -776,20 +747,18 @@ private void populateStudentDetails(String department, String studentNumber, Str
                 if (studentNumber.equals(existingProfessorNumber)) {
                     isProfessorFound = true;
                     // 수정된 값으로 갱신
-                    updatedContent.append("학과: ").append(updatedDepartment).append("\n");
                     updatedContent.append("교수번호: ").append(studentNumber).append("\n");
                     updatedContent.append("이름: ").append(updatedName).append("\n");
                     updatedContent.append("생년월일: ").append(updatedBirthDate).append("\n");
                     updatedContent.append("휴대폰: ").append(updatedPhone).append("\n\n");
                 } else {
                     // 기존 데이터 유지
-                    updatedContent.append("학과: ").append(department).append("\n");
                     updatedContent.append("교수번호: ").append(studentNumber).append("\n");
                     updatedContent.append("이름: ").append(name).append("\n");
                     updatedContent.append("생년월일: ").append(birthDate).append("\n");
                     updatedContent.append("휴대폰: ").append(phone).append("\n\n");
                 }
-                department = studentNumber = name = birthDate = phone = ""; // 데이터 초기화
+                studentNumber = name = birthDate = phone = ""; // 데이터 초기화
             }
         }
     } catch (IOException e) {
@@ -816,7 +785,6 @@ private void populateStudentDetails(String department, String studentNumber, Str
     loadStudentInfo();
     S_list.repaint(); // 강제 UI 갱신
     clearInputFields(); // 입력 필드 초기화
-
     }//GEN-LAST:event_saveActionPerformed
 
     private void info_refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_info_refreshActionPerformed
@@ -824,18 +792,16 @@ private void populateStudentDetails(String department, String studentNumber, Str
     DefaultTableModel infoModel = (DefaultTableModel) S_info.getModel();
     infoModel.setRowCount(0);
 
-    String filePath = System.getProperty("user.home") + "/professor_info.txt";
+    String filePath = System.getProperty("user.home") +"\\data\\Academic_info.txt";
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
-        String department = "", studentNumber = "", name = "", birthDate = "", phone = "";
+        String studentNumber = "", name = "", birthDate = "", phone = "";
 
         while ((line = reader.readLine()) != null) {
             line = line.trim();
 
-            if (line.startsWith("학과: ")) {
-                department = line.substring(4);
-            } else if (line.startsWith("교수번호: ")) {
+            if (line.startsWith("교수번호: ")) {
                 studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
@@ -845,12 +811,12 @@ private void populateStudentDetails(String department, String studentNumber, Str
                 phone = line.substring(5);
             } else if (line.isEmpty()) {
                 // 모든 필드가 채워진 경우 S_info에 추가
-                if (!department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty() && 
+                if (!studentNumber.isEmpty() && !name.isEmpty() && 
                     !birthDate.isEmpty() && !phone.isEmpty()) {
-                    infoModel.addRow(new Object[]{name, studentNumber, department, birthDate, phone});
+                    infoModel.addRow(new Object[]{name, studentNumber, birthDate, phone});
                 }
                 // 데이터 초기화
-                department = studentNumber = name = birthDate = phone = "";
+                studentNumber = name = birthDate = phone = "";
             }
         }
     } catch (IOException e) {
@@ -861,30 +827,32 @@ private void populateStudentDetails(String department, String studentNumber, Str
     private void birthlastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_birthlastActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_birthlastActionPerformed
+
+    private void PhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PhoneActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_PhoneActionPerformed
 // 입력 필드를 초기화하는 메서드
 private void clearInputFields() {
     Name.setText("");           // 이름
-    Department.setText("");     // 학과
     Phone.setText("");          // 전화번호
-    birth.setText("");          // 생년월일
+    birth.setText("");          // 주민등록번호 앞자리
+    birthlast.setText(""); //주민등록번호 뒷자리
 }
 
 private void updateStudentInfoInFile(String updatedName, String updatedStudentNumber, String updatedDepartment, 
                                      String updatedGrade, String updatedBirthDate, String updatedPhone) {
-    String filePath = System.getProperty("user.home") + "/professor_info.txt";
+    String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
     StringBuilder updatedContent = new StringBuilder();
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
-        String department = "", studentNumber = "", name = "", birthDate = "", phone = "";
+        String studentNumber = "", name = "", birthDate = "", phone = "";
         boolean isStudentFound = false;
 
         while ((line = reader.readLine()) != null) {
             line = line.trim();
 
-            if (line.startsWith("학과: ")) {
-                department = line.substring(4);
-            } else if (line.startsWith("교수번호: ")) {
+           if (line.startsWith("교수번호: ")) {
                 studentNumber = line.substring(6);
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4);
@@ -898,14 +866,12 @@ private void updateStudentInfoInFile(String updatedName, String updatedStudentNu
                     isStudentFound = true;
 
                     // 수정된 값으로 덮어쓰기 (수정하지 않은 값은 기존 값을 유지)
-                    updatedContent.append("학과: ").append(updatedDepartment.isEmpty() ? department : updatedDepartment).append("\n");
                     updatedContent.append("교수번호: ").append(updatedStudentNumber).append("\n");
                     updatedContent.append("이름: ").append(updatedName).append("\n");
                     updatedContent.append("생년월일: ").append(updatedBirthDate.isEmpty() ? birthDate : updatedBirthDate).append("\n");
                     updatedContent.append("휴대폰: ").append(updatedPhone.isEmpty() ? phone : updatedPhone).append("\n\n");
                 } else {
                     // 기존 데이터 유지
-                    updatedContent.append("학과: ").append(department).append("\n");
                     updatedContent.append("교수번호: ").append(studentNumber).append("\n");
                     updatedContent.append("이름: ").append(name).append("\n");
                     updatedContent.append("생년월일: ").append(birthDate).append("\n");
@@ -945,14 +911,974 @@ private void updateStudentInfoInFile(String updatedName, String updatedStudentNu
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(P_Ac.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(A_Management.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(P_Ac.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(A_Management.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(P_Ac.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(A_Management.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(P_Ac.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(A_Management.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold> 
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -1021,7 +1947,7 @@ private void updateStudentInfoInFile(String updatedName, String updatedStudentNu
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new P_Ac().setVisible(true);
+                new A_Management().setVisible(true);
             }
         });
     }
@@ -1030,7 +1956,6 @@ private void updateStudentInfoInFile(String updatedName, String updatedStudentNu
     private javax.swing.JButton Add;
     private javax.swing.JButton Before;
     private javax.swing.JButton Delete;
-    private javax.swing.JTextField Department;
     private javax.swing.JTextField Name;
     private javax.swing.JTextField Phone;
     private javax.swing.JTable S_info;
@@ -1040,7 +1965,6 @@ private void updateStudentInfoInFile(String updatedName, String updatedStudentNu
     private javax.swing.JTextField birth;
     private javax.swing.JLabel birthdate;
     private javax.swing.JTextField birthlast;
-    private javax.swing.JLabel department;
     private javax.swing.JButton info_refresh;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

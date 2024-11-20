@@ -43,23 +43,26 @@
                                               <Component id="birthdate" alignment="0" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="birth" min="-2" pref="72" max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                               <Component id="Phone" min="-2" pref="160" max="-2" attributes="0"/>
                                               <Component id="gradeBox" alignment="0" min="-2" max="-2" attributes="0"/>
                                               <Component id="Department" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
-                                              <Component id="S_Number" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
                                               <Component id="Name" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="birth" min="-2" pref="72" max="-2" attributes="0"/>
+                                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                                  <Component id="birthlast" max="32767" attributes="0"/>
+                                              </Group>
                                           </Group>
+                                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Component id="grade" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="title" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="department" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="S_number" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="name" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -100,7 +103,7 @@
                       <Component id="Title" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="25" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -126,15 +129,9 @@
                           <Component id="numberBox" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="S_number" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="S_Number" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                              <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="refresh" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="refresh" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
@@ -152,6 +149,7 @@
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="birthdate" alignment="3" min="-2" max="-2" attributes="0"/>
                                   <Component id="birth" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="birthlast" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -212,14 +210,6 @@
         <Property name="text" type="java.lang.String" value="&#xc774;&#xb984;"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="S_number">
-      <Properties>
-        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-          <Font name="&#xb9d1;&#xc740; &#xace0;&#xb515;" size="14" style="0"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="&#xd559;&#xbc88;"/>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JLabel" name="department">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -241,7 +231,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="&#xb9d1;&#xc740; &#xace0;&#xb515;" size="14" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&#xc0dd;&#xb144;&#xc6d4;&#xc77c;"/>
+        <Property name="text" type="java.lang.String" value="&#xc8fc;&#xbbfc;&#xb4f1;&#xb85d;&#xbc88;&#xd638;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="phone">
@@ -281,11 +271,6 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NameActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JTextField" name="S_Number">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="S_NumberActionPerformed"/>
-      </Events>
-    </Component>
     <Component class="javax.swing.JTextField" name="Department">
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DepartmentActionPerformed"/>
@@ -315,6 +300,11 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="birthActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JTextField" name="birthlast">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="birthlastActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="Phone">

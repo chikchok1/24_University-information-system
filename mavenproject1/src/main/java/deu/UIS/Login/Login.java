@@ -3,46 +3,29 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package deu.UIS.Login;
-import deu.UIS.AcademicManager.A_Main;
-import deu.UIS.ClassManager.Class_Management;
-import deu.UIS.Professor.P_Main;
-import deu.UIS.Student.S_Main;
-import java.io.IOException;
-import javax.swing.JOptionPane;
 /**
  *
  * @author YangJinWon
  */
 public class Login extends javax.swing.JFrame {
 
+  //  UserRepository userRepository = UserRepository.getInstance();
     /**
      * Creates new form NewuJFrame
      */
+   private final LoginController loginController;
+    /**
+     * Creates new form Login
+     */
     public Login() {
-    initComponents(); // GUI 구성 요소 초기화
-     setupListeners(); // 리스너 설정 메소드 호출
-}
+        initComponents();
+        setupListeners();
+        this.loginController = new LoginController(this); // 컨트롤러 생성
+    }
     private void setupListeners() {
-    // ID 입력 필드에 KeyListener 추가
-    ID_input.addKeyListener(new java.awt.event.KeyAdapter() {
-        @Override
-        public void keyPressed(java.awt.event.KeyEvent evt) {
-            if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-                Login.doClick(); // 엔터 키 누르면 로그인 버튼 클릭
-            }
-        }
-    });
-
-    // PW 입력 필드에 KeyListener 추가
-    PW_input.addKeyListener(new java.awt.event.KeyAdapter() {
-        @Override
-        public void keyPressed(java.awt.event.KeyEvent evt) {
-            if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-                Login.doClick(); // 엔터 키 누르면 로그인 버튼 클릭
-            }
-        }
-    });
-}
+        GUIUtils.addEnterKeyListener(ID_input, Login); // 엔터키 리스너 등록
+        GUIUtils.addEnterKeyListener(PW_input, Login);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -166,66 +149,20 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_ID_inputActionPerformed
 
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
-   // 입력된 ID와 비밀번호 가져오기
-    String enteredId = ID_input.getText();
-    String enteredPassword = new String(PW_input.getPassword());
+  // 입력 필드에서 ID와 비밀번호 가져오기
+        String enteredId = ID_input.getText().trim();
+        String enteredPassword = new String(PW_input.getPassword()).trim();
 
-    boolean loginSuccess = false; // 로그인 성공 여부를 추적할 변수
-
-    // 파일에서 ID와 비밀번호를 읽어와 일치 여부 확인
-    try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader("user_data.txt"))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            // 파일의 각 줄에서 ID와 비밀번호를 추출
-            String[] parts = line.split(", ");
-            if (parts.length == 2) {
-                String fileId = parts[0].substring(4); // "ID: " 부분을 제거하고 ID만 가져오기
-                String filePassword = parts[1].substring(10); // "Password: " 부분을 제거하고 비밀번호만 가져오기
-
-                // 입력한 ID와 비밀번호가 파일의 값과 일치하는지 확인
-                if (enteredId.equals(fileId) && enteredPassword.equals(filePassword)) {
-                    loginSuccess = true;
-                    break;
-                }
-            }
-        }
-   } catch (IOException e) {
-    JOptionPane.showMessageDialog(this, "로그인 데이터 파일을 읽는 중 오류가 발생했습니다. 다시 시도해 주세요.");
-    return;
-}
-
-    // 로그인 성공 여부에 따른 메시지 표시
-    if (loginSuccess) {
-        JOptionPane.showMessageDialog(this, "로그인 성공");
-         // 아이디가 'S'로 시작하는지 확인
-        if (enteredId.startsWith("S")) { //학생 학사 관리 페이지로 이동
-            this.dispose(); // 현재 Login 창을 닫음
-            new S_Main().setVisible(true); // 새로운 Student_Management 창을 열음
-        }
-        else if (enteredId.startsWith("P")) { //교수 학사 관리 페이지로 이동
-            this.dispose(); // 현재 Login 창을 닫음
-            new P_Main().setVisible(true); // 새로운 Professor_Management 창을 열음
-        }
-        else if (enteredId.startsWith("H")) { //학사 담당자의 학사 관리 페이지로 이동
-            this.dispose(); // 현재 Login 창을 닫음
-            new A_Main().setVisible(true); // 새로운 Academic_Management 창을 열음
-        }
-        else if (enteredId.startsWith("G")) { //수업 담당자의 수업 관리 페이지로 이동
-            this.dispose(); // 현재 Login 창을 닫음
-            new Class_Management().setVisible(true); // 새로운 Class_Management 창을 열음
-        }
-    } else {
-        JOptionPane.showMessageDialog(this, "로그인 실패. 아이디와 비밀번호를 확인하세요.");
-    }
+        // 컨트롤러에 로그인 요청 위임
+        loginController.handleLogin(enteredId, enteredPassword);
     }//GEN-LAST:event_LoginActionPerformed
 
     private void SignUpPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpPageActionPerformed
-        // TODO add your handling code here:
+       // 회원가입 페이지로 이동
         dispose();
         SignUp signUpPage = new SignUp();
         signUpPage.setVisible(true);
     }//GEN-LAST:event_SignUpPageActionPerformed
-
     /**
      * @param args the command line arguments
      */
@@ -252,28 +189,8 @@ public class Login extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login().setVisible(true);
-            }
-        });
+        java.awt.EventQueue.invokeLater(() -> new Login().setVisible(true));
+      
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
