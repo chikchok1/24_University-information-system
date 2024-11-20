@@ -41,28 +41,28 @@
                                           <Group type="103" groupAlignment="0" attributes="0">
                                               <Component id="phone" alignment="0" min="-2" max="-2" attributes="0"/>
                                               <Component id="birthdate" alignment="0" min="-2" max="-2" attributes="0"/>
+                                              <Component id="department" alignment="0" min="-2" max="-2" attributes="0"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="Phone" min="-2" pref="160" max="-2" attributes="0"/>
+                                              <Component id="Phone" max="32767" attributes="0"/>
                                               <Component id="gradeBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                                              <Component id="Department" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
-                                              <Component id="Name" alignment="0" min="-2" pref="160" max="-2" attributes="0"/>
+                                              <Component id="Name" alignment="0" max="32767" attributes="0"/>
                                               <Group type="102" alignment="0" attributes="0">
                                                   <Component id="birth" min="-2" pref="72" max="-2" attributes="0"/>
                                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                                   <Component id="birthlast" max="32767" attributes="0"/>
                                               </Group>
+                                              <Component id="DepartmentComboBox" max="32767" attributes="0"/>
                                           </Group>
                                           <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
                                   <Component id="grade" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="title" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="department" alignment="0" min="-2" max="-2" attributes="0"/>
                                   <Component id="name" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="0" attributes="0">
@@ -90,7 +90,7 @@
                                   </Group>
                                   <Component id="jScrollPane1" alignment="1" min="-2" pref="269" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jScrollPane2" min="-2" pref="433" max="-2" attributes="0"/>
                                   <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
@@ -118,7 +118,7 @@
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -138,7 +138,7 @@
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="department" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="Department" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="DepartmentComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -180,7 +180,7 @@
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="171" max="32767" attributes="0"/>
+              <EmptySpace pref="52" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -269,11 +269,6 @@
     <Component class="javax.swing.JTextField" name="Name">
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="NameActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JTextField" name="Department">
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DepartmentActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="gradeBox">
@@ -498,6 +493,26 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="info_refreshActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JComboBox" name="DepartmentComboBox">
+      <Properties>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+          <StringArray count="6">
+            <StringItem index="0" value="&#xcef4;&#xd4e8;&#xd130;&#xc18c;&#xd504;&#xd2b8;&#xc6e8;&#xc5b4;&#xacf5;&#xd559;&#xacfc;"/>
+            <StringItem index="1" value="&#xc804;&#xc0b0;&#xd559;&#xacfc;"/>
+            <StringItem index="2" value="&#xc804;&#xc790;&#xacf5;&#xd559;&#xacfc;"/>
+            <StringItem index="3" value="&#xd654;&#xd559;&#xacf5;&#xd559;&#xacfc;"/>
+            <StringItem index="4" value="&#xae30;&#xacc4;&#xacf5;&#xd559;&#xacfc;"/>
+            <StringItem index="5" value="&#xd56d;&#xacf5;&#xc6b0;&#xc8fc;&#xacf5;&#xd559;&#xacfc;"/>
+          </StringArray>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="DepartmentComboBoxActionPerformed"/>
+      </Events>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+      </AuxValues>
     </Component>
   </SubComponents>
 </Form>

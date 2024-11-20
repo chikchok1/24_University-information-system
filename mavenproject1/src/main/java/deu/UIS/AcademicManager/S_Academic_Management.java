@@ -157,7 +157,6 @@ public class S_Academic_Management extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         numberBox = new javax.swing.JComboBox<>();
         Name = new javax.swing.JTextField();
-        Department = new javax.swing.JTextField();
         gradeBox = new javax.swing.JComboBox<>();
         birth = new javax.swing.JTextField();
         birthlast = new javax.swing.JTextField();
@@ -177,6 +176,7 @@ public class S_Academic_Management extends javax.swing.JFrame {
         refresh = new javax.swing.JButton();
         save = new javax.swing.JButton();
         info_refresh = new javax.swing.JButton();
+        DepartmentComboBox = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -214,12 +214,6 @@ public class S_Academic_Management extends javax.swing.JFrame {
         Name.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 NameActionPerformed(evt);
-            }
-        });
-
-        Department.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DepartmentActionPerformed(evt);
             }
         });
 
@@ -353,6 +347,13 @@ public class S_Academic_Management extends javax.swing.JFrame {
             }
         });
 
+        DepartmentComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "컴퓨터소프트웨어공학과", "전산학과", "전자공학과", "화학공학과", "기계공학과", "항공우주공학과" }));
+        DepartmentComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DepartmentComboBoxActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -373,23 +374,23 @@ public class S_Academic_Management extends javax.swing.JFrame {
                                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addComponent(phone)
-                                                .addComponent(birthdate))
+                                                .addComponent(birthdate)
+                                                .addComponent(department))
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                .addComponent(Phone, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(Phone)
                                                 .addComponent(gradeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(Department, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addComponent(Name, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(Name)
                                                 .addGroup(layout.createSequentialGroup()
                                                     .addComponent(birth, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                    .addComponent(birthlast)))
+                                                    .addComponent(birthlast))
+                                                .addComponent(DepartmentComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                             .addGap(2, 2, 2)))
                                     .addComponent(grade)
                                     .addComponent(title)
-                                    .addComponent(department)
                                     .addComponent(name))
-                                .addGap(35, 35, 35)
+                                .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -411,7 +412,7 @@ public class S_Academic_Management extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(refresh))
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(20, 20, 20)
+                                .addGap(10, 10, 10)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2)))))
@@ -430,7 +431,7 @@ public class S_Academic_Management extends javax.swing.JFrame {
                     .addComponent(title)
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -448,7 +449,7 @@ public class S_Academic_Management extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(department)
-                                    .addComponent(Department, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(DepartmentComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(grade)
@@ -477,7 +478,7 @@ public class S_Academic_Management extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(Delete)
                             .addComponent(info_refresh))))
-                .addContainerGap(171, Short.MAX_VALUE))
+                .addContainerGap(52, Short.MAX_VALUE))
         );
 
         pack();
@@ -498,10 +499,6 @@ public class S_Academic_Management extends javax.swing.JFrame {
     private void gradeBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gradeBoxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_gradeBoxActionPerformed
-
-    private void DepartmentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DepartmentActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_DepartmentActionPerformed
 
     private void S_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_S_searchActionPerformed
         // TODO add your handling code here:
@@ -559,71 +556,71 @@ public class S_Academic_Management extends javax.swing.JFrame {
     }//GEN-LAST:event_search_buttonActionPerformed
 
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
-     // 입력된 값을 가져옵니다.
-    String name = Name.getText().trim();
-    String department = Department.getText().trim();
-    String grade = (String) gradeBox.getSelectedItem();
-    String phone = Phone.getText().trim();
-    String birthFirst = birth.getText().trim();
-    String birthLast = birthlast.getText().trim();
+        // 입력된 값을 가져옵니다.
+        String name = Name.getText().trim();
+        String department = (String) DepartmentComboBox.getSelectedItem(); // ComboBox에서 선택된 값
+        String grade = (String) gradeBox.getSelectedItem();
+        String phone = Phone.getText().trim();
+        String birthFirst = birth.getText().trim();
+        String birthLast = birthlast.getText().trim();
 
-    // 생년월일 결합
-    String birthDate = birthFirst + "-" + birthLast;
+        // 생년월일 결합
+        String birthDate = birthFirst + "-" + birthLast;
 
-    // 입력값 유효성 검증
-    if (name.isEmpty() || department.isEmpty() || grade.isEmpty() || phone.isEmpty() ||
-        birthFirst.isEmpty() || birthLast.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "모든 필드를 입력해야 합니다.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        // 입력값 유효성 검증
+        if (name.isEmpty() || department.isEmpty() || grade.isEmpty() || phone.isEmpty()
+                || birthFirst.isEmpty() || birthLast.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "모든 필드를 입력해야 합니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    // 파일 경로 설정
-    String filePath = System.getProperty("user.home") + "\\data\\student_info.txt";
+        // 파일 경로 설정
+        String filePath = System.getProperty("user.home") + "\\data\\student_info.txt";
 
-    // 현재 파일에서 가장 큰 학번을 찾습니다.
-    int maxStudentNumber = 0;
+        // 현재 파일에서 가장 큰 학번을 찾습니다.
+        int maxStudentNumber = 0;
 
-    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            if (line.startsWith("학번: ")) {
-                String studentNumberStr = line.substring(4).trim();
-                if (studentNumberStr.matches("S\\d{3}")) {
-                    int studentNumber = Integer.parseInt(studentNumberStr.substring(1));
-                    maxStudentNumber = Math.max(maxStudentNumber, studentNumber);
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("학번: ")) {
+                    String studentNumberStr = line.substring(4).trim();
+                    if (studentNumberStr.matches("S\\d{3}")) {
+                        int studentNumber = Integer.parseInt(studentNumberStr.substring(1));
+                        maxStudentNumber = Math.max(maxStudentNumber, studentNumber);
+                    }
                 }
             }
+        } catch (IOException e) {
+            // 파일이 없거나 읽을 수 없는 경우 초기값 유지
+            maxStudentNumber = 0;
         }
-    } catch (IOException e) {
-        // 파일이 없거나 읽을 수 없는 경우 초기값 유지
-        maxStudentNumber = 0;
-    }
 
-    // 새로운 학번 생성
-    String studentNumber = String.format("S%03d", maxStudentNumber + 1);
+        // 새로운 학번 생성
+        String studentNumber = String.format("S%03d", maxStudentNumber + 1);
 
-    // 파일에 저장할 데이터
-    String studentInfo = "이름: " + name + "\n" +
-                         "학번: " + studentNumber + "\n" +
-                         "학과: " + department + "\n" +
-                         "학년: " + grade + "\n" +
-                         "생년월일: " + birthDate + "\n" +
-                         "휴대폰: " + phone + "\n\n";
+        // 파일에 저장할 데이터
+        String studentInfo = "이름: " + name + "\n"
+                + "학번: " + studentNumber + "\n"
+                + "학과: " + department + "\n"
+                + "학년: " + grade + "\n"
+                + "생년월일: " + birthDate + "\n"
+                + "휴대폰: " + phone + "\n\n";
 
-    // 파일에 저장
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
-        writer.write(studentInfo);
-        writer.newLine();
-        JOptionPane.showMessageDialog(this, "학생 정보가 저장되었습니다.");
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
+        // 파일에 저장
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true))) {
+            writer.write(studentInfo);
+            writer.newLine();
+            JOptionPane.showMessageDialog(this, "학생 정보가 저장되었습니다.");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
 
-    // 테이블 갱신
-    loadStudentInfo();
+        // 테이블 갱신
+        loadStudentInfo();
 
-    // 입력 필드 초기화
-    clearInputFields();
+        // 입력 필드 초기화
+        clearInputFields();
     }//GEN-LAST:event_AddActionPerformed
 
     private void BeforeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BeforeActionPerformed
@@ -747,7 +744,8 @@ public class S_Academic_Management extends javax.swing.JFrame {
                     // 선택된 학생과 일치하는 정보를 찾았을 때 입력 필드에 채우기
 
                     Name.setText(name);
-                    Department.setText(department);
+                    // ComboBox에서 해당 학과 선택
+                    DepartmentComboBox.setSelectedItem(department);
                     gradeBox.setSelectedItem(grade);
                     birth.setText(birthDate);
                     Phone.setText(phone);
@@ -785,7 +783,7 @@ public class S_Academic_Management extends javax.swing.JFrame {
 
         // 입력 필드 값 가져오기
         String updatedName = Name.getText().trim();
-        String updatedDepartment = Department.getText().trim();
+        String updatedDepartment = (String) DepartmentComboBox.getSelectedItem(); // ComboBox에서 선택된 값
         String updatedGrade = (String) gradeBox.getSelectedItem();
         String updatedBirthDatePart1 = birth.getText().trim(); // 주민등록번호 앞 6자리
         String updatedBirthDatePart2 = birthlast.getText().trim(); // 주민등록번호 뒤 7자리
@@ -896,11 +894,15 @@ public class S_Academic_Management extends javax.swing.JFrame {
     private void birthlastActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_birthlastActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_birthlastActionPerformed
+
+    private void DepartmentComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DepartmentComboBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DepartmentComboBoxActionPerformed
 // 입력 필드를 초기화하는 메서드
 
     private void clearInputFields() {
         Name.setText("");           // 이름
-        Department.setText("");     // 학과
+        DepartmentComboBox.setSelectedIndex(0); // ComboBox 초기화
         gradeBox.setSelectedIndex(0);  // 학년 (초기값으로 리셋)
         Phone.setText("");          // 전화번호
         birth.setText("");          // 생년월일
@@ -1011,7 +1013,7 @@ public class S_Academic_Management extends javax.swing.JFrame {
     private javax.swing.JButton Add;
     private javax.swing.JButton Before;
     private javax.swing.JButton Delete;
-    private javax.swing.JTextField Department;
+    private javax.swing.JComboBox<String> DepartmentComboBox;
     private javax.swing.JTextField Name;
     private javax.swing.JTextField Phone;
     private javax.swing.JTable S_info;

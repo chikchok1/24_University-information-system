@@ -160,7 +160,7 @@ public class SignUp extends javax.swing.JFrame {
         return;
     }
     // 사용자 홈 디렉터리에 파일 저장 경로 설정
-    String filePath = System.getProperty("user.home") + "/user_data.txt";   
+    String filePath = System.getProperty("user.home") + "/data/user_data.txt";   
     // 파일에 아이디와 비밀번호를 저장
     try (FileWriter writer = new FileWriter(filePath, true)) { // append 모드로 파일에 쓰기
         writer.write("ID: " + id + ", Password: " + password + "\n");

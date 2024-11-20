@@ -10,7 +10,7 @@ package deu.UIS.Login;
  */
 public class LoginService {
 
-    private static final String USER_FILE_PATH = System.getProperty("user.home") + "/user_data.txt";
+    private static final String USER_FILE_PATH = System.getProperty("user.home") + "/data//user_data.txt";
     private static final String PROFESSOR_FILE_PATH = System.getProperty("user.home") + "/data/professor_info.txt";
     private static final String ACADEMIC_FILE_PATH = System.getProperty("user.home") + "/data/Academic_info.txt";
     private static final String STUDENT_FILE_PATH = System.getProperty("user.home") + "/data/student_info.txt";
