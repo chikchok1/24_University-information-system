@@ -69,21 +69,24 @@ public class FileManager {
     //수업담당자 인증
     public static boolean verifyCourseManagerCredentials(String filePath, String enteredId, String enteredPassword) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line, managerId = "", departmentCode = "";
+            String line, managerId = "", birthLast = "";
 
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
 
-                if (line.startsWith("담당자ID: ")) {
+                if (line.startsWith("수업담당자번호: ")) {
                     managerId = line.substring(8).trim();
-                } else if (line.startsWith("부서코드: ")) {
-                    departmentCode = line.substring(6).trim();
+                } else if (line.startsWith("생년월일: ")) {
+                    String[] birthParts = line.substring(6).split("-");
+                    if (birthParts.length == 2) {
+                        birthLast = birthParts[1].trim();
+                    }
                 } else if (line.isEmpty()) {
-                    if (enteredId.equals(managerId) && enteredPassword.equals(departmentCode)) {
+                    if (enteredId.equals(managerId) && enteredPassword.equals(birthLast)) {
                         return true;
                     }
                     managerId = "";
-                    departmentCode = "";
+                    birthLast = "";
                 }
             }
         } catch (IOException e) {
@@ -123,23 +126,23 @@ public class FileManager {
 //학사 담당자 인증
     public static boolean verifyAcademicCredentials(String filePath, String enteredId, String enteredPassword) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line, professorNumber = "", birthLast = "";
+            String line, AcademicNumber = "", birthLast = "";
 
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
 
-                if (line.startsWith("교수번호: ")) {
-                    professorNumber = line.substring(6).trim();
+                if (line.startsWith("학사담당자번호: ")) {
+                    AcademicNumber = line.substring(8).trim();
                 } else if (line.startsWith("생년월일: ")) {
                     String[] birthParts = line.substring(6).split("-");
                     if (birthParts.length == 2) {
                         birthLast = birthParts[1].trim();
                     }
                 } else if (line.isEmpty()) {
-                    if (enteredId.equals(professorNumber) && enteredPassword.equals(birthLast)) {
+                    if (enteredId.equals(AcademicNumber) && enteredPassword.equals(birthLast)) {
                         return true;
                     }
-                    professorNumber = "";
+                    AcademicNumber = "";
                     birthLast = "";
                 }
             }
