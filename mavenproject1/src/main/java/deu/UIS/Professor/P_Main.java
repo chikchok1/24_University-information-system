@@ -31,6 +31,7 @@ public class P_Main extends javax.swing.JFrame {
         Title = new javax.swing.JLabel();
         P_Course = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,6 +52,13 @@ public class P_Main extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setText("출석부");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -58,26 +66,31 @@ public class P_Main extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(79, 79, 79)
-                        .addComponent(Title))
+                        .addGap(55, 55, 55)
+                        .addComponent(P_Course)
+                        .addGap(36, 36, 36)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(228, 228, 228)
-                        .addComponent(LogOut))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(103, 103, 103)
-                        .addComponent(P_Course)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(89, 89, 89)
+                        .addComponent(Title)))
+                .addContainerGap(63, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(LogOut)
+                .addGap(15, 15, 15))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(50, 50, 50)
                 .addComponent(Title)
-                .addGap(63, 63, 63)
-                .addComponent(P_Course)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
+                .addGap(48, 48, 48)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(P_Course)
+                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
                 .addComponent(LogOut)
-                .addGap(35, 35, 35))
+                .addGap(16, 16, 16))
         );
 
         pack();
@@ -95,6 +108,13 @@ public class P_Main extends javax.swing.JFrame {
         dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_LogOutActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        // 출석부 버튼 클릭 시 Professor_Lollbook 페이지로 이동
+        this.dispose();  // 현재 메인 페이지 창 닫기
+        new Professor_Lollbook().setVisible(true);  // 출석부 페이지 열기
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -136,5 +156,6 @@ public class P_Main extends javax.swing.JFrame {
     private javax.swing.JButton LogOut;
     private javax.swing.JButton P_Course;
     private javax.swing.JLabel Title;
+    private javax.swing.JButton jButton1;
     // End of variables declaration//GEN-END:variables
 }
