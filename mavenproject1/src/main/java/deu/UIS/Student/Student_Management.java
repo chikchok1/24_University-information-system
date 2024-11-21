@@ -3,20 +3,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package deu.UIS.Student;
-//dsada
 
+//dsada
 /**
  *
  * @author YangJinWon
  */
 import javax.swing.*;
-import javax.swing.table.*;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 public class Student_Management extends javax.swing.JFrame {
 
@@ -28,8 +28,10 @@ public class Student_Management extends javax.swing.JFrame {
         loadDataFromFile();  // 텍스트 파일에서 데이터를 읽어오는 메서드
 
         S_ReqInfo.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer());
-        S_ReqInfo.getColumnModel().getColumn(0).setCellEditor(new ButtonEditor(new JCheckBox()));
-    }   // "신청"버튼이 들어가는 열에 버튼랜더러와 버튼에디터 설정
+        S_ReqInfo.getColumnModel().getColumn(0).setCellEditor(new ReqButtonEditor(new JCheckBox()));
+        S_PreCouInfo.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer());
+        S_PreCouInfo.getColumnModel().getColumn(0).setCellEditor(new CourButtonEditor(new JCheckBox()));
+    }   // "신청"버튼과 "취소"버튼들어가는 열에 버튼랜더러와 버튼에디터 설정
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,7 +77,7 @@ public class Student_Management extends javax.swing.JFrame {
 
         S_ReqInfo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", null, null, null, null, null, null},
+                {"", "1", "2", "3", "4", "5", null},
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
                 {null, null, null, null, null, null, null},
@@ -105,16 +107,24 @@ public class Student_Management extends javax.swing.JFrame {
 
         S_PreCouInfo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null}
             },
             new String [] {
-                "과목번호", "과목명", "학점/시간", "담당교수", "강의실(시간)", "원격여부"
+                "취소", "과목번호", "과목명", "학점/시간", "담당교수", "강의실(시간)", "원격여부"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false, false, false, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         S_PreCouInfo.setRowHeight(25);
         S_PreCouInfo.setShowHorizontalLines(true);
         S_PreCouInfo.setShowVerticalLines(true);
@@ -237,9 +247,9 @@ public class Student_Management extends javax.swing.JFrame {
 
     private void loadDataFromFile() {
         DefaultTableModel model = (DefaultTableModel) S_ReqInfo.getModel(); // 테이블 모델 가져오기
-        
+
         model.setRowCount(0);   //기존 데이터 초기화  
-        
+
         try (BufferedReader br = new BufferedReader(new FileReader("S_Course.txt"))) {
             String line;
 
@@ -261,6 +271,32 @@ public class Student_Management extends javax.swing.JFrame {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "파일을 읽는 도중 오류가 발생했습니다: " + e.getMessage());
         }
+
+        DefaultTableModel Model = (DefaultTableModel) S_PreCouInfo.getModel(); // 테이블 모델 가져오기
+
+        Model.setRowCount(0);   //기존 데이터 초기화  
+
+        try (BufferedReader br = new BufferedReader(new FileReader("S_PreCour.txt"))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                line = line.trim(); // 앞뒤 공백 제거
+                if (line.isEmpty()) {
+                    continue; // 빈 줄 건너뛰기
+                }
+
+                String[] data = line.split(","); // 쉼표로 구분된 데이터 분리
+
+                if (data.length == 6) { // 필요한 열 개수만 처리
+                    // 테이블에 데이터 추가
+                    Model.addRow(new Object[]{"취소", data[0], data[1], data[2], data[3], data[4], data[5]});
+                } else {
+                    System.err.println("잘못된 데이터 형식: " + line);
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "파일을 읽는 도중 오류가 발생했습니다: " + e.getMessage());
+        }
     }
 
     //버튼랜더러
@@ -272,46 +308,155 @@ public class Student_Management extends javax.swing.JFrame {
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setText("신청");    // 버튼 텍스트
+            setText(value == null ? "" : value.toString());    // 버튼 텍스트
             return this;
         }
     }
 
-    //버튼에디터
-    class ButtonEditor extends DefaultCellEditor {
+    //버튼에디터(ReqButtonEditor - 수강신청, CourbuttonEditor - 수강 현황)
+    class ReqButtonEditor extends DefaultCellEditor {
 
         protected JButton button;
         private boolean isPushed;
+        private int selectedRow; // 선택된 행의 인덱스를 저장
+        private JTable table; // 테이블 참조
 
-        public ButtonEditor(JCheckBox checkBox) {
+        public ReqButtonEditor(JCheckBox checkBox) {
             super(checkBox);
-            button = new JButton();
+            button = new JButton("신청");
             button.setOpaque(true);
-            button.addActionListener(e -> fireEditingStopped());    //클릭시 편집 종료 이벤트 발생
+            button.addActionListener(e -> {
+                fireEditingStopped();
+                handleRequestAction();
+            });
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            button.setText("신청"); //버튼 텍스트
             isPushed = true;
+            selectedRow = row; // 현재 선택된 행 인덱스 저장
+            this.table = table; // 테이블 참조 저장
             return button;
         }
 
         @Override
         public Object getCellEditorValue() {
-            if (isPushed) { //버튼 입력시 실행할 작업
-                JOptionPane.showMessageDialog(null, "수강 신청이 완료되었습니다.");
-            }
-            isPushed = false;   //클릭 상태 초기화
+            isPushed = false;
             return "신청";
         }
 
-        @Override
-        public boolean stopCellEditing() {
-            isPushed = false;
-            return super.stopCellEditing();
+        private void handleRequestAction() {
+            // 선택된 행의 데이터 가져오기
+            DefaultTableModel model = (DefaultTableModel) table.getModel();
+            Object[] rowData = new Object[model.getColumnCount() - 1]; // 버튼 열 제외
+
+            for (int i = 1; i < model.getColumnCount(); i++) {
+                rowData[i - 1] = model.getValueAt(selectedRow, i);
+            }
+            // 파일에 추가
+            try (java.io.FileWriter fw = new java.io.FileWriter("S_PreCour.txt", true)) {
+                StringBuilder rowString = new StringBuilder();
+                for (Object obj : rowData) {
+                    if (rowString.length() > 0) {
+                        rowString.append(",");
+                    }
+                    rowString.append(obj == null ? "" : obj.toString());
+                }
+                fw.write(rowString.toString() + "\n");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "파일 저장 중 오류가 발생했습니다: " + ex.getMessage());
+                return;
+            }
+            // S_PreCouInfo 테이블에 추가
+            DefaultTableModel preModel = (DefaultTableModel) S_PreCouInfo.getModel();
+            preModel.addRow(new Object[]{"취소", rowData[0], rowData[1], rowData[2], rowData[3], rowData[4], rowData[5]});
+
+            JOptionPane.showMessageDialog(null, "신청이 완료되었습니다.");
         }
     }
+
+    class CourButtonEditor extends DefaultCellEditor {
+
+        protected JButton button;
+        private boolean isPushed;
+        private int selectedRow; // 선택된 행
+
+        public CourButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton("취소");
+            button.setOpaque(true);
+            button.addActionListener(e -> {
+                fireEditingStopped();
+                handleCancelAction();
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            isPushed = true;
+            selectedRow = row; // 선택된 행 저장
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            isPushed = false;
+            return "취소";
+        }
+
+        private void handleCancelAction() {
+            DefaultTableModel model = (DefaultTableModel) S_PreCouInfo.getModel();
+
+            // 선택된 행의 데이터를 가져오기
+            Object[] rowData = new Object[model.getColumnCount() - 1];
+            for (int i = 1; i < model.getColumnCount(); i++) { // 첫 번째 열(취소 버튼)은 제외
+                rowData[i - 1] = model.getValueAt(selectedRow, i);
+            }
+
+            // S_PreCour.txt 파일에서 해당 데이터 제거 후 다시 저장
+            try {
+                java.io.File inputFile = new java.io.File("S_PreCour.txt");
+                java.util.List<String> updatedLines = new java.util.ArrayList<>();
+
+                try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(inputFile))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        String[] fileRow = line.split(",");
+                        boolean match = true;
+
+                        // 선택된 행 데이터와 비교
+                        for (int i = 0; i < rowData.length; i++) {
+                            if (!rowData[i].toString().equals(fileRow[i].trim())) {
+                                match = false;
+                                break;
+                            }
+                        }
+
+                        // 일치하지 않는 데이터만 리스트에 추가
+                        if (!match) {
+                            updatedLines.add(line);
+                        }
+                    }
+                }
+
+                // 업데이트된 내용으로 파일 덮어쓰기
+                try (java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter(inputFile))) {
+                    for (String updatedLine : updatedLines) {
+                        writer.write(updatedLine);
+                        writer.newLine();
+                    }
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "파일 처리 중 오류가 발생했습니다: " + ex.getMessage());
+                return;
+            }
+
+            // S_PreCouInfo 테이블에서 해당 행 삭제
+            model.removeRow(selectedRow);
+            JOptionPane.showMessageDialog(null, "취소가 완료되었습니다.");
+        }
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
