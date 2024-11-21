@@ -35,115 +35,45 @@ public class FileManager {
         }
         return false;
     }
-    //학생 인증
+
+    // 학생 인증
     public static boolean verifyStudentCredentials(String filePath, String enteredId, String enteredPassword) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line, studentId = "", birthLast = "";
-
-            while ((line = reader.readLine()) != null) {
-                line = line.trim(); // 앞뒤 공백 제거
-
-                if (line.startsWith("학번: ")) {
-                    studentId = line.substring(4).trim();
-                } else if (line.startsWith("생년월일: ")) {
-                    String[] birthParts = line.substring(6).split("-");
-                    if (birthParts.length == 2) {
-                        birthLast = birthParts[1].trim();
-                    }
-                } else if (line.isEmpty()) {
-                    if (enteredId.equals(studentId) && enteredPassword.equals(birthLast)) {
-                        return true;
-                    
-                    }
-                    // 데이터 초기화
-                    studentId = "";
-                    birthLast = "";
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("파일 읽기 오류", e);
-        }
-        return false;
+        return verifyCredentials(filePath, "학번: ", "비밀번호: ", enteredId, enteredPassword);
     }
-    
-    //수업담당자 인증
+
+    // 수업담당자 인증
     public static boolean verifyCourseManagerCredentials(String filePath, String enteredId, String enteredPassword) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line, managerId = "", birthLast = "";
-
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-
-                if (line.startsWith("수업담당자번호: ")) {
-                    managerId = line.substring(8).trim();
-                } else if (line.startsWith("생년월일: ")) {
-                    String[] birthParts = line.substring(6).split("-");
-                    if (birthParts.length == 2) {
-                        birthLast = birthParts[1].trim();
-                    }
-                } else if (line.isEmpty()) {
-                    if (enteredId.equals(managerId) && enteredPassword.equals(birthLast)) {
-                        return true;
-                    }
-                    managerId = "";
-                    birthLast = "";
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("파일 읽기 오류", e);
-        }
-        return false;
+        return verifyCredentials(filePath, "수업담당자번호: ", "비밀번호: ", enteredId, enteredPassword);
     }
 
-    //교수
+    // 교수 인증
     public static boolean verifyProfessorCredentials(String filePath, String enteredId, String enteredPassword) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line, professorNumber = "", birthLast = "";
-
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-
-                if (line.startsWith("교수번호: ")) {
-                    professorNumber = line.substring(6).trim();
-                } else if (line.startsWith("생년월일: ")) {
-                    String[] birthParts = line.substring(6).split("-");
-                    if (birthParts.length == 2) {
-                        birthLast = birthParts[1].trim();
-                    }
-                } else if (line.isEmpty()) {
-                    if (enteredId.equals(professorNumber) && enteredPassword.equals(birthLast)) {
-                        return true;
-                    }
-                    professorNumber = "";
-                    birthLast = "";
-                }
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("파일 읽기 오류", e);
-        }
-        return false;
+        return verifyCredentials(filePath, "교수번호: ", "비밀번호: ", enteredId, enteredPassword);
     }
-//학사 담당자 인증
+
+    // 학사 담당자 인증
     public static boolean verifyAcademicCredentials(String filePath, String enteredId, String enteredPassword) {
+        return verifyCredentials(filePath, "학사담당자번호: ", "비밀번호: ", enteredId, enteredPassword);
+    }
+
+    // 공통 인증 메서드
+    private static boolean verifyCredentials(String filePath, String idPrefix, String passwordPrefix, String enteredId, String enteredPassword) {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line, AcademicNumber = "", birthLast = "";
+            String line, id = "", password = "";
 
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
 
-                if (line.startsWith("학사담당자번호: ")) {
-                    AcademicNumber = line.substring(8).trim();
-                } else if (line.startsWith("생년월일: ")) {
-                    String[] birthParts = line.substring(6).split("-");
-                    if (birthParts.length == 2) {
-                        birthLast = birthParts[1].trim();
-                    }
+                if (line.startsWith(idPrefix)) {
+                    id = line.substring(idPrefix.length()).trim();
+                } else if (line.startsWith(passwordPrefix)) {
+                    password = line.substring(passwordPrefix.length()).trim();
                 } else if (line.isEmpty()) {
-                    if (enteredId.equals(AcademicNumber) && enteredPassword.equals(birthLast)) {
+                    if (enteredId.equals(id) && enteredPassword.equals(password)) {
                         return true;
                     }
-                    AcademicNumber = "";
-                    birthLast = "";
+                    id = "";
+                    password = "";
                 }
             }
         } catch (IOException e) {
@@ -151,6 +81,7 @@ public class FileManager {
         }
         return false;
     }
+
     public static void cleanUpFile(String filePath) {
         StringBuilder cleanedContent = new StringBuilder();
 
@@ -172,5 +103,4 @@ public class FileManager {
             throw new RuntimeException("파일 쓰기 오류", e);
         }
     }
-
 }

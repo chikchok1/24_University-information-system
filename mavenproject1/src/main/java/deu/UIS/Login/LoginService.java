@@ -3,48 +3,49 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package deu.UIS.Login;
-
+import java.io.IOException;
+import java.nio.file.Paths;
 /**
  *
  * @author YangJinWon
  */
 public class LoginService {
 
-    private static final String USER_FILE_PATH = System.getProperty("user.home") + "/data//user_data.txt";
-    private static final String PROFESSOR_FILE_PATH = System.getProperty("user.home") + "/data/professor_info.txt";
-    private static final String ACADEMIC_FILE_PATH = System.getProperty("user.home") + "/data/Academic_info.txt";
-    private static final String STUDENT_FILE_PATH = System.getProperty("user.home") + "/data/student_info.txt";
-    private static final String COURSE_MANAGER_FILE_PATH = System.getProperty("user.home") + "/data/Class_Manager.txt";
-    
-   public static boolean authenticateUser(String enteredId, String enteredPassword) {
-        // 1. 일반 사용자 인증
+    private static final String USER_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "user_data.txt").toString();
+    private static final String PROFESSOR_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "professor_info.txt").toString();
+    private static final String ACADEMIC_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "Academic_info.txt").toString();
+    private static final String STUDENT_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "student_info.txt").toString();
+    private static final String COURSE_MANAGER_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "Class_Manager.txt").toString();
+
+    static {
+        // Ensure the directory exists
+        try {
+            java.nio.file.Files.createDirectories(Paths.get(System.getProperty("user.home"), "data"));
+        } catch (IOException e) {
+            throw new RuntimeException("데이터 디렉토리 생성 중 오류 발생", e);
+        }
+    }
+
+    public static boolean authenticateUser(String enteredId, String enteredPassword) {
+        // 기존 인증 로직 유지
         if (FileManager.verifyUserCredentials(USER_FILE_PATH, enteredId, enteredPassword)) {
             return true;
         }
-
-        // 2. 교수 인증
         if (FileManager.verifyProfessorCredentials(PROFESSOR_FILE_PATH, enteredId, enteredPassword)) {
             return true;
         }
-
-        // 3. 학사 담당자 인증
         if (FileManager.verifyAcademicCredentials(ACADEMIC_FILE_PATH, enteredId, enteredPassword)) {
             return true;
         }
-
-        // 4. 학생 인증
         if (FileManager.verifyStudentCredentials(STUDENT_FILE_PATH, enteredId, enteredPassword)) {
             return true;
         }
-
-        // 5. 수업 담당자 인증
         if (FileManager.verifyCourseManagerCredentials(COURSE_MANAGER_FILE_PATH, enteredId, enteredPassword)) {
             return true;
         }
-
         return false;
     }
-   
+
     public static String determineUserRole(String userId) {
         if (userId.startsWith("S")) return "STUDENT";
         if (userId.startsWith("P")) return "PROFESSOR";
@@ -54,3 +55,4 @@ public class LoginService {
         return "UNKNOWN";
     }
 }
+

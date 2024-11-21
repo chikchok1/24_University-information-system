@@ -479,28 +479,45 @@ private void populateStudentDetails(String department, String studentNumber, Str
     }//GEN-LAST:event_search_buttonActionPerformed
 
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
-            try {
-            String name = Name.getText().trim();
-            String department = (String) DepartmentComboBox.getSelectedItem();
-            String phone = Phone.getText().trim();
-            String birthDate = birth.getText().trim() + "-" + birthlast.getText().trim();
+             try {
+        // 입력 데이터 가져오기
+        String name = Name.getText().trim();
+        String department = (String) DepartmentComboBox.getSelectedItem();
+        String phone = Phone.getText().trim();
+        String birthDate = birth.getText().trim() + "-" + birthlast.getText().trim();
 
-            P_ValidationUtils.validateInputFields(name, department, phone, birthDate);
+        // 입력값 검증
+        P_ValidationUtils.validateInputFields(name, department, phone, birthDate);
 
-            List<Professor> professors = professorFileManager.readProfessors();
-            String newProfessorNumber = generateNewProfessorNumber(professors);
+        // 교수 목록 불러오기
+        List<Professor> professors = professorFileManager.readProfessors();
+        String newProfessorNumber = generateNewProfessorNumber(professors);
 
-            professors.add(new Professor(name, newProfessorNumber, department, birthDate, phone));
-            professorFileManager.writeProfessors(professors);
-            tableManager.loadProfessorsToTable(professors);
+        // 생년월일 뒷자리 7자리로 비밀번호 설정
+        String[] birthParts = birthDate.split("-");
+        String password = (birthParts.length == 2) ? birthParts[1] : "생년월일 형식 오류";
 
-            JOptionPane.showMessageDialog(this, "교수 정보가 추가되었습니다.");
-            clearInputFields();
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "파일 처리 오류: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        // 새 교수 객체 생성
+        Professor newProfessor = new Professor(name, newProfessorNumber, department, birthDate, phone);
+        newProfessor.setPassword(password); // 비밀번호 설정
+
+        // 교수 추가 및 파일 저장
+        professors.add(newProfessor);
+        professorFileManager.writeProfessors(professors);
+
+        // 테이블 갱신
+        tableManager.loadProfessorsToTable(professors);
+
+        // 성공 메시지
+        JOptionPane.showMessageDialog(this, "교수 정보가 추가되었습니다.");
+
+        // 입력 필드 초기화
+        clearInputFields();
+    } catch (IllegalArgumentException e) {
+        JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "파일 처리 오류: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_AddActionPerformed
 private String generateNewProfessorNumber(List<Professor> professors) {
         int maxNumber = professors.stream()
@@ -627,22 +644,60 @@ private String generateNewProfessorNumber(List<Professor> professors) {
     String professorNumber = (String) S_list.getValueAt(selectedRow, 1);
 
     try {
+        // 교수 목록 불러오기
         List<Professor> professors = professorFileManager.readProfessors();
         for (Professor professor : professors) {
             if (professor.getProfessorNumber().equals(professorNumber)) {
-                professor.setName(Name.getText().trim());
-                professor.setDepartment((String) DepartmentComboBox.getSelectedItem());
-                professor.setBirthDate(birth.getText().trim() + "-" + birthlast.getText().trim());
-                professor.setPhone(Phone.getText().trim());
+                // 유효성 검증
+                String updatedName = Name.getText().trim();
+                String updatedDepartment = (String) DepartmentComboBox.getSelectedItem();
+                String updatedPhone = Phone.getText().trim();
+                String updatedBirthDatePart1 = birth.getText().trim();
+                String updatedBirthDatePart2 = birthlast.getText().trim();
+
+                if (updatedName.isEmpty() || updatedDepartment.isEmpty() || updatedPhone.isEmpty() || 
+                    updatedBirthDatePart1.isEmpty() || updatedBirthDatePart2.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "모든 필드를 입력해야 합니다.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                if (!updatedBirthDatePart1.matches("\\d{6}") || !updatedBirthDatePart2.matches("\\d{7}")) {
+                    JOptionPane.showMessageDialog(this, "생년월일 형식이 잘못되었습니다. (예: 123456-1234567)", "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                String updatedBirthDate = updatedBirthDatePart1 + "-" + updatedBirthDatePart2;
+
+                // 정보 업데이트
+                professor.setName(updatedName);
+                professor.setDepartment(updatedDepartment);
+                professor.setPhone(updatedPhone);
+
+                // 생년월일 변경 여부와 상관없이 뒷자리 7자리로 비밀번호 갱신
+                professor.setBirthDate(updatedBirthDate);
+                professor.setPassword(updatedBirthDatePart2);
+
                 break;
             }
         }
 
+        // 수정된 데이터 파일에 저장
         professorFileManager.writeProfessors(professors);
+
+        // 테이블 갱신
         tableManager.loadProfessorsToTable(professors);
+
+        // 성공 메시지
         JOptionPane.showMessageDialog(this, "교수 정보가 수정되었습니다.");
+
+        // 입력 필드 초기화
+        clearInputFields();
     } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "파일 처리 오류: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, "파일 처리 중 오류가 발생했습니다. 관리자에게 문의하세요.\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "알 수 없는 오류가 발생했습니다.\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
     }
     }//GEN-LAST:event_saveActionPerformed
 
@@ -697,7 +752,7 @@ private String generateNewProfessorNumber(List<Professor> professors) {
         // TODO add your handling code here:
     }//GEN-LAST:event_DepartmentComboBoxActionPerformed
 
-private void updateStudentInfoInFile(String updatedName, String updatedStudentNumber, String updatedDepartment, 
+private void updateStudentInfoInFile(String updatedName, String updatedStudentNumber, String updatedDepartment,
                                      String updatedBirthDate, String updatedPhone) {
     String filePath = Paths.get(System.getProperty("user.home"), "data", "professor_info.txt").toString();
     StringBuilder updatedContent = new StringBuilder();
@@ -705,7 +760,7 @@ private void updateStudentInfoInFile(String updatedName, String updatedStudentNu
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
-        String department = "", studentNumber = "", name = "", birthDate = "", phone = "";
+        String department = "", studentNumber = "", name = "", birthDate = "", phone = "", password = "";
 
         while ((line = reader.readLine()) != null) {
             line = line.trim();
@@ -720,27 +775,34 @@ private void updateStudentInfoInFile(String updatedName, String updatedStudentNu
                 birthDate = line.substring(6);
             } else if (line.startsWith("휴대폰: ")) {
                 phone = line.substring(5);
+            } else if (line.startsWith("비밀번호: ")) {
+                password = line.substring(6);
             } else if (line.isEmpty()) {
-                // 기존 데이터와 입력된 데이터를 비교
                 if (studentNumber.equals(updatedStudentNumber)) {
                     isStudentFound = true;
 
-                    // 수정된 데이터 적용
+                    // 생년월일이 변경된 경우 비밀번호 갱신
+                    String updatedPassword = updatedBirthDate.split("-").length == 2
+                            ? updatedBirthDate.split("-")[1] : password;
+
                     updatedContent.append("학과: ").append(updatedDepartment).append("\n")
                                   .append("교수번호: ").append(updatedStudentNumber).append("\n")
                                   .append("이름: ").append(updatedName).append("\n")
                                   .append("생년월일: ").append(updatedBirthDate).append("\n")
-                                  .append("휴대폰: ").append(updatedPhone).append("\n\n");
+                                  .append("휴대폰: ").append(updatedPhone).append("\n")
+                                  .append("비밀번호: ").append(updatedPassword).append("\n\n");
                 } else {
-                    // 기존 데이터 유지
+                    // 기존 데이터를 유지
                     updatedContent.append("학과: ").append(department).append("\n")
                                   .append("교수번호: ").append(studentNumber).append("\n")
                                   .append("이름: ").append(name).append("\n")
                                   .append("생년월일: ").append(birthDate).append("\n")
-                                  .append("휴대폰: ").append(phone).append("\n\n");
+                                  .append("휴대폰: ").append(phone).append("\n")
+                                  .append("비밀번호: ").append(password).append("\n\n");
                 }
+
                 // 데이터 초기화
-                department = studentNumber = name = birthDate = phone = "";
+                department = studentNumber = name = birthDate = phone = password = "";
             }
         }
     } catch (IOException e) {
@@ -753,13 +815,13 @@ private void updateStudentInfoInFile(String updatedName, String updatedStudentNu
         return;
     }
 
-    // 수정된 내용을 파일에 저장
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
         writer.write(updatedContent.toString());
     } catch (IOException e) {
         JOptionPane.showMessageDialog(this, "파일을 저장하는 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
     }
 }
+
 
     /**
      * @param args the command line arguments

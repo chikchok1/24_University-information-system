@@ -4,6 +4,7 @@
  */
 package deu.UIS.AcademicManager;
 
+import deu.UIS.ChangePassword.ChangePassword;
 import deu.UIS.Login.Login;
 
 /**
@@ -32,6 +33,7 @@ public class A_Main extends javax.swing.JFrame {
         S_Management = new javax.swing.JButton();
         P_Management = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
+        PasswordChange = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -59,6 +61,13 @@ public class A_Main extends javax.swing.JFrame {
             }
         });
 
+        PasswordChange.setText("비밀번호 변경");
+        PasswordChange.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PasswordChangeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -70,9 +79,12 @@ public class A_Main extends javax.swing.JFrame {
                         .addComponent(Title))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(34, 34, 34)
-                        .addComponent(S_Management)
-                        .addGap(74, 74, 74)
-                        .addComponent(P_Management)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(PasswordChange)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(S_Management)
+                                .addGap(74, 74, 74)
+                                .addComponent(P_Management)))))
                 .addContainerGap(72, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -89,7 +101,9 @@ public class A_Main extends javax.swing.JFrame {
                     .addComponent(S_Management)
                     .addComponent(P_Management))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 122, Short.MAX_VALUE)
-                .addComponent(LogOut)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(LogOut)
+                    .addComponent(PasswordChange))
                 .addGap(35, 35, 35))
         );
 
@@ -112,6 +126,11 @@ public class A_Main extends javax.swing.JFrame {
          dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_LogOutActionPerformed
+
+    private void PasswordChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordChangeActionPerformed
+        dispose();
+        new ChangePassword().setVisible(true);
+    }//GEN-LAST:event_PasswordChangeActionPerformed
 
     /**
      * @param args the command line arguments
@@ -151,6 +170,7 @@ public class A_Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton LogOut;
     private javax.swing.JButton P_Management;
+    private javax.swing.JButton PasswordChange;
     private javax.swing.JButton S_Management;
     private javax.swing.JLabel Title;
     // End of variables declaration//GEN-END:variables

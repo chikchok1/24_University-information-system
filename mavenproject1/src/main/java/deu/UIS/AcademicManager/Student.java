@@ -11,6 +11,7 @@ public class Student {
     private String grade;
     private String birthDate;
     private String phone;
+    private String password; // 비밀번호 추가
 
     public Student(String name, String studentNumber, String department, String grade, String birthDate, String phone) {
         this.name = name;
@@ -19,6 +20,7 @@ public class Student {
         this.grade = grade;
         this.birthDate = birthDate;
         this.phone = phone;
+        this.password = ""; // 비밀번호 초기화
     }
 
     // Getters and setters
@@ -34,5 +36,8 @@ public class Student {
     public void setBirthDate(String birthDate) { this.birthDate = birthDate; }
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 }
+
 

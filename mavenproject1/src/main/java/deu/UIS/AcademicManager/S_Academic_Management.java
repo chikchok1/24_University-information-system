@@ -517,27 +517,39 @@ private void populateStudentDetails(String department, String studentNumber, Str
 
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
         try {
-            String name = Name.getText().trim();
-            String department = (String) DepartmentComboBox.getSelectedItem();
-            String grade = (String) gradeBox.getSelectedItem();
-            String phone = Phone.getText().trim();
-            String birthDate = birth.getText().trim() + "-" + birthlast.getText().trim();
+        String name = Name.getText().trim();
+        String department = (String) DepartmentComboBox.getSelectedItem();
+        String grade = (String) gradeBox.getSelectedItem();
+        String phone = Phone.getText().trim();
+        String birthDate = birth.getText().trim() + "-" + birthlast.getText().trim();
 
-            S_ValidationUtils.validateInputFields(name, department, grade, phone, birthDate);
+        // 입력값 유효성 검증
+        S_ValidationUtils.validateInputFields(name, department, grade, phone, birthDate);
 
-            List<Student> students = studentFileManager.readStudents();
-            String newStudentNumber = generateNewStudentNumber(students);
-            students.add(new Student(name, newStudentNumber, department, grade, birthDate, phone));
-            studentFileManager.writeStudents(students);
-            tableManager.loadStudentsToTable(students);
+        // 학생 목록 불러오기
+        List<Student> students = studentFileManager.readStudents();
+        String newStudentNumber = generateNewStudentNumber(students);
 
-            JOptionPane.showMessageDialog(this, "학생 정보가 추가되었습니다.");
-            clearInputFields();
-        } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "파일 처리 오류: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        // 생년월일 뒷자리 7자리로 비밀번호 설정
+        String[] birthParts = birthDate.split("-");
+        String password = (birthParts.length == 2) ? birthParts[1] : "생년월일 형식 오류";
+
+        // 새 학생 추가
+        Student newStudent = new Student(name, newStudentNumber, department, grade, birthDate, phone);
+        newStudent.setPassword(password); // 비밀번호 설정
+        students.add(newStudent);
+
+        // 파일 저장 및 테이블 갱신
+        studentFileManager.writeStudents(students);
+        tableManager.loadStudentsToTable(students);
+
+        JOptionPane.showMessageDialog(this, "학생 정보가 추가되었습니다.");
+        clearInputFields();
+    } catch (IllegalArgumentException e) {
+        JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "파일 처리 오류: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_AddActionPerformed
     private String generateNewStudentNumber(List<Student> students) {
         int maxNumber = students.stream()
@@ -558,74 +570,62 @@ private void populateStudentDetails(String department, String studentNumber, Str
     }//GEN-LAST:event_birthActionPerformed
 
     private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
-// S_list에서 선택된 행의 인덱스를 가져옵니다.
-        int selectedRow = S_list.getSelectedRow();
+int selectedRow = S_list.getSelectedRow();
 
-        if (selectedRow != -1) { // 선택된 행이 있을 경우
-            // 테이블 모델을 가져옵니다.
-            DefaultTableModel model = (DefaultTableModel) S_list.getModel();
+    if (selectedRow != -1) {
+        DefaultTableModel model = (DefaultTableModel) S_list.getModel();
+        String selectedStudentNumber = (String) model.getValueAt(selectedRow, 1);
 
-            // 선택된 행의 데이터를 가져옵니다.
-            String selectedStudentNumber = (String) model.getValueAt(selectedRow, 1); // 학번
+        String filePath = Paths.get(System.getProperty("user.home"), "data", "student_info.txt").toString();
+        StringBuilder updatedContent = new StringBuilder();
 
-            // 파일 경로 설정
-            String filePath = Paths.get(System.getProperty("user.home"), "data", "student_info.txt").toString();
-            StringBuilder updatedContent = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "", password = "";
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-                String line;
-                String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "";
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
 
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim();
+                if (line.startsWith("학과: ")) department = line.substring(4);
+                else if (line.startsWith("학번: ")) studentNumber = line.substring(4);
+                else if (line.startsWith("이름: ")) name = line.substring(4);
+                else if (line.startsWith("학년: ")) grade = line.substring(4);
+                else if (line.startsWith("생년월일: ")) birthDate = line.substring(6);
+                else if (line.startsWith("휴대폰: ")) phone = line.substring(5);
+                else if (line.startsWith("비밀번호: ")) password = line.substring(6);
 
-                    if (line.startsWith("학과: ")) {
-                        department = line.substring(4);
-                    } else if (line.startsWith("학번: ")) {
-                        studentNumber = line.substring(4);
-                    } else if (line.startsWith("이름: ")) {
-                        name = line.substring(4);
-                    } else if (line.startsWith("학년: ")) {
-                        grade = line.substring(4);
-                    } else if (line.startsWith("생년월일: ")) {
-                        birthDate = line.substring(6);
-                    } else if (line.startsWith("휴대폰: ")) {
-                        phone = line.substring(5);
-                    } else if (line.isEmpty()) {
-                        // 선택된 학번과 일치하지 않는 경우만 파일에 저장
-                        if (!studentNumber.equals(selectedStudentNumber)) {
-                            updatedContent.append("학과: ").append(department).append("\n");
-                            updatedContent.append("학번: ").append(studentNumber).append("\n");
-                            updatedContent.append("이름: ").append(name).append("\n");
-                            updatedContent.append("학년: ").append(grade).append("\n");
-                            updatedContent.append("생년월일: ").append(birthDate).append("\n");
-                            updatedContent.append("휴대폰: ").append(phone).append("\n\n");
-                        }
-                        // 데이터 초기화
-                        department = studentNumber = name = grade = birthDate = phone = "";
+                if (line.isEmpty() && !department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()
+                        && !grade.isEmpty() && !birthDate.isEmpty() && !phone.isEmpty() && !password.isEmpty()) {
+
+                    if (!studentNumber.equals(selectedStudentNumber)) {
+                        updatedContent.append("학과: ").append(department).append("\n");
+                        updatedContent.append("학번: ").append(studentNumber).append("\n");
+                        updatedContent.append("이름: ").append(name).append("\n");
+                        updatedContent.append("학년: ").append(grade).append("\n");
+                        updatedContent.append("생년월일: ").append(birthDate).append("\n");
+                        updatedContent.append("휴대폰: ").append(phone).append("\n");
+                        updatedContent.append("비밀번호: ").append(password).append("\n\n");
                     }
+                    department = studentNumber = name = grade = birthDate = phone = password = ""; // 초기화
                 }
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "파일 읽기 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
             }
-
-            // 수정된 데이터를 파일에 저장
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-                writer.write(updatedContent.toString());
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            // 테이블에서 선택된 행 삭제
-            model.removeRow(selectedRow);
-
-            // 삭제 완료 메시지
-            JOptionPane.showMessageDialog(this, "선택된 학생 정보가 삭제되었습니다.");
-        } else {
-            // 선택된 행이 없을 경우 경고 메시지
-            JOptionPane.showMessageDialog(this, "삭제할 학생을 선택해 주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 읽기 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            writer.write(updatedContent.toString());
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        model.removeRow(selectedRow);
+        JOptionPane.showMessageDialog(this, "선택된 학생 정보가 삭제되었습니다.");
+    } else {
+        JOptionPane.showMessageDialog(this, "삭제할 학생을 선택해 주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
+    }
     }//GEN-LAST:event_DeleteActionPerformed
 
     private void modifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyActionPerformed
@@ -698,98 +698,71 @@ private void populateStudentDetails(String department, String studentNumber, Str
     }//GEN-LAST:event_refreshActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-        int selectedRow = S_list.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "수정할 학생을 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+     int selectedRow = S_list.getSelectedRow();
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "수정할 학생을 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
 
-        // 입력 필드 값 가져오기
-        String updatedName = Name.getText().trim();
-        String updatedDepartment = (String) DepartmentComboBox.getSelectedItem(); // ComboBox에서 선택된 값
-        String updatedGrade = (String) gradeBox.getSelectedItem();
-        String updatedBirthDatePart1 = birth.getText().trim(); // 주민등록번호 앞 6자리
-        String updatedBirthDatePart2 = birthlast.getText().trim(); // 주민등록번호 뒤 7자리
-        String updatedPhone = Phone.getText().trim();
+    String studentNumber = (String) S_list.getValueAt(selectedRow, 1);
 
-        // 주민등록번호를 다시 합침
-        String updatedBirthDate = updatedBirthDatePart1 + "-" + updatedBirthDatePart2;
-        // 입력 데이터 유효성 확인
-        if (updatedName.isEmpty() || updatedDepartment.isEmpty()
-                || updatedGrade.isEmpty() || updatedBirthDatePart1.isEmpty() || updatedBirthDatePart2.isEmpty() || updatedPhone.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "모든 필드를 입력해야 합니다.", "Warning", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+    try {
+        List<Student> students = studentFileManager.readStudents(); // 학생 목록 읽기
+        for (Student student : students) {
+            if (student.getStudentNumber().equals(studentNumber)) {
+                // 유효성 검증
+                String updatedName = Name.getText().trim();
+                String updatedDepartment = (String) DepartmentComboBox.getSelectedItem();
+                String updatedGrade = (String) gradeBox.getSelectedItem();
+                String updatedPhone = Phone.getText().trim();
+                String updatedBirthDatePart1 = birth.getText().trim(); // 앞 6자리
+                String updatedBirthDatePart2 = birthlast.getText().trim(); // 뒤 7자리
 
-        String filePath = Paths.get(System.getProperty("user.home"), "data", "student_info.txt").toString();
-        StringBuilder updatedContent = new StringBuilder();
-        boolean isStudentFound = false;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "";
-
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-
-                if (line.startsWith("학과: ")) {
-                    department = line.substring(4);
-                } else if (line.startsWith("학번: ")) {
-                    studentNumber = line.substring(4);
-                } else if (line.startsWith("이름: ")) {
-                    name = line.substring(4);
-                } else if (line.startsWith("학년: ")) {
-                    grade = line.substring(4);
-                } else if (line.startsWith("생년월일: ")) {
-                    birthDate = line.substring(6);
-                } else if (line.startsWith("휴대폰: ")) {
-                    phone = line.substring(5);
-                } else if (line.isEmpty()) {
-                    // 수정 대상 행인지 확인
-                    if (studentNumber.equals(S_list.getValueAt(selectedRow, 1))) {
-                        isStudentFound = true;
-
-                        // 수정된 데이터로 대체
-                        updatedContent.append("학과: ").append(updatedDepartment).append("\n");
-                        updatedContent.append("학번: ").append(studentNumber).append("\n");
-                        updatedContent.append("이름: ").append(updatedName).append("\n");
-                        updatedContent.append("학년: ").append(updatedGrade).append("\n");
-                        updatedContent.append("생년월일: ").append(updatedBirthDate).append("\n");
-                        updatedContent.append("휴대폰: ").append(updatedPhone).append("\n\n");
-                    } else {
-                        // 기존 데이터 유지
-                        updatedContent.append("학과: ").append(department).append("\n");
-                        updatedContent.append("학번: ").append(studentNumber).append("\n");
-                        updatedContent.append("이름: ").append(name).append("\n");
-                        updatedContent.append("학년: ").append(grade).append("\n");
-                        updatedContent.append("생년월일: ").append(birthDate).append("\n");
-                        updatedContent.append("휴대폰: ").append(phone).append("\n\n");
-                    }
-                    department = studentNumber = name = grade = birthDate = phone = ""; // 초기화
+                if (updatedName.isEmpty() || updatedDepartment.isEmpty() || updatedGrade.isEmpty() || 
+                    updatedPhone.isEmpty() || updatedBirthDatePart1.isEmpty() || updatedBirthDatePart2.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "모든 필드를 입력해야 합니다.", "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
                 }
-            }
 
-            if (!isStudentFound) {
-                JOptionPane.showMessageDialog(this, "선택된 학생 정보를 찾을 수 없습니다. 다시 시도해주세요.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "파일을 읽는 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+                if (!updatedBirthDatePart1.matches("\\d{6}") || !updatedBirthDatePart2.matches("\\d{7}")) {
+                    JOptionPane.showMessageDialog(this, "생년월일 형식이 잘못되었습니다. (예: 123456-1234567)", "Warning", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
 
-        // 수정된 데이터를 파일에 저장
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            writer.write(updatedContent.toString());
-            JOptionPane.showMessageDialog(this, "학생 정보가 성공적으로 저장되었습니다.");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "파일을 저장하는 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                // 생년월일 통합
+                String updatedBirthDate = updatedBirthDatePart1 + "-" + updatedBirthDatePart2;
+
+                // 학생 정보 수정
+                student.setName(updatedName);
+                student.setDepartment(updatedDepartment);
+                student.setGrade(updatedGrade);
+                student.setBirthDate(updatedBirthDate);
+                student.setPhone(updatedPhone);
+
+                // 생년월일 뒷자리 7자리로 비밀번호 설정
+                student.setPassword(updatedBirthDatePart2);
+
+                break;
+            }
         }
+        studentFileManager.writeStudents(students); // 파일에 수정된 학생 정보 저장
 
         // 테이블 갱신
-        loadStudentInfo();
-        S_list.repaint(); // 강제 UI 갱신
+        tableManager.loadStudentsToTable(students);
+
+        // 정보 저장 성공 메시지
+        JOptionPane.showMessageDialog(this, "학생 정보가 수정되었습니다.");
+
+        // 입력 필드 초기화
         clearInputFields();
+
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "파일 처리 오류: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "알 수 없는 오류가 발생했습니다.\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        ex.printStackTrace();
+    }
     }//GEN-LAST:event_saveActionPerformed
 
     private void info_refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_info_refreshActionPerformed
@@ -848,45 +821,43 @@ private void populateStudentDetails(String department, String studentNumber, Str
 
     try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
         String line;
-        String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "";
+        String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "", password = "";
 
         while ((line = reader.readLine()) != null) {
             line = line.trim();
 
-            // 데이터 필드 감지 및 추출
             if (line.startsWith("학과: ")) department = line.substring(4);
             else if (line.startsWith("학번: ")) studentNumber = line.substring(4);
             else if (line.startsWith("이름: ")) name = line.substring(4);
             else if (line.startsWith("학년: ")) grade = line.substring(4);
             else if (line.startsWith("생년월일: ")) birthDate = line.substring(6);
             else if (line.startsWith("휴대폰: ")) phone = line.substring(5);
+            else if (line.startsWith("비밀번호: ")) password = line.substring(6);
 
-            // 블록의 마지막 줄인 경우 데이터 완성
             if (line.isEmpty() && !department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()
-                    && !grade.isEmpty() && !birthDate.isEmpty() && !phone.isEmpty()) {
+                    && !grade.isEmpty() && !birthDate.isEmpty() && !phone.isEmpty() && !password.isEmpty()) {
 
-                // 기존 학생 정보와 매칭
                 if (name.equals(updatedName) && studentNumber.equals(updatedStudentNumber)) {
                     isStudentFound = true;
-                    // 수정된 값으로 갱신
+                    String updatedPassword = updatedBirthDate.split("-")[1]; // 생년월일 뒷자리 7자리
                     updatedContent.append("학과: ").append(updatedDepartment.isEmpty() ? department : updatedDepartment).append("\n");
                     updatedContent.append("학번: ").append(updatedStudentNumber).append("\n");
                     updatedContent.append("이름: ").append(updatedName).append("\n");
                     updatedContent.append("학년: ").append(updatedGrade.isEmpty() ? grade : updatedGrade).append("\n");
                     updatedContent.append("생년월일: ").append(updatedBirthDate.isEmpty() ? birthDate : updatedBirthDate).append("\n");
-                    updatedContent.append("휴대폰: ").append(updatedPhone.isEmpty() ? phone : updatedPhone).append("\n\n");
+                    updatedContent.append("휴대폰: ").append(updatedPhone.isEmpty() ? phone : updatedPhone).append("\n");
+                    updatedContent.append("비밀번호: ").append(updatedPassword).append("\n\n");
                 } else {
-                    // 기존 데이터 유지
                     updatedContent.append("학과: ").append(department).append("\n");
                     updatedContent.append("학번: ").append(studentNumber).append("\n");
                     updatedContent.append("이름: ").append(name).append("\n");
                     updatedContent.append("학년: ").append(grade).append("\n");
                     updatedContent.append("생년월일: ").append(birthDate).append("\n");
-                    updatedContent.append("휴대폰: ").append(phone).append("\n\n");
+                    updatedContent.append("휴대폰: ").append(phone).append("\n");
+                    updatedContent.append("비밀번호: ").append(password).append("\n\n");
                 }
 
-                // 데이터 초기화
-                department = studentNumber = name = grade = birthDate = phone = "";
+                department = studentNumber = name = grade = birthDate = phone = password = ""; // 초기화
             }
         }
     } catch (IOException e) {
@@ -894,13 +865,11 @@ private void populateStudentDetails(String department, String studentNumber, Str
         return;
     }
 
-    // 학생 정보가 발견되지 않은 경우 경고
     if (!isStudentFound) {
         JOptionPane.showMessageDialog(this, "수정할 학생 정보를 찾을 수 없습니다.", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
 
-    // 파일에 갱신된 데이터 저장
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
         writer.write(updatedContent.toString());
     } catch (IOException e) {
