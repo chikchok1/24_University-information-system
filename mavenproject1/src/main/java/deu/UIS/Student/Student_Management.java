@@ -4,10 +4,20 @@
  */
 package deu.UIS.Student;
 //dsada
+
 /**
  *
  * @author YangJinWon
  */
+import javax.swing.*;
+import javax.swing.table.*;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 public class Student_Management extends javax.swing.JFrame {
 
     /**
@@ -15,7 +25,11 @@ public class Student_Management extends javax.swing.JFrame {
      */
     public Student_Management() {
         initComponents();
-    }
+        loadDataFromFile();  // 텍스트 파일에서 데이터를 읽어오는 메서드
+
+        S_ReqInfo.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer());
+        S_ReqInfo.getColumnModel().getColumn(0).setCellEditor(new ButtonEditor(new JCheckBox()));
+    }   // "신청"버튼이 들어가는 열에 버튼랜더러와 버튼에디터 설정
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,7 +89,15 @@ public class Student_Management extends javax.swing.JFrame {
             new String [] {
                 "신청", "과목번호", "과목명", "학점/시간", "담당교수", "강의실(시간)", "원격여부"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                true, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         S_ReqInfo.setRowHeight(25);
         S_ReqInfo.setShowHorizontalLines(true);
         S_ReqInfo.setShowVerticalLines(true);
@@ -117,7 +139,6 @@ public class Student_Management extends javax.swing.JFrame {
         ));
         S_TimeInfo.setRowHeight(27);
         S_TimeInfo.setShowGrid(true);
-        S_TimeInfo.setShowHorizontalLines(true);
         S_Timetable.setViewportView(S_TimeInfo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -209,11 +230,87 @@ public class Student_Management extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Student_Management().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Student_Management().setVisible(true);
         });
+    }
+
+    private void loadDataFromFile() {
+        DefaultTableModel model = (DefaultTableModel) S_ReqInfo.getModel(); // 테이블 모델 가져오기
+        
+        model.setRowCount(0);   //기존 데이터 초기화  
+        
+        try (BufferedReader br = new BufferedReader(new FileReader("S_Course.txt"))) {
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                line = line.trim(); // 앞뒤 공백 제거
+                if (line.isEmpty()) {
+                    continue; // 빈 줄 건너뛰기
+                }
+
+                String[] data = line.split(","); // 쉼표로 구분된 데이터 분리
+
+                if (data.length == 6) { // 필요한 열 개수만 처리
+                    // 테이블에 데이터 추가
+                    model.addRow(new Object[]{"신청", data[0], data[1], data[2], data[3], data[4], data[5]});
+                } else {
+                    System.err.println("잘못된 데이터 형식: " + line);
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, "파일을 읽는 도중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
+    //버튼랜더러
+    class ButtonRenderer extends JButton implements TableCellRenderer {
+
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setText("신청");    // 버튼 텍스트
+            return this;
+        }
+    }
+
+    //버튼에디터
+    class ButtonEditor extends DefaultCellEditor {
+
+        protected JButton button;
+        private boolean isPushed;
+
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+            button = new JButton();
+            button.setOpaque(true);
+            button.addActionListener(e -> fireEditingStopped());    //클릭시 편집 종료 이벤트 발생
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            button.setText("신청"); //버튼 텍스트
+            isPushed = true;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            if (isPushed) { //버튼 입력시 실행할 작업
+                JOptionPane.showMessageDialog(null, "수강 신청이 완료되었습니다.");
+            }
+            isPushed = false;   //클릭 상태 초기화
+            return "신청";
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
