@@ -35,12 +35,17 @@ public class A_Management extends javax.swing.JFrame {
     // 학생 정보를 파일에서 불러와 테이블에 추가하는 메서드
 
     private void loadAcademicInfo() {
-        List<AcademicInfo> academicInfoList = readAcademicInfoFromFile();
-        tableModel.setRowCount(0); // 기존 데이터 초기화
+       List<AcademicInfo> academicInfoList = readAcademicInfoFromFile();
+    tableModel.setRowCount(0); // 기존 데이터 초기화
 
-        for (AcademicInfo info : academicInfoList) {
-            tableModel.addRow(new Object[]{info.getName(), info.getAcademicNumber(), info.getBirthDate(), info.getPhone()});
-        }
+    for (AcademicInfo info : academicInfoList) {
+        tableModel.addRow(new Object[]{
+            info.getName(),
+            info.getAcademicNumber(),
+            info.getBirthDate(),
+            info.getPhone() // 비밀번호 제외
+        });
+    }
     }
 
     private void addMouseListenerToSList() {
@@ -60,16 +65,21 @@ public class A_Management extends javax.swing.JFrame {
     private void populateAcademicDetails(String academicNumber, String name) {
         List<AcademicInfo> academicInfoList = readAcademicInfoFromFile();
 
-        DefaultTableModel infoModel = new DefaultTableModel(
-                new String[]{"이름", "학사담당자번호", "생년월일", "휴대폰"}, 0);
-        S_info.setModel(infoModel);
+    DefaultTableModel infoModel = new DefaultTableModel(
+        new String[]{"이름", "학사담당자번호", "생년월일", "휴대폰"}, 0);
+    S_info.setModel(infoModel);
 
-        for (AcademicInfo info : academicInfoList) {
-            if (info.getAcademicNumber().equals(academicNumber) && info.getName().equals(name)) {
-                infoModel.addRow(new Object[]{info.getName(), info.getAcademicNumber(), info.getBirthDate(), info.getPhone()});
-                break;
-            }
+    for (AcademicInfo info : academicInfoList) {
+        if (info.getAcademicNumber().equals(academicNumber) && info.getName().equals(name)) {
+            infoModel.addRow(new Object[]{
+                info.getName(),
+                info.getAcademicNumber(),
+                info.getBirthDate(),
+                info.getPhone() // 비밀번호 제외
+            });
+            break;
         }
+    }
     }
 
     /**
@@ -413,10 +423,8 @@ public class A_Management extends javax.swing.JFrame {
 
             if (line.startsWith("학사담당자번호: ")) {
                 studentNumber = line.substring(8).trim(); // "학사담당자번호: " 이후 값 추출
-                System.out.println("학사담당자번호: " + studentNumber); // 디버깅 출력
             } else if (line.startsWith("이름: ")) {
                 name = line.substring(4).trim(); // "이름: " 이후 값 추출
-                System.out.println("이름: " + name); // 디버깅 출력
             } else if (line.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()) {
                 // 검색 타입에 따라 매칭
                 boolean matches = false;
@@ -428,7 +436,6 @@ public class A_Management extends javax.swing.JFrame {
 
                 if (matches) {
                     model.addRow(new Object[]{name, studentNumber});
-                    System.out.println("매칭됨: " + name + ", " + studentNumber); // 디버깅 출력
                 }
 
                 // 데이터 초기화
@@ -634,15 +641,16 @@ private List<AcademicInfo> readAcademicInfoFromFile() {
     }
 private void saveAcademicInfoToFile(List<AcademicInfo> academicInfoList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (AcademicInfo info : academicInfoList) {
-                writer.write("학사담당자번호: " + info.getAcademicNumber() + "\n");
-                writer.write("이름: " + info.getName() + "\n");
-                writer.write("생년월일: " + info.getBirthDate() + "\n");
-                writer.write("휴대폰: " + info.getPhone() + "\n\n");
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "파일 저장 오류: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        for (AcademicInfo info : academicInfoList) {
+            writer.write("학사담당자번호: " + info.getAcademicNumber() + "\n");
+            writer.write("이름: " + info.getName() + "\n");
+            writer.write("생년월일: " + info.getBirthDate() + "\n");
+            writer.write("휴대폰: " + info.getPhone() + "\n");
+            writer.write("비밀번호: " + info.getPassword() + "\n\n"); // 비밀번호 저장
         }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "파일 저장 오류: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }
 private String generateNewAcademicNumber(List<AcademicInfo> academicInfoList) {
         int maxNumber = academicInfoList.stream()
