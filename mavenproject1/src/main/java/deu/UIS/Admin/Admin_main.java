@@ -4,6 +4,8 @@
  */
 package deu.UIS.Admin;
 
+import deu.UIS.Admin.Academic_Manager.A_Management;
+import deu.UIS.Admin.Class_Manager.C_Management;
 import deu.UIS.Login.Login;
 
 /**

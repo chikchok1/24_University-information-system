@@ -4,6 +4,8 @@
  */
 package deu.UIS.AcademicManager;
 
+import deu.UIS.AcademicManager.professor.P_Academic_Management;
+import deu.UIS.AcademicManager.student.S_Academic_Management;
 import deu.UIS.ChangePassword.ChangePassword;
 import deu.UIS.Login.Login;
 
@@ -79,17 +81,16 @@ public class A_Main extends javax.swing.JFrame {
                         .addComponent(Title))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(34, 34, 34)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(PasswordChange)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(PasswordChange)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(LogOut))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(S_Management)
                                 .addGap(74, 74, 74)
                                 .addComponent(P_Management)))))
                 .addContainerGap(72, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(LogOut)
-                .addGap(34, 34, 34))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,7 +129,7 @@ public class A_Main extends javax.swing.JFrame {
     }//GEN-LAST:event_LogOutActionPerformed
 
     private void PasswordChangeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PasswordChangeActionPerformed
-        dispose();
+
         new ChangePassword().setVisible(true);
     }//GEN-LAST:event_PasswordChangeActionPerformed
 

@@ -4,9 +4,9 @@
  */
 package deu.UIS.ChangePassword;
 
-import deu.UIS.AcademicManager.*;
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +16,21 @@ import java.util.List;
  */
 public class ChangePassword extends javax.swing.JFrame {
 
-    private static final String FILE_PATH = System.getProperty("user.home") + "\\data\\student_info.txt";
+    private static final String STUDENT_INFO_PATH = Paths.get(System.getProperty("user.home"), "data", "student_info.txt").toString();
+    private static final String PROFESSOR_INFO_PATH = Paths.get(System.getProperty("user.home"), "data", "professor_info.txt").toString();
+    private static final String ACADEMIC_INFO_PATH = Paths.get(System.getProperty("user.home"), "data", "Academic_info.txt").toString();
+    private static final String CLASS_MANAGER_PATH = Paths.get(System.getProperty("user.home"), "data", "Class_Manager.txt").toString();
+
+    
+     // 파일 경로 목록
+    private static final String[] FILE_PATHS = {STUDENT_INFO_PATH, PROFESSOR_INFO_PATH, ACADEMIC_INFO_PATH, CLASS_MANAGER_PATH};
     /**
      * Creates new form ChangePassword
      */
     public ChangePassword() {
         initComponents();
+        // 엔터 키 이벤트 설정
+        configureEnterKey();
     }
 
     /**
@@ -71,21 +80,25 @@ public class ChangePassword extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel3))
-                .addGap(42, 42, 42)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(PresentPassword)
-                    .addComponent(ChangePassword))
-                .addContainerGap(106, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Save)
                 .addGap(20, 20, 20))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addGap(42, 42, 42)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(PresentPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 116, Short.MAX_VALUE)
+                            .addComponent(ChangePassword)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(120, 120, 120)
+                        .addComponent(jLabel1)))
+                .addContainerGap(106, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -108,6 +121,22 @@ public class ChangePassword extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void configureEnterKey() {
+        java.awt.event.KeyAdapter enterKeyListener = new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
+                    // 현재 비밀번호와 새 비밀번호가 모두 입력되었는지 확인
+                    if (!PresentPassword.getText().trim().isEmpty() && !ChangePassword.getText().trim().isEmpty()) {
+                        Save.doClick(); // 저장 버튼 클릭
+                    }
+                }
+            }
+        };
+        // 두 입력 필드에 동일한 이벤트 리스너 추가
+        PresentPassword.addKeyListener(enterKeyListener);
+        ChangePassword.addKeyListener(enterKeyListener);
+    }
+    
     private void PresentPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PresentPasswordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_PresentPasswordActionPerformed
@@ -125,49 +154,59 @@ public class ChangePassword extends javax.swing.JFrame {
             return;
         }
 
-        try {
-            List<String> lines = new ArrayList<>();
-            boolean isPasswordUpdated = false;
+        boolean isPasswordUpdated = false;
 
-            // 파일 읽기 및 수정
-            try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-                String line;
-                String idPart = "";
+        // 파일 목록 순회
+        for (String filePath : FILE_PATHS) {
+            try {
+                List<String> lines = new ArrayList<>();
+                boolean fileUpdated = false;
 
-                while ((line = reader.readLine()) != null) {
-                    if (line.startsWith("생년월일: ")) {
-                        idPart = line.split("-")[1].trim(); // 주민등록번호 뒷자리 추출
-                    } else if (line.startsWith("비밀번호: ")) {
-                        if (idPart.equals(presentPassword)) {
-                            // 비밀번호를 업데이트
-                            lines.add("비밀번호: " + newPassword);
-                            isPasswordUpdated = true;
+                // 파일 읽기 및 수정
+                try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+                    String line;
+
+                    while ((line = reader.readLine()) != null) {
+                        if (line.startsWith("비밀번호: ")) {
+                            String currentPasswordInFile = line.split(":")[1].trim();
+                            if (currentPasswordInFile.equals(presentPassword)) {
+                                // 비밀번호를 새 비밀번호로 업데이트
+                                lines.add("비밀번호: " + newPassword);
+                                fileUpdated = true;
+                                isPasswordUpdated = true;
+                            } else {
+                                lines.add(line);
+                            }
                         } else {
                             lines.add(line);
                         }
-                    } else {
-                        lines.add(line);
                     }
                 }
-            }
 
-            if (!isPasswordUpdated) {
-                JOptionPane.showMessageDialog(this, "현재 비밀번호가 올바르지 않습니다.", "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // 파일에 다시 쓰기
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-                for (String line : lines) {
-                    writer.write(line);
-                    writer.newLine();
+                // 수정된 내용을 해당 파일에 다시 쓰기
+                if (fileUpdated) {
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                        for (String line : lines) {
+                            writer.write(line);
+                            writer.newLine();
+                        }
+                    }
                 }
+
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "파일 처리 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+        }
 
+        if (isPasswordUpdated) {
             JOptionPane.showMessageDialog(this, "비밀번호가 성공적으로 변경되었습니다.");
-
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "파일 처리 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            
+            // 입력 필드 초기화
+        PresentPassword.setText("");
+        ChangePassword.setText("");
+         dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "일치하는 비밀번호가 없습니다.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_SaveActionPerformed
 

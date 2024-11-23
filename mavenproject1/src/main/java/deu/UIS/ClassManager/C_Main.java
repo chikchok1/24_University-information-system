@@ -4,6 +4,7 @@
  */
 package deu.UIS.ClassManager;
 
+import deu.UIS.ChangePassword.ChangePassword;
 import deu.UIS.Login.Login;
 
 /**
@@ -31,6 +32,7 @@ public class C_Main extends javax.swing.JFrame {
         Title = new javax.swing.JLabel();
         C_Management = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
+        ChangePassword = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,33 +53,43 @@ public class C_Main extends javax.swing.JFrame {
             }
         });
 
+        ChangePassword.setText("비밀번호 변경");
+        ChangePassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChangePasswordActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(109, 109, 109)
-                        .addComponent(Title))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(139, 139, 139)
-                        .addComponent(C_Management)))
-                .addContainerGap(136, Short.MAX_VALUE))
+                .addGap(121, 121, 121)
+                .addComponent(Title)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(45, 45, 45)
+                .addComponent(ChangePassword)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(LogOut)
-                .addGap(30, 30, 30))
+                .addGap(45, 45, 45))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(142, Short.MAX_VALUE)
+                .addComponent(C_Management, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(150, 150, 150))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(Title)
-                .addGap(56, 56, 56)
-                .addComponent(C_Management)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
-                .addComponent(LogOut)
+                .addGap(54, 54, 54)
+                .addComponent(C_Management, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(LogOut)
+                    .addComponent(ChangePassword))
                 .addGap(26, 26, 26))
         );
 
@@ -95,6 +107,11 @@ public class C_Main extends javax.swing.JFrame {
          dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_LogOutActionPerformed
+
+    private void ChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePasswordActionPerformed
+        // TODO add your handling code here:
+        new ChangePassword().setVisible(true);
+    }//GEN-LAST:event_ChangePasswordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -133,6 +150,7 @@ public class C_Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton C_Management;
+    private javax.swing.JButton ChangePassword;
     private javax.swing.JButton LogOut;
     private javax.swing.JLabel Title;
     // End of variables declaration//GEN-END:variables

@@ -2,8 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package deu.UIS.AcademicManager;
+package deu.UIS.AcademicManager.professor;
 
+import deu.UIS.AcademicManager.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 
