@@ -30,19 +30,20 @@ public class C_Main extends javax.swing.JFrame {
     private void initComponents() {
 
         Title = new javax.swing.JLabel();
-        C_Management = new javax.swing.JButton();
+        AddCourse = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
         ChangePassword = new javax.swing.JButton();
+        AddLecture = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Title.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
         Title.setText("수업 담당자 메인 페이지");
 
-        C_Management.setText("수업관리");
-        C_Management.addActionListener(new java.awt.event.ActionListener() {
+        AddCourse.setText("강좌 추가");
+        AddCourse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                C_ManagementActionPerformed(evt);
+                AddCourseActionPerformed(evt);
             }
         });
 
@@ -60,33 +61,45 @@ public class C_Main extends javax.swing.JFrame {
             }
         });
 
+        AddLecture.setText("강의 추가");
+        AddLecture.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddLectureActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(121, 121, 121)
-                .addComponent(Title)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(45, 45, 45)
                 .addComponent(ChangePassword)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(LogOut)
                 .addGap(45, 45, 45))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(142, Short.MAX_VALUE)
-                .addComponent(C_Management, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(150, 150, 150))
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(121, 121, 121)
+                        .addComponent(Title))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(70, 70, 70)
+                        .addComponent(AddCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(54, 54, 54)
+                        .addComponent(AddLecture, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addComponent(Title)
-                .addGap(54, 54, 54)
-                .addComponent(C_Management, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addGap(57, 57, 57)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(AddCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(AddLecture, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LogOut)
                     .addComponent(ChangePassword))
@@ -96,22 +109,25 @@ public class C_Main extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void C_ManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_C_ManagementActionPerformed
+    private void AddCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddCourseActionPerformed
         // TODO add your handling code here:
          dispose();
         new Class_Management().setVisible(true);
-    }//GEN-LAST:event_C_ManagementActionPerformed
+    }//GEN-LAST:event_AddCourseActionPerformed
 
     private void LogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutActionPerformed
-        // TODO add your handling code here:
          dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_LogOutActionPerformed
 
     private void ChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePasswordActionPerformed
-        // TODO add your handling code here:
         new ChangePassword().setVisible(true);
     }//GEN-LAST:event_ChangePasswordActionPerformed
+
+    private void AddLectureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddLectureActionPerformed
+        dispose();
+        new AddLecture().setVisible(true);
+    }//GEN-LAST:event_AddLectureActionPerformed
 
     /**
      * @param args the command line arguments
@@ -149,7 +165,8 @@ public class C_Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton C_Management;
+    private javax.swing.JButton AddCourse;
+    private javax.swing.JButton AddLecture;
     private javax.swing.JButton ChangePassword;
     private javax.swing.JButton LogOut;
     private javax.swing.JLabel Title;

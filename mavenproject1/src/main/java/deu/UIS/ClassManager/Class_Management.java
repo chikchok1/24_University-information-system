@@ -209,7 +209,7 @@ public class Class_Management extends javax.swing.JFrame {
 
     private void AddClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddClassActionPerformed
         // TODO add your handling code here:
-        new AddClass(this).setVisible(true);
+        new AddCourse(this).setVisible(true);
     }//GEN-LAST:event_AddClassActionPerformed
 
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
