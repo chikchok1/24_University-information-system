@@ -9,7 +9,6 @@ package deu.UIS.Login;
  * @author YangJinWon
  */
 public class GUIUtils {
-
     public static void addEnterKeyListener(javax.swing.JTextField textField, javax.swing.JButton button) {
         textField.addKeyListener(new java.awt.event.KeyAdapter() {
             @Override
@@ -21,3 +20,4 @@ public class GUIUtils {
         });
     }
 }
+

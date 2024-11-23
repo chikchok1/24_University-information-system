@@ -8,12 +8,11 @@ package deu.UIS.Login;
  * @author YangJinWon
  */
 public class Login extends javax.swing.JFrame {
+        private final LoginController loginController;
 
-  //  UserRepository userRepository = UserRepository.getInstance();
     /**
      * Creates new form NewuJFrame
      */
-   private final LoginController loginController;
     /**
      * Creates new form Login
      */
@@ -152,8 +151,6 @@ public class Login extends javax.swing.JFrame {
   // 입력 필드에서 ID와 비밀번호 가져오기
         String enteredId = ID_input.getText().trim();
         String enteredPassword = new String(PW_input.getPassword()).trim();
-
-        // 컨트롤러에 로그인 요청 위임
         loginController.handleLogin(enteredId, enteredPassword);
     }//GEN-LAST:event_LoginActionPerformed
 

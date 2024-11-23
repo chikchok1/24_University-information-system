@@ -14,7 +14,6 @@ public class Student_GradeCheck extends javax.swing.JFrame {
     /** Creates new form Student_GradeCheck */
     public Student_GradeCheck() {
         initComponents();
-        
     }
 
     /** This method is called from within the constructor to
@@ -62,19 +61,10 @@ public class Student_GradeCheck extends javax.swing.JFrame {
 
         output.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
-                "교과목번호", "교과목명", "학점", "성적", "담당교수"
+                "강좌 번호", "강의 이름", "학점", "성적", "담당교수"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -132,7 +122,6 @@ public class Student_GradeCheck extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
-        // TODO add your handling code here:
         dispose();
         new S_Main().setVisible(true); //뒤로가기
     }//GEN-LAST:event_BackActionPerformed

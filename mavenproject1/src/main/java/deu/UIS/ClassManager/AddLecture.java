@@ -180,7 +180,7 @@ public class AddLecture extends javax.swing.JFrame {
                 String[] parts = line.split(",");
                 if (parts.length >= 7) { // 최소 7개의 필드가 있어야 유효
                     String lectureName = parts[1].replace("강좌 이름: ", "").trim();
-                    String professor = parts[4].replace("교수: ", "").trim();
+                    String professor = parts[4].replace("담당 교수: ", "").trim();
                     String minStudents = parts[5].replace("최소 학생 수: ", "").trim();
                     String maxStudents = parts[6].replace("최대 학생 수: ", "").trim();
 
@@ -373,11 +373,12 @@ public class AddLecture extends javax.swing.JFrame {
                             .addComponent(maxStudent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(24, 24, 24)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(add)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(before)
-                    .addComponent(delete)
-                    .addComponent(modify))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(add)
+                        .addComponent(delete)
+                        .addComponent(modify)))
                 .addGap(30, 30, 30))
         );
 
@@ -409,7 +410,7 @@ public class AddLecture extends javax.swing.JFrame {
         }
 
         // 강의 정보 문자열 생성
-        String lectureData = String.format("강좌 번호: %s, 강좌 이름: %s, 담당 학과: %s, 학점 수: %s, 교수: %s, 최소 학생 수: %s, 최대 학생 수: %s",
+        String lectureData = String.format("강좌 번호: %s, 강좌 이름: %s, 담당 학과: %s, 학점 수: %s, 담당 교수: %s, 최소 학생 수: %s, 최대 학생 수: %s",
                 courseNumber, courseName, courseDepartment, courseCredits, professorName, minStudentCount, maxStudentCount);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(LECTURE_INFO_PATH, true))) {

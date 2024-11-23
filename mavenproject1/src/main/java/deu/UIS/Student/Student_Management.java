@@ -5,33 +5,102 @@
 package deu.UIS.Student;
 
 //dsada
+import deu.UIS.Login.UserSession;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author YangJinWon
  */
-import javax.swing.*;
-import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-
 public class Student_Management extends javax.swing.JFrame {
+
+    private static final String LECTURE_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "lecture.txt").toString();
+    private static final String STUDENT_COURSE_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "student_courses.txt").toString(); // 학생 수강 파일
 
     /**
      * Creates new form Main
      */
     public Student_Management() {
         initComponents();
-        loadDataFromFile();  // 텍스트 파일에서 데이터를 읽어오는 메서드
+        loadLecturesToTable(); // 강의 정보를 테이블에 로드
+        loadStudentCoursesToTable(); // 학생 수강 강좌를 테이블에 로드
+    }
 
-        S_ReqInfo.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer());
-        S_ReqInfo.getColumnModel().getColumn(0).setCellEditor(new ReqButtonEditor(new JCheckBox()));
-        S_PreCouInfo.getColumnModel().getColumn(0).setCellRenderer(new ButtonRenderer());
-        S_PreCouInfo.getColumnModel().getColumn(0).setCellEditor(new CourButtonEditor(new JCheckBox()));
-    }   // "신청"버튼과 "취소"버튼들어가는 열에 버튼랜더러와 버튼에디터 설정
+    private void loadLecturesToTable() {
+        DefaultTableModel model = (DefaultTableModel) lectureList1.getModel();
+        model.setRowCount(0); // 기존 데이터 초기화
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(LECTURE_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] lectureData = line.split(", ");
+                if (lectureData.length >= 7) {
+                    String courseNumber = lectureData[0].replace("강좌 번호: ", "").trim();
+                    String lectureName = lectureData[1].replace("강좌 이름: ", "").trim();
+                    String credits = lectureData[3].replace("학점 수: ", "").trim();
+                    String professor = lectureData[4].replace("담당 교수: ", "").trim();
+                    String maxStudents = lectureData[6].replace("최대 학생 수: ", "").trim();
+
+                    String currentStudents = "0"; // 기본값 설정
+                    if (lectureData.length > 7 && lectureData[7].contains("현재 학생 수: ")) {
+                        currentStudents = lectureData[7].replace("현재 학생 수: ", "").trim();
+                    }
+
+                    model.addRow(new Object[]{courseNumber, lectureName, credits, professor, maxStudents, currentStudents});
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "강의 정보 파일 읽기 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void loadStudentCoursesToTable() {
+        DefaultTableModel model = (DefaultTableModel) lectureList.getModel();
+        model.setRowCount(0); // 기존 데이터 초기화
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_COURSE_FILE_PATH))) {
+            String line;
+            String loggedInStudentId = UserSession.getInstance().getUserId(); // 현재 로그인한 학생 ID
+            while ((line = reader.readLine()) != null) {
+                // 각 줄을 파싱하여 키-값 구조로 읽기
+                String[] fields = line.split(", ");
+                Map<String, String> dataMap = new HashMap<>();
+                for (String field : fields) {
+                    String[] keyValue = field.split(": ");
+                    if (keyValue.length == 2) {
+                        dataMap.put(keyValue[0].trim(), keyValue[1].trim());
+                    }
+                }
+
+                // 현재 학생 ID와 일치하는 정보만 로드
+                if (loggedInStudentId.equals(dataMap.get("아이디"))) {
+                    String courseNumber = dataMap.get("강좌 번호");
+                    String lectureName = dataMap.get("강의 이름");
+                    String credits = dataMap.get("학점");
+                    String professor = dataMap.get("담당 교수");
+                    String maxStudents = dataMap.get("최대 수강 인원");
+                    String currentStudents = dataMap.get("현재 수강 인원");
+
+                    // JTable에 추가
+                    model.addRow(new Object[]{courseNumber, lectureName, credits, professor, maxStudents, currentStudents});
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "학생 수강 파일 읽기 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -46,13 +115,12 @@ public class Student_Management extends javax.swing.JFrame {
         Back = new javax.swing.JButton();
         S_PreCourseTitle = new javax.swing.JLabel();
         S_RequestTitle = new javax.swing.JLabel();
-        S_RequestTitle1 = new javax.swing.JLabel();
         S_Request = new javax.swing.JScrollPane();
-        S_ReqInfo = new javax.swing.JTable();
-        S_PreCourse = new javax.swing.JScrollPane();
-        S_PreCouInfo = new javax.swing.JTable();
-        S_Timetable = new javax.swing.JScrollPane();
-        S_TimeInfo = new javax.swing.JTable();
+        lectureList = new javax.swing.JTable();
+        add = new javax.swing.JButton();
+        delete = new javax.swing.JButton();
+        S_Request1 = new javax.swing.JScrollPane();
+        lectureList1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,139 +135,115 @@ public class Student_Management extends javax.swing.JFrame {
         });
 
         S_PreCourseTitle.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        S_PreCourseTitle.setText("  수강 현황");
+        S_PreCourseTitle.setText("수강 신청 현황");
 
         S_RequestTitle.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        S_RequestTitle.setText("  개설강좌");
+        S_RequestTitle.setText("개설된 강의 목록");
 
-        S_RequestTitle1.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        S_RequestTitle1.setText("  시간표 현황");
-
-        S_ReqInfo.setModel(new javax.swing.table.DefaultTableModel(
+        lectureList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {"", "1", "2", "3", "4", "5", null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "신청", "과목번호", "과목명", "학점/시간", "담당교수", "강의실(시간)", "원격여부"
+                "강좌 번호", "강의 이름", "학점", "담당교수", "최대 수강 인원", "현재 수강 인원"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false, false, false
+                false, false, true, true, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        S_ReqInfo.setRowHeight(25);
-        S_ReqInfo.setShowHorizontalLines(true);
-        S_ReqInfo.setShowVerticalLines(true);
-        S_Request.setViewportView(S_ReqInfo);
+        lectureList.setRowHeight(25);
+        lectureList.setShowHorizontalLines(true);
+        lectureList.setShowVerticalLines(true);
+        S_Request.setViewportView(lectureList);
 
-        S_PreCouInfo.setModel(new javax.swing.table.DefaultTableModel(
+        add.setText("추가");
+        add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addActionPerformed(evt);
+            }
+        });
+
+        delete.setText("삭제");
+        delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteActionPerformed(evt);
+            }
+        });
+
+        lectureList1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "취소", "과목번호", "과목명", "학점/시간", "담당교수", "강의실(시간)", "원격여부"
+                "강좌 번호", "강의 이름", "학점", "담당교수", "최대 수강 인원", "현재 수강 인원"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                true, false, false, false, false, false, true
+                false, false, true, true, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
         });
-        S_PreCouInfo.setRowHeight(25);
-        S_PreCouInfo.setShowHorizontalLines(true);
-        S_PreCouInfo.setShowVerticalLines(true);
-        S_PreCourse.setViewportView(S_PreCouInfo);
-
-        S_TimeInfo.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {"1교시", null, null, null, null, null},
-                {"2교시", null, null, null, null, null},
-                {"3교시", null, null, null, null, null},
-                {"4교시", null, null, null, null, null},
-                {"5교시", null, null, null, null, null},
-                {"6교시", null, null, null, null, null},
-                {"7교시", null, null, null, null, null},
-                {"8교시", null, null, null, null, null},
-                {"9교시", null, null, null, null, null},
-                {"10교시", null, null, null, null, null}
-            },
-            new String [] {
-                "", "월요일", "화요일", "수요일", "목요일", "금요일"
-            }
-        ));
-        S_TimeInfo.setRowHeight(27);
-        S_TimeInfo.setShowGrid(true);
-        S_Timetable.setViewportView(S_TimeInfo);
+        lectureList1.setRowHeight(25);
+        lectureList1.setShowHorizontalLines(true);
+        lectureList1.setShowVerticalLines(true);
+        S_Request1.setViewportView(lectureList1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(37, 37, 37)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(S_PreCourse, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(S_RequestTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(S_Request, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
-                        .addComponent(S_PreCourseTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(340, 340, 340)
-                        .addComponent(Back))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(S_RequestTitle1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(S_Timetable, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))))
-                .addContainerGap(36, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(391, 391, 391)
-                .addComponent(Title, javax.swing.GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE)
-                .addContainerGap())
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(add))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(199, 199, 199)
+                        .addComponent(Title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(S_RequestTitle)
+                                    .addComponent(S_PreCourseTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 130, Short.MAX_VALUE))
+                            .addComponent(S_Request)
+                            .addComponent(S_Request1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(Back)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(delete)))))
+                .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addContainerGap()
                 .addComponent(Title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(22, 22, 22)
+                .addComponent(S_RequestTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(S_Request1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(add)
+                .addGap(5, 5, 5)
+                .addComponent(S_PreCourseTitle)
+                .addGap(9, 9, 9)
+                .addComponent(S_Request, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(S_RequestTitle)
-                    .addComponent(S_RequestTitle1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(S_Request, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(S_PreCourseTitle)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(S_PreCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(S_Timetable, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Back)))
-                .addGap(19, 19, 19))
+                    .addComponent(delete)
+                    .addComponent(Back))
+                .addGap(18, 18, 18))
         );
 
         pack();
@@ -210,6 +254,192 @@ public class Student_Management extends javax.swing.JFrame {
         dispose();
         new S_Main().setVisible(true); //뒤로가기
     }//GEN-LAST:event_BackActionPerformed
+
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+        addStudentToLecture(); // 추가 버튼 동작
+    }//GEN-LAST:event_addActionPerformed
+
+    private void addStudentToLecture() {
+        int selectedRow = lectureList1.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "수강할 강좌를 선택하세요.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) lectureList1.getModel();
+        String courseNumber = model.getValueAt(selectedRow, 0).toString(); // 강좌 번호
+        String lectureName = model.getValueAt(selectedRow, 1).toString();
+        String credits = model.getValueAt(selectedRow, 2).toString();
+        String professor = model.getValueAt(selectedRow, 3).toString();
+        String maxStudents = model.getValueAt(selectedRow, 4).toString();
+        int currentStudents = Integer.parseInt(model.getValueAt(selectedRow, 5).toString()); // 현재 수강 인원
+
+        // 이미 수강 신청되었는지 확인
+        if (isLectureAlreadyAdded(courseNumber)) {
+            JOptionPane.showMessageDialog(this, "이미 수강 신청된 강좌입니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return; // 이미 신청된 경우 메서드를 종료
+        }
+
+        if (currentStudents >= Integer.parseInt(maxStudents)) {
+            JOptionPane.showMessageDialog(this, "최대 수강 인원을 초과할 수 없습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // "현재 수강 인원" 증가
+        currentStudents++;
+        model.setValueAt(String.valueOf(currentStudents), selectedRow, 5); // JTable 업데이트
+
+        // 파일에 반영
+        updateLectureFile(courseNumber, currentStudents);
+
+        // 학생 수강 정보 추가
+        addStudentCourse(courseNumber, lectureName, credits, professor, maxStudents, String.valueOf(currentStudents));
+
+        // 학생의 강좌 목록을 새로 로드
+        loadStudentCoursesToTable();
+    }
+
+    private boolean isLectureAlreadyAdded(String courseNumber) {
+        String loggedInStudentId = UserSession.getInstance().getUserId(); // 로그인한 학생 ID
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_COURSE_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // 각 줄을 파싱하여 키-값 구조로 읽기
+                String[] fields = line.split(", ");
+                Map<String, String> dataMap = new HashMap<>();
+                for (String field : fields) {
+                    String[] keyValue = field.split(": ");
+                    if (keyValue.length == 2) {
+                        dataMap.put(keyValue[0].trim(), keyValue[1].trim());
+                    }
+                }
+
+                // 현재 학생 ID와 강좌 번호가 모두 일치하면 이미 신청된 강좌임
+                if (loggedInStudentId.equals(dataMap.get("아이디")) && courseNumber.equals(dataMap.get("강좌 번호"))) {
+                    return true;
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "학생 수강 파일 읽기 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return false; // 중복되지 않은 경우
+    }
+
+    private void updateLectureFile(String courseNumber, int currentStudents) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(LECTURE_FILE_PATH));
+            List<String> updatedLines = new ArrayList<>();
+
+            for (String line : lines) {
+                if (line.contains("강좌 번호: " + courseNumber)) {
+                    String[] lectureData = line.split(", ");
+                    if (lectureData.length <= 7) {
+                        line += ", 현재 학생 수: " + currentStudents;
+                    } else {
+                        lectureData[7] = "현재 학생 수: " + currentStudents;
+                        line = String.join(", ", lectureData);
+                    }
+                }
+                updatedLines.add(line);
+            }
+
+            Files.write(Paths.get(LECTURE_FILE_PATH), updatedLines);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 업데이트 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void addStudentCourse(String courseNumber, String lectureName, String credits, String professor, String maxStudents, String currentStudents) {
+        String loggedInStudentId = UserSession.getInstance().getUserId(); // 로그인한 학생 ID
+        String loggedInStudentName = UserSession.getInstance().getUserName(); // 로그인한 학생 이름
+
+        // 새로 추가할 데이터 형식을 "키: 값" 형태로 설정
+        String newEntry = String.format(
+                "이름: %s, 아이디: %s, 강좌 번호: %s, 강의 이름: %s, 학점: %s, 담당 교수: %s, 최대 수강 인원: %s, 현재 수강 인원: %s",
+                loggedInStudentName, loggedInStudentId, courseNumber, lectureName, credits, professor, maxStudents, currentStudents
+        );
+
+        try {
+            // 파일을 읽어 이미 등록된 데이터인지 확인
+            List<String> lines = Files.readAllLines(Paths.get(STUDENT_COURSE_FILE_PATH));
+            for (String line : lines) {
+                if (line.contains("아이디: " + loggedInStudentId) && line.contains("강좌 번호: " + courseNumber)) {
+                    JOptionPane.showMessageDialog(this, "이미 수강 신청된 강좌입니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
+                    return; // 이미 존재하면 추가하지 않음
+                }
+            }
+
+            // 중복되지 않은 경우에만 파일에 추가
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(STUDENT_COURSE_FILE_PATH, true))) {
+                writer.write(newEntry);
+                writer.newLine();
+            }
+
+            JOptionPane.showMessageDialog(this, "수강 신청이 완료되었습니다.");
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "학생 수강 파일 업데이트 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
+        removeStudentFromLecture(); // 삭제 버튼 동작
+    }//GEN-LAST:event_deleteActionPerformed
+    private void removeStudentFromLecture() {
+        int selectedRow = lectureList.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "삭제할 강좌를 선택하세요.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel model = (DefaultTableModel) lectureList.getModel();
+
+        // JTable에서 선택한 데이터 가져오기
+        String courseNumber = model.getValueAt(selectedRow, 0).toString();
+        String loggedInStudentId = UserSession.getInstance().getUserId();
+
+        // 파일에서 삭제
+        deleteStudentCourseFromFile(loggedInStudentId, courseNumber);
+
+        // JTable에서 데이터 삭제
+        model.removeRow(selectedRow);
+    }
+
+    private void deleteStudentCourseFromFile(String studentId, String courseNumber) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(STUDENT_COURSE_FILE_PATH));
+            List<String> updatedLines = new ArrayList<>();
+
+            for (String line : lines) {
+                // 각 줄을 파싱하여 키-값 구조로 읽기
+                String[] fields = line.split(", ");
+                Map<String, String> dataMap = new HashMap<>();
+                for (String field : fields) {
+                    String[] keyValue = field.split(": ");
+                    if (keyValue.length == 2) {
+                        dataMap.put(keyValue[0].trim(), keyValue[1].trim());
+                    }
+                }
+
+                // 조건: 현재 학생 ID와 강좌 번호가 모두 일치하면 삭제
+                if (studentId.equals(dataMap.get("아이디")) && courseNumber.equals(dataMap.get("강좌 번호"))) {
+                    continue; // 해당 줄은 삭제
+                }
+
+                // 삭제하지 않는 줄은 업데이트 목록에 추가
+                updatedLines.add(line);
+            }
+
+            // 파일 덮어쓰기
+            Files.write(Paths.get(STUDENT_COURSE_FILE_PATH), updatedLines);
+
+            JOptionPane.showMessageDialog(this, "선택한 강좌가 삭제되었습니다.");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "학생 수강 파일 업데이트 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     /**
      * @param args the command line arguments
@@ -245,230 +475,16 @@ public class Student_Management extends javax.swing.JFrame {
         });
     }
 
-    private void loadDataFromFile() {
-        DefaultTableModel model = (DefaultTableModel) S_ReqInfo.getModel(); // 테이블 모델 가져오기
-
-        model.setRowCount(0);   //기존 데이터 초기화  
-
-        try (BufferedReader br = new BufferedReader(new FileReader("S_Course.txt"))) {
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                line = line.trim(); // 앞뒤 공백 제거
-                if (line.isEmpty()) {
-                    continue; // 빈 줄 건너뛰기
-                }
-
-                String[] data = line.split(","); // 쉼표로 구분된 데이터 분리
-
-                if (data.length == 6) { // 필요한 열 개수만 처리
-                    // 테이블에 데이터 추가
-                    model.addRow(new Object[]{"신청", data[0], data[1], data[2], data[3], data[4], data[5]});
-                } else {
-                    System.err.println("잘못된 데이터 형식: " + line);
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "파일을 읽는 도중 오류가 발생했습니다: " + e.getMessage());
-        }
-
-        DefaultTableModel Model = (DefaultTableModel) S_PreCouInfo.getModel(); // 테이블 모델 가져오기
-
-        Model.setRowCount(0);   //기존 데이터 초기화  
-
-        try (BufferedReader br = new BufferedReader(new FileReader("S_PreCour.txt"))) {
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                line = line.trim(); // 앞뒤 공백 제거
-                if (line.isEmpty()) {
-                    continue; // 빈 줄 건너뛰기
-                }
-
-                String[] data = line.split(","); // 쉼표로 구분된 데이터 분리
-
-                if (data.length == 6) { // 필요한 열 개수만 처리
-                    // 테이블에 데이터 추가
-                    Model.addRow(new Object[]{"취소", data[0], data[1], data[2], data[3], data[4], data[5]});
-                } else {
-                    System.err.println("잘못된 데이터 형식: " + line);
-                }
-            }
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "파일을 읽는 도중 오류가 발생했습니다: " + e.getMessage());
-        }
-    }
-
-    //버튼랜더러
-    class ButtonRenderer extends JButton implements TableCellRenderer {
-
-        public ButtonRenderer() {
-            setOpaque(true);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            setText(value == null ? "" : value.toString());    // 버튼 텍스트
-            return this;
-        }
-    }
-
-    //버튼에디터(ReqButtonEditor - 수강신청, CourbuttonEditor - 수강 현황)
-    class ReqButtonEditor extends DefaultCellEditor {
-
-        protected JButton button;
-        private boolean isPushed;
-        private int selectedRow; // 선택된 행의 인덱스를 저장
-        private JTable table; // 테이블 참조
-
-        public ReqButtonEditor(JCheckBox checkBox) {
-            super(checkBox);
-            button = new JButton("신청");
-            button.setOpaque(true);
-            button.addActionListener(e -> {
-                fireEditingStopped();
-                handleRequestAction();
-            });
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            isPushed = true;
-            selectedRow = row; // 현재 선택된 행 인덱스 저장
-            this.table = table; // 테이블 참조 저장
-            return button;
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            isPushed = false;
-            return "신청";
-        }
-
-        private void handleRequestAction() {
-            // 선택된 행의 데이터 가져오기
-            DefaultTableModel model = (DefaultTableModel) table.getModel();
-            Object[] rowData = new Object[model.getColumnCount() - 1]; // 버튼 열 제외
-
-            for (int i = 1; i < model.getColumnCount(); i++) {
-                rowData[i - 1] = model.getValueAt(selectedRow, i);
-            }
-            // 파일에 추가
-            try (java.io.FileWriter fw = new java.io.FileWriter("S_PreCour.txt", true)) {
-                StringBuilder rowString = new StringBuilder();
-                for (Object obj : rowData) {
-                    if (rowString.length() > 0) {
-                        rowString.append(",");
-                    }
-                    rowString.append(obj == null ? "" : obj.toString());
-                }
-                fw.write(rowString.toString() + "\n");
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "파일 저장 중 오류가 발생했습니다: " + ex.getMessage());
-                return;
-            }
-            // S_PreCouInfo 테이블에 추가
-            DefaultTableModel preModel = (DefaultTableModel) S_PreCouInfo.getModel();
-            preModel.addRow(new Object[]{"취소", rowData[0], rowData[1], rowData[2], rowData[3], rowData[4], rowData[5]});
-
-            JOptionPane.showMessageDialog(null, "신청이 완료되었습니다.");
-        }
-    }
-
-    class CourButtonEditor extends DefaultCellEditor {
-
-        protected JButton button;
-        private boolean isPushed;
-        private int selectedRow; // 선택된 행
-
-        public CourButtonEditor(JCheckBox checkBox) {
-            super(checkBox);
-            button = new JButton("취소");
-            button.setOpaque(true);
-            button.addActionListener(e -> {
-                fireEditingStopped();
-                handleCancelAction();
-            });
-        }
-
-        @Override
-        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            isPushed = true;
-            selectedRow = row; // 선택된 행 저장
-            return button;
-        }
-
-        @Override
-        public Object getCellEditorValue() {
-            isPushed = false;
-            return "취소";
-        }
-
-        private void handleCancelAction() {
-            DefaultTableModel model = (DefaultTableModel) S_PreCouInfo.getModel();
-
-            // 선택된 행의 데이터를 가져오기
-            Object[] rowData = new Object[model.getColumnCount() - 1];
-            for (int i = 1; i < model.getColumnCount(); i++) { // 첫 번째 열(취소 버튼)은 제외
-                rowData[i - 1] = model.getValueAt(selectedRow, i);
-            }
-
-            // S_PreCour.txt 파일에서 해당 데이터 제거 후 다시 저장
-            try {
-                java.io.File inputFile = new java.io.File("S_PreCour.txt");
-                java.util.List<String> updatedLines = new java.util.ArrayList<>();
-
-                try (java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.FileReader(inputFile))) {
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        String[] fileRow = line.split(",");
-                        boolean match = true;
-
-                        // 선택된 행 데이터와 비교
-                        for (int i = 0; i < rowData.length; i++) {
-                            if (!rowData[i].toString().equals(fileRow[i].trim())) {
-                                match = false;
-                                break;
-                            }
-                        }
-
-                        // 일치하지 않는 데이터만 리스트에 추가
-                        if (!match) {
-                            updatedLines.add(line);
-                        }
-                    }
-                }
-
-                // 업데이트된 내용으로 파일 덮어쓰기
-                try (java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter(inputFile))) {
-                    for (String updatedLine : updatedLines) {
-                        writer.write(updatedLine);
-                        writer.newLine();
-                    }
-                }
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "파일 처리 중 오류가 발생했습니다: " + ex.getMessage());
-                return;
-            }
-
-            // S_PreCouInfo 테이블에서 해당 행 삭제
-            model.removeRow(selectedRow);
-            JOptionPane.showMessageDialog(null, "취소가 완료되었습니다.");
-        }
-    }
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Back;
-    private javax.swing.JTable S_PreCouInfo;
-    private javax.swing.JScrollPane S_PreCourse;
     private javax.swing.JLabel S_PreCourseTitle;
-    private javax.swing.JTable S_ReqInfo;
     private javax.swing.JScrollPane S_Request;
+    private javax.swing.JScrollPane S_Request1;
     private javax.swing.JLabel S_RequestTitle;
-    private javax.swing.JLabel S_RequestTitle1;
-    private javax.swing.JTable S_TimeInfo;
-    private javax.swing.JScrollPane S_Timetable;
     private javax.swing.JLabel Title;
+    private javax.swing.JButton add;
+    private javax.swing.JButton delete;
+    private javax.swing.JTable lectureList;
+    private javax.swing.JTable lectureList1;
     // End of variables declaration//GEN-END:variables
 }

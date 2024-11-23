@@ -4,7 +4,9 @@
  */
 package deu.UIS.Student;
 
+import deu.UIS.ChangePassword.ChangePassword;
 import deu.UIS.Login.Login;
+import deu.UIS.Login.UserSession;
 
 /**
  *
@@ -17,8 +19,13 @@ public class S_Main extends javax.swing.JFrame {
      */
     public S_Main() {
         initComponents();
+        displayUserInfo();
     }
-
+    
+ private void displayUserInfo() {
+        UserSession session = UserSession.getInstance();
+        System.out.println("환영합니다, " + session.getUserName() + " (" + session.getUserId() + ")");
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -32,6 +39,7 @@ public class S_Main extends javax.swing.JFrame {
         S_Course = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
         S_Grade = new javax.swing.JButton();
+        ChangePassword = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -59,25 +67,34 @@ public class S_Main extends javax.swing.JFrame {
             }
         });
 
+        ChangePassword.setText("비밀번호 변경");
+        ChangePassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChangePasswordActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(Title)
-                        .addGap(92, 92, 92))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(LogOut)
-                        .addGap(41, 41, 41))))
+                .addComponent(Title)
+                .addGap(92, 92, 92))
             .addGroup(layout.createSequentialGroup()
                 .addGap(51, 51, 51)
-                .addComponent(S_Course)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
-                .addComponent(S_Grade)
-                .addGap(49, 49, 49))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(ChangePassword)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(LogOut)
+                        .addGap(41, 41, 41))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(S_Course)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                        .addComponent(S_Grade)
+                        .addGap(49, 49, 49))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -89,7 +106,9 @@ public class S_Main extends javax.swing.JFrame {
                     .addComponent(S_Course)
                     .addComponent(S_Grade))
                 .addGap(136, 136, 136)
-                .addComponent(LogOut)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(LogOut)
+                    .addComponent(ChangePassword))
                 .addGap(33, 33, 33))
         );
 
@@ -103,7 +122,7 @@ public class S_Main extends javax.swing.JFrame {
     }//GEN-LAST:event_S_CourseActionPerformed
 
     private void LogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutActionPerformed
-        // TODO add your handling code here:
+       UserSession.getInstance().clearSession(); // 세션 초기화
         dispose();
         new Login().setVisible(true); //로그아웃
     }//GEN-LAST:event_LogOutActionPerformed
@@ -113,6 +132,10 @@ public class S_Main extends javax.swing.JFrame {
         dispose();
         new Student_GradeCheck().setVisible(true); //성적조회페이지
     }//GEN-LAST:event_S_GradeActionPerformed
+
+    private void ChangePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChangePasswordActionPerformed
+        new ChangePassword().setVisible(true); 
+    }//GEN-LAST:event_ChangePasswordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -150,6 +173,7 @@ public class S_Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ChangePassword;
     private javax.swing.JButton LogOut;
     private javax.swing.JButton S_Course;
     private javax.swing.JButton S_Grade;

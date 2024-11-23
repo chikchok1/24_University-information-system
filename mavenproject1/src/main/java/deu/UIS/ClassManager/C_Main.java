@@ -6,6 +6,7 @@ package deu.UIS.ClassManager;
 
 import deu.UIS.ChangePassword.ChangePassword;
 import deu.UIS.Login.Login;
+import deu.UIS.Login.UserSession;
 
 /**
  *
@@ -18,6 +19,12 @@ public class C_Main extends javax.swing.JFrame {
      */
     public C_Main() {
         initComponents();
+        displayUserInfo();
+    }
+
+    private void displayUserInfo() {
+        UserSession session = UserSession.getInstance();
+        System.out.println("환영합니다, " + session.getUserName() + " (" + session.getUserId() + ")");
     }
 
     /**
@@ -111,12 +118,13 @@ public class C_Main extends javax.swing.JFrame {
 
     private void AddCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddCourseActionPerformed
         // TODO add your handling code here:
-         dispose();
+        dispose();
         new Class_Management().setVisible(true);
     }//GEN-LAST:event_AddCourseActionPerformed
 
     private void LogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutActionPerformed
-         dispose();
+        UserSession.getInstance().clearSession(); // 세션 초기화
+        dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_LogOutActionPerformed
 
