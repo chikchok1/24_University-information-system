@@ -4,17 +4,95 @@
  */
 package deu.UIS.ClassManager;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.io.*;
+import java.nio.file.*;
+
 /**
  *
  * @author YangJinWon
  */
 public class Class_Management extends javax.swing.JFrame {
 
+    private static final String CLASS_INFO_PATH = Paths.get(System.getProperty("user.home"), "data", "강좌정보.txt").toString();
+
     /**
      * Creates new form Employee_Management
      */
     public Class_Management() {
         initComponents();
+        loadCourseList();
+        addMouseListenerToCourseList(); // 클릭 이벤트 리스너 추가
+
+    }
+
+    void loadCourseList() {
+        DefaultTableModel model = (DefaultTableModel) CourseList.getModel();
+        model.setRowCount(0); // 기존 데이터 초기화
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(CLASS_INFO_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] courseData = line.split(",");
+                if (courseData.length == 5) { // 정확히 5개의 필드만 처리
+                    // "강좌 번호: "와 같은 접두사 제거
+                    String courseNumber = courseData[0].replace("강좌 번호: ", "").trim();
+                    String courseName = courseData[1].replace("강좌 이름: ", "").trim();
+                    String courseDepartment = courseData[2].replace("담당 학과: ", "").trim();
+                    String courseCredits = courseData[3].replace("학점 수: ", "").trim();
+
+                    // JTable에 추가
+                    model.addRow(new Object[]{courseNumber, courseName, courseDepartment, courseCredits});
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 읽기 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    // 강좌 번호를 기준으로 강좌 설명을 JTable에 로드
+    private void loadCourseInfo(String courseNumber) {
+        // 이미 존재하는 CourseInfo 테이블의 모델 가져오기
+        DefaultTableModel model = (DefaultTableModel) CourseInfo.getModel();
+        model.setRowCount(0); // 기존 데이터를 초기화
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(CLASS_INFO_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // 쉼표로 데이터 분리
+                String[] courseData = line.split(",");
+                if (courseData.length == 5) { // 데이터가 정확히 5개인지 확인
+                    // 각 필드에서 접두사를 제거하고 내용만 추출
+                    String number = courseData[0].replace("강좌 번호: ", "").trim();
+
+                    if (number.equals(courseNumber)) { // 선택된 강좌 번호와 일치하는지 확인
+                        String description = courseData[4].replace("강좌에 대한 설명: ", "").trim();
+
+                        // "강좌에 대한 설명"만 CourseInfo에 추가
+                        model.addRow(new Object[]{description});
+                        break; // 데이터를 찾으면 종료
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 읽기 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void CourseListMouseClicked(java.awt.event.MouseEvent evt) {
+        int selectedRow = CourseList.getSelectedRow(); // 선택된 행 가져오기
+        if (selectedRow != -1) {
+            String courseNumber = CourseList.getValueAt(selectedRow, 0).toString();
+            loadCourseInfo(courseNumber); // 해당 강좌 번호로 설명 로드
+        }
+    }
+
+    private void addMouseListenerToCourseList() {
+        CourseList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                CourseListMouseClicked(evt); // 클릭 시 기존 메서드 호출
+            }
+        });
     }
 
     /**
@@ -29,20 +107,20 @@ public class Class_Management extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         CourseList = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        before = new javax.swing.JButton();
+        AddClass = new javax.swing.JButton();
+        refresh = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
         CourseInfo = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
-        jLabel1.setText("수업관리");
+        jLabel1.setText("수업관리 페이지");
 
         CourseList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "강좌 번호", "강좌 이름", "담당 학과", "학점 수"
@@ -50,33 +128,58 @@ public class Class_Management extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(CourseList);
 
+        before.setText("이전");
+        before.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                beforeActionPerformed(evt);
+            }
+        });
+
+        AddClass.setText("강좌 추가");
+        AddClass.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddClassActionPerformed(evt);
+            }
+        });
+
+        refresh.setText("새로고침");
+        refresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshActionPerformed(evt);
+            }
+        });
+
         CourseInfo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null},
-                {null},
-                {null},
-                {null}
+
             },
             new String [] {
-                "강좌에 대한 간단한 설명"
+                "강좌에 대한 설명"
             }
         ));
-        jScrollPane2.setViewportView(CourseInfo);
+        jScrollPane3.setViewportView(CourseInfo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(84, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(404, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addGap(412, 412, 412))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(AddClass)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(refresh)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(before))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -85,14 +188,33 @@ public class Class_Management extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(74, 74, 74)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addContainerGap(177, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE))
+                .addGap(31, 31, 31)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(before)
+                    .addComponent(AddClass)
+                    .addComponent(refresh))
+                .addContainerGap(111, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void beforeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beforeActionPerformed
+        // TODO add your handling code here:
+        dispose();
+        new C_Main().setVisible(true);
+    }//GEN-LAST:event_beforeActionPerformed
+
+    private void AddClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddClassActionPerformed
+        // TODO add your handling code here:
+        new AddClass(this).setVisible(true);
+    }//GEN-LAST:event_AddClassActionPerformed
+
+    private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
+        loadCourseList(); // 새로고침 시 강좌 정보를 다시 로드
+    }//GEN-LAST:event_refreshActionPerformed
     /**
      * @param args the command line arguments
      */
@@ -130,10 +252,13 @@ public class Class_Management extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton AddClass;
     private javax.swing.JTable CourseInfo;
     private javax.swing.JTable CourseList;
+    private javax.swing.JButton before;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JButton refresh;
     // End of variables declaration//GEN-END:variables
 }
