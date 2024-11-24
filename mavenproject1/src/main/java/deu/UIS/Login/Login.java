@@ -4,6 +4,10 @@
  */
 package deu.UIS.Login;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
+
 /**
  *
  * @author YangJinWon
@@ -168,6 +172,51 @@ public class Login extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+
+        // 파일 경로 설정
+        String userHome = System.getProperty("user.home");
+        String dataFolderPath = Paths.get(userHome, "data").toString();
+
+        // 파일 이름 배열
+        String[] fileNames = {
+            "student_courses.txt",
+            "user_data.txt",
+            "student_info.txt",
+            "professor_info.txt",
+            "lecture.txt",
+            "courses_bill.txt",
+            "CourseInfo.txt",
+            "Class_Manager.txt",
+            "Academic_info.txt"
+        };
+
+        File dataFolder = new File(dataFolderPath);
+
+        // 데이터 폴더 확인 및 생성
+        if (!dataFolder.exists()) {
+            if (dataFolder.mkdir()) {
+                System.out.println("data 폴더가 생성되었습니다: " + dataFolderPath);
+            } else {
+                System.err.println("data 폴더 생성에 실패했습니다.");
+            }
+        }
+
+        // 각 파일 확인 및 생성
+        for (String fileName : fileNames) {
+            File file = new File(Paths.get(dataFolderPath, fileName).toString());
+            if (!file.exists()) {
+                try {
+                    if (file.createNewFile()) {
+                        System.out.println(fileName + " 파일이 생성되었습니다: " + file.getAbsolutePath());
+                    } else {
+                        System.err.println(fileName + " 파일 생성에 실패했습니다.");
+                    }
+                } catch (IOException e) {
+                    System.err.println(fileName + " 파일 생성 중 오류가 발생했습니다: " + e.getMessage());
+                }
+            }
+        }
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.

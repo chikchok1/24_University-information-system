@@ -42,19 +42,22 @@ public class Professor_Management extends javax.swing.JFrame {
         }
 
         initComponents(); // 이미 존재하는 컴포넌트 초기화
+        // JTable 열 구조 설정
+        configureTableModel();
+
         loadLectureNames(); // 강의 이름 로드
         loadStudentData(); // 학생 데이터 로드
     }
 
+    private void configureTableModel() {
+        DefaultTableModel model = new DefaultTableModel(
+                new String[]{"강의 이름", "학번", "이름", "취득 학점", "성적"}, 0
+        );
+        S_list.setModel(model); // S_list는 이미 생성된 JTable
+    }
+
     private void loadStudentData() {
         String filePath = Paths.get(System.getProperty("user.home"), "data", "student_courses.txt").toString();
-
-        // 파일 및 디렉토리 확인
-        File dataFolder = Paths.get(System.getProperty("user.home"), "data").toFile();
-        if (!dataFolder.exists()) {
-            dataFolder.mkdir(); // 폴더가 없으면 생성
-            System.out.println("data 폴더를 생성했습니다: " + dataFolder.getAbsolutePath());
-        }
 
         File file = new File(filePath);
         if (!file.exists()) {
@@ -62,52 +65,51 @@ public class Professor_Management extends javax.swing.JFrame {
             return;
         }
 
-        DefaultTableModel tableModel = (DefaultTableModel) S_list.getModel(); // JTable의 모델 가져오기
+        DefaultTableModel tableModel = (DefaultTableModel) S_list.getModel();
         tableModel.setRowCount(0); // 기존 데이터 초기화
 
-        List<Object[]> rows = new ArrayList<>(); // 데이터를 저장할 리스트
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(", "); // 데이터를 쉼표로 구분
+                // 쉼표와 공백으로 데이터 분리
+                String[] parts = line.split(", ");
 
-                // 각 데이터 확인 (요구된 순서에 맞게 데이터 배열을 해석)
-                if (parts.length >= 8) { // 최소 8개 요소가 있어야 함
-                    String studentName = parts[0].split(":")[1].trim(); // 이름
-                    String studentId = parts[1].split(":")[1].trim(); // 학번
-                    String courseCode = parts[2].split(":")[1].trim(); // 강좌 번호
-                    String courseName = parts[3].split(":")[1].trim(); // 강의 이름
-                    String credits = parts[4].split(":")[1].trim(); // 학점
-                    String professor = parts[5].split(":")[1].trim(); // 담당 교수
+                // 배열 크기 검증
+                if (parts.length < 7) { // 최소 필수 데이터가 없으면 스킵
+                    System.err.println("잘못된 데이터 형식: " + line);
+                    continue;
+                }
 
-                    // 성적 필드 처리
-                    String grade = ""; // 기본값: 성적이 없는 경우
-                    for (String part : parts) {
-                        if (part.startsWith("성적:")) {
-                            grade = part.split(":")[1].trim();
-                            break;
-                        }
-                    }
+                // 각 필드 추출
+                String studentName = "", studentId = "", courseName = "", grade = "", professor = "";
+                String earnedCredits = ""; // 빈 문자열로 초기화
 
-                    // 담당 교수가 현재 로그인한 교수와 일치하는지 확인
-                    if (professor.equals(professorName)) {
-                        // 데이터를 리스트에 저장
-                        rows.add(new Object[]{courseName, studentId, studentName, credits, grade});
+                for (String part : parts) {
+                    if (part.startsWith("이름:")) {
+                        studentName = part.split(":")[1].trim();
+                    } else if (part.startsWith("아이디:")) {
+                        studentId = part.split(":")[1].trim();
+                    } else if (part.startsWith("강의 이름:")) {
+                        courseName = part.split(":")[1].trim();
+                    } else if (part.startsWith("성적:")) {
+                        grade = part.split(":")[1].trim();
+                    } else if (part.startsWith("담당 교수:")) {
+                        professor = part.split(":")[1].trim();
+                    } else if (part.startsWith("취득 학점:")) {
+                        earnedCredits = part.split(":")[1].trim();
                     }
                 }
+
+                // 담당 교수가 현재 로그인한 교수인지 확인
+                if (!professor.equals(professorName)) {
+                    continue; // 담당 교수가 다르면 스킵
+                }
+
+                // JTable에 데이터 추가 (취득 학점과 성적이 없는 경우 빈 값으로 추가)
+                tableModel.addRow(new Object[]{courseName, studentId, studentName, earnedCredits.isEmpty() ? "" : earnedCredits, grade.isEmpty() ? "" : grade});
             }
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "파일 읽기 오류: " + e.getMessage(),
-                    "오류", JOptionPane.ERROR_MESSAGE);
-        }
-
-        // 학번 순으로 정렬
-        rows.sort(Comparator.comparing(row -> row[1].toString())); // 학번(인덱스 1) 기준 정렬
-
-        // 정렬된 데이터를 JTable에 추가
-        for (Object[] row : rows) {
-            tableModel.addRow(row);
+            JOptionPane.showMessageDialog(this, "파일 읽기 오류: " + e.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -384,17 +386,24 @@ public class Professor_Management extends javax.swing.JFrame {
                 boolean updated = false;
                 for (Map.Entry<String, String> entry : tempGrades.entrySet()) {
                     String key = entry.getKey();
-                    String grade = entry.getValue();
+                    String gradeAndCredits = entry.getValue(); // 성적과 취득 학점 (예: "A: 4.0")
                     String[] keyParts = key.split(":");
                     String studentId = keyParts[0];
                     String courseName = keyParts[1];
+                    String professor = keyParts[2];
 
-                    if (line.contains("아이디: " + studentId) && line.contains("강의 이름: " + courseName)) {
+                    // 고유 조합 (학번, 강의 이름, 담당 교수)으로 데이터 업데이트
+                    if (line.contains("아이디: " + studentId) && line.contains("강의 이름: " + courseName) && line.contains("담당 교수: " + professor)) {
                         // 기존 줄에 성적 정보 추가 또는 업데이트
                         if (line.contains("성적:")) {
-                            line = line.replaceAll("성적: [A-F]", "성적: " + grade);
+                            line = line.replaceAll("성적: [A-F]", "성적: " + gradeAndCredits.split(":")[0]);
+                            if (line.contains("취득 학점:")) {
+                                line = line.replaceAll("취득 학점: \\d+(\\.\\d+)?", "취득 학점: " + gradeAndCredits.split(":")[1]);
+                            } else {
+                                line += ", 취득 학점: " + gradeAndCredits.split(":")[1];
+                            }
                         } else {
-                            line += ", 성적: " + grade;
+                            line += ", 성적: " + gradeAndCredits.split(":")[0] + ", 취득 학점: " + gradeAndCredits.split(":")[1];
                         }
                         updated = true;
                         break;
@@ -407,7 +416,7 @@ public class Professor_Management extends javax.swing.JFrame {
             Files.write(Paths.get(filePath), updatedLines);
 
             // 성공 메시지
-            JOptionPane.showMessageDialog(this, "모든 성적이 저장되었습니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "모든 성적과 취득 학점이 저장되었습니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
 
             // 임시 저장소 초기화
             tempGrades.clear();
@@ -435,7 +444,6 @@ public class Professor_Management extends javax.swing.JFrame {
     }//GEN-LAST:event_refreshActionPerformed
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        // JTable에서 선택된 행 확인
         int selectedRow = S_list.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "추가할 정보를 선택하세요.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -447,7 +455,7 @@ public class Professor_Management extends javax.swing.JFrame {
         // 선택된 행에서 필요한 데이터 가져오기
         String courseName = tableModel.getValueAt(selectedRow, 0).toString(); // 강의 이름
         String studentId = tableModel.getValueAt(selectedRow, 1).toString(); // 학번
-        String studentName = tableModel.getValueAt(selectedRow, 2).toString(); // 이름
+        String professor = professorName; // 현재 로그인한 교수 이름
 
         // 성적 입력받기
         String grade = JOptionPane.showInputDialog(this, "성적을 입력하세요 (A, B, C, D, F):", "성적 입력", JOptionPane.PLAIN_MESSAGE);
@@ -456,7 +464,7 @@ public class Professor_Management extends javax.swing.JFrame {
             return;
         }
 
-        // 성적 검증
+        // 성적 검증 및 취득 학점 계산
         Map<String, Double> gradeMap = Map.of(
                 "A", 4.0,
                 "B", 3.0,
@@ -468,16 +476,18 @@ public class Professor_Management extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "올바르지 않은 성적입니다. (A, B, C, D, F 중 하나를 입력하세요)", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+        double earnedCredits = gradeMap.get(grade.toUpperCase());
 
-        // 임시 저장소에 추가
-        String key = studentId + ":" + courseName; // 고유 키 생성
-        tempGrades.put(key, grade.toUpperCase());
+        // 임시 저장소에 추가 (강의 이름 + 담당 교수 조합 사용)
+        String key = studentId + ":" + courseName + ":" + professor; // 고유 키 생성
+        tempGrades.put(key, grade.toUpperCase() + ": " + earnedCredits);
 
         // JTable 업데이트
-        tableModel.setValueAt(grade.toUpperCase(), selectedRow, 3); // 성적 열에 반영
+        tableModel.setValueAt(earnedCredits, selectedRow, 3); // 취득 학점 열에 반영
+        tableModel.setValueAt(grade.toUpperCase(), selectedRow, 4); // 성적 열에 반영
 
         // 확인 메시지
-        JOptionPane.showMessageDialog(this, "성적이 저장되었으며, 화면에 반영되었습니다. 저장 버튼을 눌러 파일에 반영하세요.", "Info", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this, "성적과 취득 학점이 저장되었으며, 화면에 반영되었습니다. 저장 버튼을 눌러 파일에 반영하세요.", "Info", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_addActionPerformed
 
     /**
