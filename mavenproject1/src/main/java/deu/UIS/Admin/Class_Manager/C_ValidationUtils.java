@@ -4,8 +4,6 @@
  */
 package deu.UIS.Admin.Class_Manager;
 
-import deu.UIS.Admin.*;
-
 /**
  *
  * @author YangJinWon

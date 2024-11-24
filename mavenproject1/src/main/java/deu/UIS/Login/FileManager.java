@@ -28,7 +28,7 @@ public class FileManager {
             }
 
             if (line.isEmpty()) {
-                System.out.println("파일에서 읽은 ID: " + id + ", 비밀번호: " + password);
+                //System.out.println("파일에서 읽은 ID: " + id + ", 비밀번호: " + password);
                 if (enteredId.equals(id) && enteredPassword.equals(password)) {
                     return true;
                 }

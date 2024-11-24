@@ -5,13 +5,12 @@
 package deu.UIS.Admin.Class_Manager;
 
 import deu.UIS.Admin.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -23,7 +22,8 @@ import javax.swing.table.DefaultTableModel;
 public class C_Management extends javax.swing.JFrame {
 
     private final ClassManagerService service; // ClassManagerService 사용
-    private final String filePath = System.getProperty("user.home") + "\\data\\Class_Manager.txt";
+    private final String filePath = Paths.get(System.getProperty("user.home"), "data", "Class_Manager.txt").toString();
+
     /**
      * Creates new form Academic_Management
      */
@@ -36,7 +36,7 @@ public class C_Management extends javax.swing.JFrame {
     // 학생 정보를 파일에서 불러와 테이블에 추가하는 메서드
 
     private void loadStudentInfo() {
-       DefaultTableModel model = (DefaultTableModel) S_list.getModel();
+        DefaultTableModel model = (DefaultTableModel) S_list.getModel();
         model.setRowCount(0); // 기존 데이터 초기화
 
         try {
@@ -78,6 +78,7 @@ public class C_Management extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "수업 담당자 정보를 불러오는 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -425,29 +426,29 @@ public class C_Management extends javax.swing.JFrame {
 
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
         String name = Name.getText().trim();
-    String phone = Phone.getText().trim();
-    String birthFirst = birth.getText().trim();
-    String birthLast = birthlast.getText().trim();
-    String birthDate = birthFirst + "-" + birthLast;
+        String phone = Phone.getText().trim();
+        String birthFirst = birth.getText().trim();
+        String birthLast = birthlast.getText().trim();
+        String birthDate = birthFirst + "-" + birthLast;
 
-    try {
-        // 유효성 검사 호출
-        C_ValidationUtils.validateInputFields(name, phone, birthDate);
+        try {
+            // 유효성 검사 호출
+            C_ValidationUtils.validateInputFields(name, phone, birthDate);
 
-        String newClassNumber = String.format("G%03d", generateClassNumber());
-        String password = birthLast;
+            String newClassNumber = String.format("G%03d", generateClassNumber());
+            String password = birthLast;
 
-        ClassManager manager = new ClassManager(name, newClassNumber, birthDate, phone, password);
-        service.addClassManager(manager);
+            ClassManager manager = new ClassManager(name, newClassNumber, birthDate, phone, password);
+            service.addClassManager(manager);
 
-        loadStudentInfo();
-        clearInputFields();
-        JOptionPane.showMessageDialog(this, "수업 담당자 정보가 저장되었습니다.");
-    } catch (IllegalArgumentException e) {
-        JOptionPane.showMessageDialog(this, e.getMessage(), "Validation Error", JOptionPane.WARNING_MESSAGE);
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "수업 담당자 정보 저장 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
+            loadStudentInfo();
+            clearInputFields();
+            JOptionPane.showMessageDialog(this, "수업 담당자 정보가 저장되었습니다.");
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Validation Error", JOptionPane.WARNING_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "수업 담당자 정보 저장 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_AddActionPerformed
 
     private void BeforeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BeforeActionPerformed
@@ -538,33 +539,33 @@ public class C_Management extends javax.swing.JFrame {
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         int selectedRow = S_list.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "수정할 수업담당자를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "수정할 수업담당자를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-    String updatedName = Name.getText().trim();
-    String updatedBirthDatePart1 = birth.getText().trim();
-    String updatedBirthDatePart2 = birthlast.getText().trim();
-    String updatedPhone = Phone.getText().trim();
-    String updatedBirthDate = updatedBirthDatePart1 + "-" + updatedBirthDatePart2;
+        String updatedName = Name.getText().trim();
+        String updatedBirthDatePart1 = birth.getText().trim();
+        String updatedBirthDatePart2 = birthlast.getText().trim();
+        String updatedPhone = Phone.getText().trim();
+        String updatedBirthDate = updatedBirthDatePart1 + "-" + updatedBirthDatePart2;
 
-    try {
-        // 유효성 검사 호출
-        C_ValidationUtils.validateInputFields(updatedName, updatedPhone, updatedBirthDate);
+        try {
+            // 유효성 검사 호출
+            C_ValidationUtils.validateInputFields(updatedName, updatedPhone, updatedBirthDate);
 
-        String existingClassNumber = (String) S_list.getValueAt(selectedRow, 1);
-        ClassManager updatedManager = new ClassManager(updatedName, existingClassNumber, updatedBirthDate, updatedPhone, updatedBirthDatePart2);
-        service.updateClassManager(updatedManager);
+            String existingClassNumber = (String) S_list.getValueAt(selectedRow, 1);
+            ClassManager updatedManager = new ClassManager(updatedName, existingClassNumber, updatedBirthDate, updatedPhone, updatedBirthDatePart2);
+            service.updateClassManager(updatedManager);
 
-        loadStudentInfo();
-        clearInputFields();
-        JOptionPane.showMessageDialog(this, "수업 담당자 정보가 성공적으로 수정되었습니다.");
-    } catch (IllegalArgumentException e) {
-        JOptionPane.showMessageDialog(this, e.getMessage(), "Validation Error", JOptionPane.WARNING_MESSAGE);
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "수업 담당자 정보 수정 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
+            loadStudentInfo();
+            clearInputFields();
+            JOptionPane.showMessageDialog(this, "수업 담당자 정보가 성공적으로 수정되었습니다.");
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Validation Error", JOptionPane.WARNING_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "수업 담당자 정보 수정 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_saveActionPerformed
 
     private void info_refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_info_refreshActionPerformed
@@ -675,7 +676,8 @@ public class C_Management extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "파일을 저장하는 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-private int generateClassNumber() {
+
+    private int generateClassNumber() {
         try {
             List<ClassManager> managers = service.getAllClassManagers();
             return managers.stream()
@@ -687,6 +689,7 @@ private int generateClassNumber() {
             return 1;
         }
     }
+
     /**
      * @param args the command line arguments
      */

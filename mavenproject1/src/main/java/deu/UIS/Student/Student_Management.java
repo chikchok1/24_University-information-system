@@ -102,6 +102,46 @@ public class Student_Management extends javax.swing.JFrame {
         }
     }
 
+    private int getTotalCredits() {
+        int totalCredits = 0;
+        String loggedInStudentId = UserSession.getInstance().getUserId(); // 현재 로그인한 학생 ID
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_COURSE_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // 각 줄을 파싱하여 키-값 구조로 읽기
+                String[] fields = line.split(", ");
+                Map<String, String> dataMap = new HashMap<>();
+                for (String field : fields) {
+                    String[] keyValue = field.split(": ");
+                    if (keyValue.length == 2) {
+                        dataMap.put(keyValue[0].trim(), keyValue[1].trim());
+                    }
+                }
+
+                // 현재 학생 ID와 일치하는 정보만 처리
+                if (loggedInStudentId.equals(dataMap.get("아이디"))) {
+                    String creditsStr = dataMap.get("학점");
+                    int credits = parseCredits(creditsStr);
+                    totalCredits += credits;
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "학생 수강 파일 읽기 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return totalCredits;
+    }
+
+    private int parseCredits(String creditStr) {
+        // 숫자만 추출
+        creditStr = creditStr.replaceAll("[^0-9]", "");
+        if (creditStr.isEmpty()) {
+            return 0;
+        }
+        return Integer.parseInt(creditStr);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -269,7 +309,8 @@ public class Student_Management extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) lectureList1.getModel();
         String courseNumber = model.getValueAt(selectedRow, 0).toString(); // 강좌 번호
         String lectureName = model.getValueAt(selectedRow, 1).toString();
-        String credits = model.getValueAt(selectedRow, 2).toString();
+        String creditsStr = model.getValueAt(selectedRow, 2).toString(); // 학점
+        int courseCredits = parseCredits(creditsStr); // 학점 정수 변환
         String professor = model.getValueAt(selectedRow, 3).toString();
         String maxStudents = model.getValueAt(selectedRow, 4).toString();
         int currentStudents = Integer.parseInt(model.getValueAt(selectedRow, 5).toString()); // 현재 수강 인원
@@ -285,6 +326,12 @@ public class Student_Management extends javax.swing.JFrame {
             return;
         }
 
+        // 총 학점 계산 및 18학점 초과 여부 확인
+        int totalCredits = getTotalCredits();
+        if (totalCredits + courseCredits > 18) {
+            JOptionPane.showMessageDialog(this, "총 수강 학점이 18학점을 초과할 수 없습니다.\n현재 총 학점: " + totalCredits + "학점", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         // "현재 수강 인원" 증가
         currentStudents++;
         model.setValueAt(String.valueOf(currentStudents), selectedRow, 5); // JTable 업데이트
@@ -293,7 +340,7 @@ public class Student_Management extends javax.swing.JFrame {
         updateLectureFile(courseNumber, currentStudents);
 
         // 학생 수강 정보 추가
-        addStudentCourse(courseNumber, lectureName, credits, professor, maxStudents, String.valueOf(currentStudents));
+        addStudentCourse(courseNumber, lectureName, creditsStr, professor, maxStudents, String.valueOf(currentStudents));
 
         // 학생의 강좌 목록을 새로 로드
         loadStudentCoursesToTable();
@@ -397,14 +444,52 @@ public class Student_Management extends javax.swing.JFrame {
         DefaultTableModel model = (DefaultTableModel) lectureList.getModel();
 
         // JTable에서 선택한 데이터 가져오기
-        String courseNumber = model.getValueAt(selectedRow, 0).toString();
+        String courseNumber = model.getValueAt(selectedRow, 0).toString(); // 강좌 번호
         String loggedInStudentId = UserSession.getInstance().getUserId();
 
         // 파일에서 삭제
         deleteStudentCourseFromFile(loggedInStudentId, courseNumber);
 
+        // 강좌 정보에서 현재 수강 인원 감소
+        decreaseCurrentStudents(courseNumber);
+
         // JTable에서 데이터 삭제
         model.removeRow(selectedRow);
+    }
+
+    private void decreaseCurrentStudents(String courseNumber) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(LECTURE_FILE_PATH));
+            List<String> updatedLines = new ArrayList<>();
+            DefaultTableModel lectureModel = (DefaultTableModel) lectureList1.getModel(); // JTable 모델 가져오기
+
+            for (String line : lines) {
+                if (line.contains("강좌 번호: " + courseNumber)) {
+                    String[] lectureData = line.split(", ");
+                    if (lectureData.length > 7 && lectureData[7].contains("현재 학생 수: ")) {
+                        // 현재 학생 수 감소
+                        int currentStudents = Integer.parseInt(lectureData[7].replace("현재 학생 수: ", "").trim());
+                        currentStudents = Math.max(0, currentStudents - 1); // 0 이하로 내려가지 않도록 설정
+                        lectureData[7] = "현재 학생 수: " + currentStudents;
+                        line = String.join(", ", lectureData);
+
+                        // JTable의 해당 강좌의 현재 수강 인원 업데이트
+                        for (int i = 0; i < lectureModel.getRowCount(); i++) {
+                            if (lectureModel.getValueAt(i, 0).toString().equals(courseNumber)) {
+                                lectureModel.setValueAt(String.valueOf(currentStudents), i, 5); // 현재 수강 인원 업데이트
+                                break;
+                            }
+                        }
+                    }
+                }
+                updatedLines.add(line);
+            }
+
+            // 파일 덮어쓰기
+            Files.write(Paths.get(LECTURE_FILE_PATH), updatedLines);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "강좌 정보 파일 업데이트 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private void deleteStudentCourseFromFile(String studentId, String courseNumber) {

@@ -3,18 +3,119 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package deu.UIS.Professor;
-// dfdfffdghghghgsdsadas
+
+import deu.UIS.Login.Login;
+import deu.UIS.Login.UserSession;
+import javax.swing.table.DefaultTableModel;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author YangJinWon
  */
 public class Professor_Management extends javax.swing.JFrame {
 
+    private final String professorName; // 로그인한 교수 이름 저장
+// 성적 임시 저장소 (학생 ID와 강의 이름을 키로 사용, 성적을 값으로 저장)
+    private final Map<String, String> tempGrades = new HashMap<>();
+
     /**
      * Creates new form Professor_Management
      */
     public Professor_Management() {
-        initComponents();
+        // UserSession에서 교수 이름 가져오기
+        this.professorName = UserSession.getInstance().getUserName();
+
+        if (professorName == null || professorName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "교수 이름을 불러올 수 없습니다. 다시 로그인해주세요.", "오류", JOptionPane.ERROR_MESSAGE);
+            dispose();
+            new Login().setVisible(true); // 로그인 페이지로 리다이렉트
+            return;
+        }
+
+        initComponents(); // 이미 존재하는 컴포넌트 초기화
+        loadLectureNames(); // 강의 이름 로드
+        loadStudentData(); // 학생 데이터 로드
+    }
+
+    private void loadStudentData() {
+        String filePath = Paths.get(System.getProperty("user.home"), "data", "student_courses.txt").toString();
+
+        // 파일 및 디렉토리 확인
+        File dataFolder = Paths.get(System.getProperty("user.home"), "data").toFile();
+        if (!dataFolder.exists()) {
+            dataFolder.mkdir(); // 폴더가 없으면 생성
+            System.out.println("data 폴더를 생성했습니다: " + dataFolder.getAbsolutePath());
+        }
+
+        File file = new File(filePath);
+        if (!file.exists()) {
+            JOptionPane.showMessageDialog(this, "파일을 찾을 수 없습니다: " + filePath, "오류", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel tableModel = (DefaultTableModel) S_list.getModel(); // JTable의 모델 가져오기
+        tableModel.setRowCount(0); // 기존 데이터 초기화
+
+        List<Object[]> rows = new ArrayList<>(); // 데이터를 저장할 리스트
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(", "); // 데이터를 쉼표로 구분
+
+                // 각 데이터 확인 (요구된 순서에 맞게 데이터 배열을 해석)
+                if (parts.length >= 8) { // 최소 8개 요소가 있어야 함
+                    String studentName = parts[0].split(":")[1].trim(); // 이름
+                    String studentId = parts[1].split(":")[1].trim(); // 학번
+                    String courseCode = parts[2].split(":")[1].trim(); // 강좌 번호
+                    String courseName = parts[3].split(":")[1].trim(); // 강의 이름
+                    String credits = parts[4].split(":")[1].trim(); // 학점
+                    String professor = parts[5].split(":")[1].trim(); // 담당 교수
+
+                    // 성적 필드 처리
+                    String grade = ""; // 기본값: 성적이 없는 경우
+                    for (String part : parts) {
+                        if (part.startsWith("성적:")) {
+                            grade = part.split(":")[1].trim();
+                            break;
+                        }
+                    }
+
+                    // 담당 교수가 현재 로그인한 교수와 일치하는지 확인
+                    if (professor.equals(professorName)) {
+                        // 데이터를 리스트에 저장
+                        rows.add(new Object[]{courseName, studentId, studentName, credits, grade});
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 읽기 오류: " + e.getMessage(),
+                    "오류", JOptionPane.ERROR_MESSAGE);
+        }
+
+        // 학번 순으로 정렬
+        rows.sort(Comparator.comparing(row -> row[1].toString())); // 학번(인덱스 1) 기준 정렬
+
+        // 정렬된 데이터를 JTable에 추가
+        for (Object[] row : rows) {
+            tableModel.addRow(row);
+        }
+    }
+
+    private void loadLectureNames() {
+        lectureName.removeAllItems(); // 기존 항목 제거
+        lectureName.addItem("강의 이름"); // 강의 이름 옵션
+        lectureName.addItem("학번");     // 학번 옵션
+        lectureName.addItem("이름");     // 이름 옵션
     }
 
     /**
@@ -27,29 +128,18 @@ public class Professor_Management extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jLabel3 = new javax.swing.JLabel();
-        jSpinner1 = new javax.swing.JSpinner();
-        jLabel4 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
+        searchfield = new javax.swing.JTextField();
+        search = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
-        jLabel9 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
-        jLabel10 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jTextField3 = new javax.swing.JTextField();
-        jButton5 = new javax.swing.JButton();
+        S_list = new javax.swing.JTable();
+        before = new javax.swing.JButton();
+        lectureName = new javax.swing.JComboBox<>();
+        save = new javax.swing.JButton();
+        refresh = new javax.swing.JButton();
+        add = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(809, 510));
@@ -57,91 +147,67 @@ public class Professor_Management extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
         jLabel1.setText("교수 수강 관리");
 
-        jLabel2.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        jLabel2.setText("수간 인원 설정");
-
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-
-        jButton1.setText("검색");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
-            },
-            new String [] {
-                "강좌", "현재 인원", "최대 인원"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
-
-        jLabel3.setText("강좌 ");
-
-        jLabel4.setText("최대 인원 설정");
-
-        jLabel6.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
         jLabel6.setText("학생 명단");
 
+        jLabel5.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
         jLabel5.setText("학생 정보");
 
-        jButton2.setText("신청");
-
-        jButton3.setText("적용");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        searchfield.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                searchfieldActionPerformed(evt);
             }
         });
 
-        jLabel7.setText("현재 신청 학점 : ");
+        search.setText("검색");
+        search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchActionPerformed(evt);
+            }
+        });
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        S_list.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "학번", "이름", "학점"
+                "강의 이름", "학번", "이름", "취득 학점", "성적 입력란"
             }
         ));
-        jScrollPane2.setViewportView(jTable2);
+        jScrollPane2.setViewportView(S_list);
 
-        jLabel9.setText("학점");
-
-        jButton4.setText("새로고침");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        before.setText("이전");
+        before.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                beforeActionPerformed(evt);
             }
         });
 
-        jLabel10.setText("학점 계산");
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A", "B", "C", "D", "F" }));
-
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        lectureName.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "강의 이름", "학번", "이름" }));
+        lectureName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                lectureNameActionPerformed(evt);
             }
         });
 
-        jButton5.setText("뒤로");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        save.setText("저장");
+        save.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                saveActionPerformed(evt);
+            }
+        });
+
+        refresh.setText("새로고침");
+        refresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshActionPerformed(evt);
+            }
+        });
+
+        add.setText("추가");
+        add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addActionPerformed(evt);
             }
         });
 
@@ -150,145 +216,269 @@ public class Professor_Management extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(361, 361, 361)
-                .addComponent(jLabel1)
-                .addGap(361, 406, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
             .addGroup(layout.createSequentialGroup()
-                .addGap(48, 48, 48)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(50, 50, 50)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton4))
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 338, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(50, 50, 50))))))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(before, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(add)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(save))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 561, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lectureName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(searchfield, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(refresh)))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(256, 256, 256)
+                        .addComponent(jLabel1)))
+                .addContainerGap(50, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel1)
-                        .addGap(25, 25, 25))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel8)
-                        .addGap(68, 68, 68)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton2)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabel9))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButton4)
-                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel10))
-                        .addGap(72, 72, 72))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButton1)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButton3)))
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton5)
-                        .addGap(33, 33, 33))))
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel8)
+                .addGap(19, 19, 19)
+                .addComponent(jLabel1)
+                .addGap(24, 24, 24)
+                .addComponent(jLabel6)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(searchfield, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(search)
+                    .addComponent(lectureName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(refresh))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(before)
+                    .addComponent(save)
+                    .addComponent(add))
+                .addGap(30, 30, 30))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void beforeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beforeActionPerformed
         // TODO add your handling code here:
         // 뒤로 버튼 클릭 시 P_Main 페이지로 돌아가기
-        this.dispose();  // 현재 출석부 페이지 창 닫기
+        dispose();  // 현재 출석부 페이지 창 닫기
         new P_Main().setVisible(true);  // 메인 페이지 열기
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_beforeActionPerformed
+
+    private void lectureNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lectureNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_lectureNameActionPerformed
+
+    private void searchfieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchfieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchfieldActionPerformed
+
+    private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
+        // JComboBox와 JTextField에서 입력된 값 가져오기
+        String selectedOption = lectureName.getSelectedItem().toString().trim(); // JComboBox 선택 값
+        String searchText = searchfield.getText().trim(); // JTextField 입력 값
+
+        // 유효한 검색어가 있는지 확인
+        if ((selectedOption == null || selectedOption.isEmpty()) || searchText.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "검색 조건과 값을 입력하세요.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // JTable 초기화
+        DefaultTableModel tableModel = (DefaultTableModel) S_list.getModel();
+        tableModel.setRowCount(0); // 기존 데이터 제거
+
+        String filePath = Paths.get(System.getProperty("user.home"), "data", "student_courses.txt").toString();
+
+        List<Object[]> searchResults = new ArrayList<>(); // 검색 결과 저장 리스트
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(", "); // 데이터를 쉼표로 구분
+
+                // 각 데이터 확인 (요구된 순서에 맞게 데이터 배열을 해석)
+                if (parts.length >= 8) {
+                    String studentName = parts[0].split(":")[1].trim(); // 이름
+                    String studentId = parts[1].split(":")[1].trim(); // 학번
+                    String courseCode = parts[2].split(":")[1].trim(); // 강좌 번호
+                    String courseName = parts[3].split(":")[1].trim(); // 강의 이름
+                    String credits = parts[4].split(":")[1].trim(); // 학점
+                    String professor = parts[5].split(":")[1].trim(); // 담당 교수
+
+                    // 성적 필드 처리
+                    String grade = ""; // 기본값: 성적이 없는 경우
+                    for (String part : parts) {
+                        if (part.startsWith("성적:")) {
+                            grade = part.split(":")[1].trim();
+                            break;
+                        }
+                    }
+
+                    // 조건: 선택된 옵션에 따라 검색 수행
+                    boolean matches = false;
+                    switch (selectedOption) {
+                        case "강의 이름":
+                            matches = courseName.equalsIgnoreCase(searchText);
+                            break;
+                        case "학번":
+                            matches = studentId.equalsIgnoreCase(searchText);
+                            break;
+                        case "이름":
+                            matches = studentName.equalsIgnoreCase(searchText);
+                            break;
+                    }
+
+                    // 검색 조건에 맞는 데이터 추가
+                    if (matches && professor.equals(professorName)) {
+                        searchResults.add(new Object[]{courseName, studentId, studentName, credits, grade});
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 읽기 오류: " + e.getMessage(),
+                    "오류", JOptionPane.ERROR_MESSAGE);
+        }
+
+        // 학번 순으로 검색 결과 정렬
+        searchResults.sort(Comparator.comparing(row -> row[1].toString())); // 학번(인덱스 1) 기준 정렬
+
+        // 정렬된 검색 결과를 JTable에 추가
+        for (Object[] row : searchResults) {
+            tableModel.addRow(row);
+        }
+
+        // 검색 결과가 없을 경우 알림
+        if (tableModel.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }//GEN-LAST:event_searchActionPerformed
+
+    private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
+        String filePath = Paths.get(System.getProperty("user.home"), "data", "student_courses.txt").toString();
+
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(filePath));
+            List<String> updatedLines = new ArrayList<>();
+
+            for (String line : lines) {
+                boolean updated = false;
+                for (Map.Entry<String, String> entry : tempGrades.entrySet()) {
+                    String key = entry.getKey();
+                    String grade = entry.getValue();
+                    String[] keyParts = key.split(":");
+                    String studentId = keyParts[0];
+                    String courseName = keyParts[1];
+
+                    if (line.contains("아이디: " + studentId) && line.contains("강의 이름: " + courseName)) {
+                        // 기존 줄에 성적 정보 추가 또는 업데이트
+                        if (line.contains("성적:")) {
+                            line = line.replaceAll("성적: [A-F]", "성적: " + grade);
+                        } else {
+                            line += ", 성적: " + grade;
+                        }
+                        updated = true;
+                        break;
+                    }
+                }
+                updatedLines.add(line);
+            }
+
+            // 파일 덮어쓰기
+            Files.write(Paths.get(filePath), updatedLines);
+
+            // 성공 메시지
+            JOptionPane.showMessageDialog(this, "모든 성적이 저장되었습니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
+
+            // 임시 저장소 초기화
+            tempGrades.clear();
+
+            // JTable 데이터 다시 로드
+            DefaultTableModel tableModel = (DefaultTableModel) S_list.getModel();
+            tableModel.setRowCount(0); // 기존 데이터 초기화
+            loadStudentData(); // 새로 로드된 데이터를 추가
+
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_saveActionPerformed
+
+    private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
+        // JTable 초기화 (기존 데이터 제거)
+        DefaultTableModel tableModel = (DefaultTableModel) S_list.getModel();
+        tableModel.setRowCount(0);
+
+        // 데이터 다시 로드
+        loadStudentData();
+
+        // 확인 메시지 (선택 사항)
+        JOptionPane.showMessageDialog(this, "데이터가 새로 고침되었습니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_refreshActionPerformed
+
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+        // JTable에서 선택된 행 확인
+        int selectedRow = S_list.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "추가할 정보를 선택하세요.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel tableModel = (DefaultTableModel) S_list.getModel();
+
+        // 선택된 행에서 필요한 데이터 가져오기
+        String courseName = tableModel.getValueAt(selectedRow, 0).toString(); // 강의 이름
+        String studentId = tableModel.getValueAt(selectedRow, 1).toString(); // 학번
+        String studentName = tableModel.getValueAt(selectedRow, 2).toString(); // 이름
+
+        // 성적 입력받기
+        String grade = JOptionPane.showInputDialog(this, "성적을 입력하세요 (A, B, C, D, F):", "성적 입력", JOptionPane.PLAIN_MESSAGE);
+        if (grade == null || grade.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "성적 입력이 취소되었습니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // 성적 검증
+        Map<String, Double> gradeMap = Map.of(
+                "A", 4.0,
+                "B", 3.0,
+                "C", 2.0,
+                "D", 1.0,
+                "F", 0.0
+        );
+        if (!gradeMap.containsKey(grade.toUpperCase())) {
+            JOptionPane.showMessageDialog(this, "올바르지 않은 성적입니다. (A, B, C, D, F 중 하나를 입력하세요)", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 임시 저장소에 추가
+        String key = studentId + ":" + courseName; // 고유 키 생성
+        tempGrades.put(key, grade.toUpperCase());
+
+        // JTable 업데이트
+        tableModel.setValueAt(grade.toUpperCase(), selectedRow, 3); // 성적 열에 반영
+
+        // 확인 메시지
+        JOptionPane.showMessageDialog(this, "성적이 저장되었으며, 화면에 반영되었습니다. 저장 버튼을 눌러 파일에 반영하세요.", "Info", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_addActionPerformed
 
     /**
      * @param args the command line arguments
@@ -326,29 +516,18 @@ public class Professor_Management extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JTable S_list;
+    private javax.swing.JButton add;
+    private javax.swing.JButton before;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSpinner jSpinner1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTable jTable2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JComboBox<String> lectureName;
+    private javax.swing.JButton refresh;
+    private javax.swing.JButton save;
+    private javax.swing.JButton search;
+    private javax.swing.JTextField searchfield;
     // End of variables declaration//GEN-END:variables
 }

@@ -3,12 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package deu.UIS.Login;
+
 /**
  *
  * @author YangJinWon
  */
 public class Login extends javax.swing.JFrame {
-        private final LoginController loginController;
+
+    private final LoginController loginController;
 
     /**
      * Creates new form NewuJFrame
@@ -21,10 +23,12 @@ public class Login extends javax.swing.JFrame {
         setupListeners();
         this.loginController = new LoginController(this); // 컨트롤러 생성
     }
+
     private void setupListeners() {
         GUIUtils.addEnterKeyListener(ID_input, Login); // 엔터키 리스너 등록
         GUIUtils.addEnterKeyListener(PW_input, Login);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -148,14 +152,14 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_ID_inputActionPerformed
 
     private void LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LoginActionPerformed
-  // 입력 필드에서 ID와 비밀번호 가져오기
+        // 입력 필드에서 ID와 비밀번호 가져오기
         String enteredId = ID_input.getText().trim();
         String enteredPassword = new String(PW_input.getPassword()).trim();
         loginController.handleLogin(enteredId, enteredPassword);
     }//GEN-LAST:event_LoginActionPerformed
 
     private void SignUpPageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignUpPageActionPerformed
-       // 회원가입 페이지로 이동
+        // 회원가입 페이지로 이동
         dispose();
         SignUp signUpPage = new SignUp();
         signUpPage.setVisible(true);
@@ -187,7 +191,7 @@ public class Login extends javax.swing.JFrame {
         }
         //</editor-fold>
         java.awt.EventQueue.invokeLater(() -> new Login().setVisible(true));
-      
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

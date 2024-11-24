@@ -22,8 +22,8 @@ import javax.swing.table.DefaultTableModel;
  */
 public class AddLecture extends javax.swing.JFrame {
 
-    private static final String CLASS_INFO_PATH = System.getProperty("user.home") + "/data/강좌정보.txt";
-    private static final String LECTURE_INFO_PATH = System.getProperty("user.home") + "/data/lecture.txt";
+    private static final String CLASS_INFO_PATH = Paths.get(System.getProperty("user.home"), "data", "CourseInfo.txt").toString();
+    private static final String LECTURE_INFO_PATH = Paths.get(System.getProperty("user.home"), "data", "lecture.txt").toString();
     private Class_Management parent; // Class_Management 참조
 
     // 기본 생성자
@@ -448,66 +448,66 @@ public class AddLecture extends javax.swing.JFrame {
 
     private void modifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modifyActionPerformed
         int selectedRow = jTable1.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "수정할 강좌를 선택하세요.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    String courseNumber = jTable1.getValueAt(selectedRow, 0).toString();
-
-    // 강의 개설 여부 확인
-    if (isLectureCreated(courseNumber)) {
-        JOptionPane.showMessageDialog(this, "이 강좌는 이미 강의가 개설된 적이 있어 수정할 수 없습니다.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    // 기존 값 가져오기
-    String currentCourseName = jTable1.getValueAt(selectedRow, 1).toString();
-    String currentDepartment = jTable1.getValueAt(selectedRow, 2).toString();
-    String currentCredits = jTable1.getValueAt(selectedRow, 3).toString();
-
-    // 새 값 입력받기
-    String newCourseName = JOptionPane.showInputDialog(this, "새 강좌 이름을 입력하세요:", currentCourseName);
-    if (newCourseName == null || newCourseName.trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "강좌 이름을 입력해야 합니다.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    String newDepartment = JOptionPane.showInputDialog(this, "새 담당 학과를 입력하세요:", currentDepartment);
-    if (newDepartment == null || newDepartment.trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "담당 학과를 입력해야 합니다.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    String newCredits = JOptionPane.showInputDialog(this, "새 학점 수를 입력하세요:", currentCredits);
-    if (newCredits == null || newCredits.trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "학점 수를 입력해야 합니다.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    // 강좌 정보 파일에서 수정
-    try {
-        List<String> lines = Files.readAllLines(Paths.get(CLASS_INFO_PATH));
-        List<String> updatedLines = new ArrayList<>();
-
-        for (String line : lines) {
-            if (line.contains("강좌 번호: " + courseNumber)) {
-                String[] parts = line.split(",");
-                parts[1] = " 강좌 이름: " + newCourseName;  // 새 강좌 이름
-                parts[2] = " 담당 학과: " + newDepartment; // 새 담당 학과
-                parts[3] = " 학점 수: " + newCredits;     // 새 학점 수
-                updatedLines.add(String.join(",", parts)); // 수정된 내용으로 추가
-            } else {
-                updatedLines.add(line); // 수정 대상이 아닌 경우 유지
-            }
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "수정할 강좌를 선택하세요.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        Files.write(Paths.get(CLASS_INFO_PATH), updatedLines);
-        JOptionPane.showMessageDialog(this, "강좌 정보가 수정되었습니다.");
-        loadCoursesToTable(); // 테이블 갱신
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "강좌 수정 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
+        String courseNumber = jTable1.getValueAt(selectedRow, 0).toString();
+
+        // 강의 개설 여부 확인
+        if (isLectureCreated(courseNumber)) {
+            JOptionPane.showMessageDialog(this, "이 강좌는 이미 강의가 개설된 적이 있어 수정할 수 없습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 기존 값 가져오기
+        String currentCourseName = jTable1.getValueAt(selectedRow, 1).toString();
+        String currentDepartment = jTable1.getValueAt(selectedRow, 2).toString();
+        String currentCredits = jTable1.getValueAt(selectedRow, 3).toString();
+
+        // 새 값 입력받기
+        String newCourseName = JOptionPane.showInputDialog(this, "새 강좌 이름을 입력하세요:", currentCourseName);
+        if (newCourseName == null || newCourseName.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "강좌 이름을 입력해야 합니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String newDepartment = JOptionPane.showInputDialog(this, "새 담당 학과를 입력하세요:", currentDepartment);
+        if (newDepartment == null || newDepartment.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "담당 학과를 입력해야 합니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String newCredits = JOptionPane.showInputDialog(this, "새 학점 수를 입력하세요:", currentCredits);
+        if (newCredits == null || newCredits.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "학점 수를 입력해야 합니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // 강좌 정보 파일에서 수정
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(CLASS_INFO_PATH));
+            List<String> updatedLines = new ArrayList<>();
+
+            for (String line : lines) {
+                if (line.contains("강좌 번호: " + courseNumber)) {
+                    String[] parts = line.split(",");
+                    parts[1] = " 강좌 이름: " + newCourseName;  // 새 강좌 이름
+                    parts[2] = " 담당 학과: " + newDepartment; // 새 담당 학과
+                    parts[3] = " 학점 수: " + newCredits;     // 새 학점 수
+                    updatedLines.add(String.join(",", parts)); // 수정된 내용으로 추가
+                } else {
+                    updatedLines.add(line); // 수정 대상이 아닌 경우 유지
+                }
+            }
+
+            Files.write(Paths.get(CLASS_INFO_PATH), updatedLines);
+            JOptionPane.showMessageDialog(this, "강좌 정보가 수정되었습니다.");
+            loadCoursesToTable(); // 테이블 갱신
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "강좌 수정 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_modifyActionPerformed
 
     private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed

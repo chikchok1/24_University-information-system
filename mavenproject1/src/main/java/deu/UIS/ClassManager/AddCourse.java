@@ -7,6 +7,7 @@ package deu.UIS.ClassManager;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  *
@@ -14,15 +15,14 @@ import java.io.IOException;
  */
 public class AddCourse extends javax.swing.JFrame {
 
-    
-    private static final String CLASS_INFO_PATH = System.getProperty("user.home") + "/data/강좌정보.txt";
+    private static final String CLASS_INFO_PATH = Paths.get(System.getProperty("user.home"), "data", "CourseInfo.txt").toString();
     private Class_Management parent; // Class_Management 참조
 
     // 기본 생성자
     public AddCourse() {
         this(null); // null을 기본값으로 사용
     }
-    
+
     public AddCourse(Class_Management parent) {
         this.parent = parent; // 참조 저장
         initComponents();
@@ -235,7 +235,7 @@ public class AddCourse extends javax.swing.JFrame {
         }
 
         dispose();
-                      
+
     }//GEN-LAST:event_addActionPerformed
 
     private void nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameActionPerformed
@@ -255,8 +255,8 @@ public class AddCourse extends javax.swing.JFrame {
     }//GEN-LAST:event_infoActionPerformed
 
     private void beforeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beforeActionPerformed
-       dispose();
-       new Class_Management().setVisible(true);
+        dispose();
+        new Class_Management().setVisible(true);
     }//GEN-LAST:event_beforeActionPerformed
 
     /**

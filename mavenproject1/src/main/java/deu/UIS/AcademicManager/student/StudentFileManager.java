@@ -4,7 +4,6 @@
  */
 package deu.UIS.AcademicManager.student;
 
-import deu.UIS.AcademicManager.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,55 +16,54 @@ public class StudentFileManager {
         this.filePath = filePath;
     }
 
-  public List<Student> readStudents() throws IOException {
-    List<Student> students = new ArrayList<>();
-    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-        String line;
-        String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "", password = "";
+    public List<Student> readStudents() throws IOException {
+        List<Student> students = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "", password = "";
 
-        while ((line = reader.readLine()) != null) {
-            line = line.trim();
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
 
-            if (line.startsWith("학과: ")) {
-                department = line.substring(4);
-            } else if (line.startsWith("학번: ")) {
-                studentNumber = line.substring(4);
-            } else if (line.startsWith("이름: ")) {
-                name = line.substring(4);
-            } else if (line.startsWith("학년: ")) {
-                grade = line.substring(4);
-            } else if (line.startsWith("생년월일: ")) {
-                birthDate = line.substring(6);
-            } else if (line.startsWith("휴대폰: ")) {
-                phone = line.substring(5);
-            } else if (line.startsWith("비밀번호: ")) {
-                password = line.substring(6); // 비밀번호 읽기
-            } else if (line.isEmpty()) {
-                if (!department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()
-                        && !grade.isEmpty() && !birthDate.isEmpty() && !phone.isEmpty()) {
-                    Student student = new Student(name, studentNumber, department, grade, birthDate, phone);
-                    student.setPassword(password); // 비밀번호 설정
-                    students.add(student);
+                if (line.startsWith("학과: ")) {
+                    department = line.substring(4);
+                } else if (line.startsWith("학번: ")) {
+                    studentNumber = line.substring(4);
+                } else if (line.startsWith("이름: ")) {
+                    name = line.substring(4);
+                } else if (line.startsWith("학년: ")) {
+                    grade = line.substring(4);
+                } else if (line.startsWith("생년월일: ")) {
+                    birthDate = line.substring(6);
+                } else if (line.startsWith("휴대폰: ")) {
+                    phone = line.substring(5);
+                } else if (line.startsWith("비밀번호: ")) {
+                    password = line.substring(6); // 비밀번호 읽기
+                } else if (line.isEmpty()) {
+                    if (!department.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()
+                            && !grade.isEmpty() && !birthDate.isEmpty() && !phone.isEmpty()) {
+                        Student student = new Student(name, studentNumber, department, grade, birthDate, phone);
+                        student.setPassword(password); // 비밀번호 설정
+                        students.add(student);
+                    }
+                    department = studentNumber = name = grade = birthDate = phone = password = ""; // 초기화
                 }
-                department = studentNumber = name = grade = birthDate = phone = password = ""; // 초기화
             }
         }
+        return students;
     }
-    return students;
-}
-
 
     public synchronized void writeStudents(List<Student> students) throws IOException {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-        for (Student student : students) {
-            writer.write("이름: " + student.getName() + "\n");
-            writer.write("학번: " + student.getStudentNumber() + "\n");
-            writer.write("학과: " + student.getDepartment() + "\n");
-            writer.write("학년: " + student.getGrade() + "\n");
-            writer.write("생년월일: " + student.getBirthDate() + "\n");
-            writer.write("휴대폰: " + student.getPhone() + "\n");
-            writer.write("비밀번호: " + student.getPassword() + "\n"); // 비밀번호 저장
-            writer.write("\n"); // 한 학생의 데이터 끝
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (Student student : students) {
+                writer.write("학번: " + student.getStudentNumber() + "\n");
+                writer.write("이름: " + student.getName() + "\n");
+                writer.write("학과: " + student.getDepartment() + "\n");
+                writer.write("학년: " + student.getGrade() + "\n");
+                writer.write("생년월일: " + student.getBirthDate() + "\n");
+                writer.write("휴대폰: " + student.getPhone() + "\n");
+                writer.write("비밀번호: " + student.getPassword() + "\n"); // 비밀번호 저장
+                writer.write("\n"); // 한 학생의 데이터 끝
             }
         }
     }

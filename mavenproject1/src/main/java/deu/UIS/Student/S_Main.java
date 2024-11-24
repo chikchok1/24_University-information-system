@@ -24,7 +24,7 @@ public class S_Main extends javax.swing.JFrame {
     
  private void displayUserInfo() {
         UserSession session = UserSession.getInstance();
-        System.out.println("환영합니다, " + session.getUserName() + " (" + session.getUserId() + ")");
+        //System.out.println("환영합니다, " + session.getUserName() + " (" + session.getUserId() + ")");
     }
     /**
      * This method is called from within the constructor to initialize the form.

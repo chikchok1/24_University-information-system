@@ -12,6 +12,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -22,13 +23,15 @@ import javax.swing.table.DefaultTableModel;
  * @author YangJinWon
  */
 public class A_Management extends javax.swing.JFrame {
-    private static final String FILE_PATH = System.getProperty("user.home") + "\\data\\Academic_info.txt";
+
+    private static final String FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "Academic_info.txt").toString();
     private final DefaultTableModel tableModel;
+
     /**
      * Creates new form Academic_Management
      */
     public A_Management() {
-     initComponents();
+        initComponents();
         tableModel = (DefaultTableModel) S_list.getModel();
         loadAcademicInfo(); // 데이터를 파일에서 불러오기
         addMouseListenerToSList(); // 테이블에 MouseListener 추가
@@ -36,21 +39,21 @@ public class A_Management extends javax.swing.JFrame {
     // 학생 정보를 파일에서 불러와 테이블에 추가하는 메서드
 
     private void loadAcademicInfo() {
-       List<AcademicInfo> academicInfoList = readAcademicInfoFromFile();
-    tableModel.setRowCount(0); // 기존 데이터 초기화
+        List<AcademicInfo> academicInfoList = readAcademicInfoFromFile();
+        tableModel.setRowCount(0); // 기존 데이터 초기화
 
-    for (AcademicInfo info : academicInfoList) {
-        tableModel.addRow(new Object[]{
-            info.getName(),
-            info.getAcademicNumber(),
-            info.getBirthDate(),
-            info.getPhone() // 비밀번호 제외
-        });
-    }
+        for (AcademicInfo info : academicInfoList) {
+            tableModel.addRow(new Object[]{
+                info.getName(),
+                info.getAcademicNumber(),
+                info.getBirthDate(),
+                info.getPhone() // 비밀번호 제외
+            });
+        }
     }
 
     private void addMouseListenerToSList() {
-         S_list.addMouseListener(new MouseAdapter() {
+        S_list.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 int selectedRow = S_list.getSelectedRow();
                 if (selectedRow != -1) {
@@ -66,21 +69,21 @@ public class A_Management extends javax.swing.JFrame {
     private void populateAcademicDetails(String academicNumber, String name) {
         List<AcademicInfo> academicInfoList = readAcademicInfoFromFile();
 
-    DefaultTableModel infoModel = new DefaultTableModel(
-        new String[]{"이름", "학사담당자번호", "생년월일", "휴대폰"}, 0);
-    S_info.setModel(infoModel);
+        DefaultTableModel infoModel = new DefaultTableModel(
+                new String[]{"이름", "학사담당자번호", "생년월일", "휴대폰"}, 0);
+        S_info.setModel(infoModel);
 
-    for (AcademicInfo info : academicInfoList) {
-        if (info.getAcademicNumber().equals(academicNumber) && info.getName().equals(name)) {
-            infoModel.addRow(new Object[]{
-                info.getName(),
-                info.getAcademicNumber(),
-                info.getBirthDate(),
-                info.getPhone() // 비밀번호 제외
-            });
-            break;
+        for (AcademicInfo info : academicInfoList) {
+            if (info.getAcademicNumber().equals(academicNumber) && info.getName().equals(name)) {
+                infoModel.addRow(new Object[]{
+                    info.getName(),
+                    info.getAcademicNumber(),
+                    info.getBirthDate(),
+                    info.getPhone() // 비밀번호 제외
+                });
+                break;
+            }
         }
-    }
     }
 
     /**
@@ -404,54 +407,54 @@ public class A_Management extends javax.swing.JFrame {
 
     private void search_buttonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search_buttonActionPerformed
         String keyword = S_search.getText().trim(); // 검색 필드에서 키워드 가져오기
-    String searchType = (String) numberBox.getSelectedItem(); // numberBox에서 선택된 값 가져오기
+        String searchType = (String) numberBox.getSelectedItem(); // numberBox에서 선택된 값 가져오기
 
-    if (keyword.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "검색어를 입력해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
-    DefaultTableModel model = (DefaultTableModel) S_list.getModel();
-    model.setRowCount(0); // 테이블 초기화
-
-    try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-        String line;
-        String studentNumber = "", name = "";
-
-        while ((line = reader.readLine()) != null) {
-            line = line.trim();
-
-            if (line.startsWith("학사담당자번호: ")) {
-                studentNumber = line.substring(8).trim(); // "학사담당자번호: " 이후 값 추출
-            } else if (line.startsWith("이름: ")) {
-                name = line.substring(4).trim(); // "이름: " 이후 값 추출
-            } else if (line.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()) {
-                // 검색 타입에 따라 매칭
-                boolean matches = false;
-                if ("학사담당자번호".equals(searchType)) {
-                    matches = keyword.equals(studentNumber); // 학사담당자번호 매칭
-                } else if ("이름".equals(searchType)) {
-                    matches = keyword.equalsIgnoreCase(name); // 이름 매칭 (대소문자 무시)
-                }
-
-                if (matches) {
-                    model.addRow(new Object[]{name, studentNumber});
-                }
-
-                // 데이터 초기화
-                studentNumber = "";
-                name = "";
-            }
+        if (keyword.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "검색어를 입력해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
         }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "학사 담당자 정보 검색 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
-    }
 
-    // 검색 결과가 없을 경우 알림
-    if (model.getRowCount() == 0) {
-        JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.", "검색", JOptionPane.INFORMATION_MESSAGE);
-    }
+        String filePath = Paths.get(System.getProperty("user.home"), "data", "Academic_info.txt").toString();
+        DefaultTableModel model = (DefaultTableModel) S_list.getModel();
+        model.setRowCount(0); // 테이블 초기화
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            String studentNumber = "", name = "";
+
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+
+                if (line.startsWith("학사담당자번호: ")) {
+                    studentNumber = line.substring(8).trim(); // "학사담당자번호: " 이후 값 추출
+                } else if (line.startsWith("이름: ")) {
+                    name = line.substring(4).trim(); // "이름: " 이후 값 추출
+                } else if (line.isEmpty() && !studentNumber.isEmpty() && !name.isEmpty()) {
+                    // 검색 타입에 따라 매칭
+                    boolean matches = false;
+                    if ("학사담당자번호".equals(searchType)) {
+                        matches = keyword.equals(studentNumber); // 학사담당자번호 매칭
+                    } else if ("이름".equals(searchType)) {
+                        matches = keyword.equalsIgnoreCase(name); // 이름 매칭 (대소문자 무시)
+                    }
+
+                    if (matches) {
+                        model.addRow(new Object[]{name, studentNumber});
+                    }
+
+                    // 데이터 초기화
+                    studentNumber = "";
+                    name = "";
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "학사 담당자 정보 검색 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        // 검색 결과가 없을 경우 알림
+        if (model.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "검색 결과가 없습니다.", "검색", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_search_buttonActionPerformed
 
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
@@ -491,7 +494,7 @@ public class A_Management extends javax.swing.JFrame {
     }//GEN-LAST:event_birthActionPerformed
 
     private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
-int selectedRow = S_list.getSelectedRow();
+        int selectedRow = S_list.getSelectedRow();
 
         if (selectedRow != -1) {
             String selectedAcademicNumber = (String) S_list.getValueAt(selectedRow, 1);
@@ -520,7 +523,7 @@ int selectedRow = S_list.getSelectedRow();
         String selectedStudentNumber = (String) S_list.getValueAt(selectedRow, 1); // 학사 담당자 번호
 
         // 파일에서 선택된 학생의 세부 정보를 가져와서 입력 필드에 채웁니다.
-        String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
+        String filePath = Paths.get(System.getProperty("user.home"), "data", "Academic_info.txt").toString();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -567,70 +570,74 @@ int selectedRow = S_list.getSelectedRow();
     }//GEN-LAST:event_refreshActionPerformed
 
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
-       int selectedRow = S_list.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "수정할 학사담당자를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-
-    // 입력 필드에서 수정된 데이터 가져오기
-    String updatedName = Name.getText().trim();
-    String updatedPhone = Phone.getText().trim();
-    String birthFirst = birth.getText().trim();
-    String birthLast = birthlast.getText().trim();
-    String updatedBirthDate = birthFirst + "-" + birthLast;
-    String existingAcademicNumber = (String) S_list.getValueAt(selectedRow, 1); // 선택된 학사 담당자 번호
-
-    try {
-        // 입력 값 검증
-        AcademicValidator.validateInput(updatedName, updatedPhone, updatedBirthDate);
-
-        // 파일에서 데이터 읽기
-        List<AcademicInfo> academicInfoList = readAcademicInfoFromFile();
-        boolean isUpdated = false;
-
-        for (int i = 0; i < academicInfoList.size(); i++) {
-            AcademicInfo info = academicInfoList.get(i);
-            if (info.getAcademicNumber().equals(existingAcademicNumber)) {
-                // 수정된 데이터로 갱신
-                academicInfoList.set(i, new AcademicInfo(updatedName, existingAcademicNumber, updatedBirthDate, updatedPhone));
-                isUpdated = true;
-                break;
-            }
-        }
-
-        if (!isUpdated) {
-            JOptionPane.showMessageDialog(this, "수정할 학사 담당자 정보를 찾을 수 없습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+        int selectedRow = S_list.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "수정할 학사담당자를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // 파일에 수정된 데이터 저장
-        saveAcademicInfoToFile(academicInfoList);
+        // 입력 필드에서 수정된 데이터 가져오기
+        String updatedName = Name.getText().trim();
+        String updatedPhone = Phone.getText().trim();
+        String birthFirst = birth.getText().trim();
+        String birthLast = birthlast.getText().trim();
+        String updatedBirthDate = birthFirst + "-" + birthLast;
+        String existingAcademicNumber = (String) S_list.getValueAt(selectedRow, 1); // 선택된 학사 담당자 번호
 
-        // 테이블 갱신
-        loadAcademicInfo();
+        try {
+            // 입력 값 검증
+            AcademicValidator.validateInput(updatedName, updatedPhone, updatedBirthDate);
 
-        // 성공 메시지
-        JOptionPane.showMessageDialog(this, "학사 담당자 정보가 성공적으로 수정되었습니다.");
+            // 파일에서 데이터 읽기
+            List<AcademicInfo> academicInfoList = readAcademicInfoFromFile();
+            boolean isUpdated = false;
 
-        // 입력 필드 초기화
-        clearInputFields();
-    } catch (IllegalArgumentException e) {
-        JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
+            for (int i = 0; i < academicInfoList.size(); i++) {
+                AcademicInfo info = academicInfoList.get(i);
+                if (info.getAcademicNumber().equals(existingAcademicNumber)) {
+                    // 수정된 데이터로 갱신
+                    academicInfoList.set(i, new AcademicInfo(updatedName, existingAcademicNumber, updatedBirthDate, updatedPhone));
+                    isUpdated = true;
+                    break;
+                }
+            }
+
+            if (!isUpdated) {
+                JOptionPane.showMessageDialog(this, "수정할 학사 담당자 정보를 찾을 수 없습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 파일에 수정된 데이터 저장
+            saveAcademicInfoToFile(academicInfoList);
+
+            // 테이블 갱신
+            loadAcademicInfo();
+
+            // 성공 메시지
+            JOptionPane.showMessageDialog(this, "학사 담당자 정보가 성공적으로 수정되었습니다.");
+
+            // 입력 필드 초기화
+            clearInputFields();
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_saveActionPerformed
-private List<AcademicInfo> readAcademicInfoFromFile() {
+    private List<AcademicInfo> readAcademicInfoFromFile() {
         List<AcademicInfo> academicInfoList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
             String line, name = "", academicNumber = "", birthDate = "", phone = "";
 
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
-                if (line.startsWith("학사담당자번호: ")) academicNumber = line.substring(8).trim();
-                else if (line.startsWith("이름: ")) name = line.substring(4).trim();
-                else if (line.startsWith("생년월일: ")) birthDate = line.substring(6).trim();
-                else if (line.startsWith("휴대폰: ")) phone = line.substring(5).trim();
-                else if (line.isEmpty() && !name.isEmpty() && !academicNumber.isEmpty() && !birthDate.isEmpty() && !phone.isEmpty()) {
+                if (line.startsWith("학사담당자번호: ")) {
+                    academicNumber = line.substring(8).trim();
+                } else if (line.startsWith("이름: ")) {
+                    name = line.substring(4).trim();
+                } else if (line.startsWith("생년월일: ")) {
+                    birthDate = line.substring(6).trim();
+                } else if (line.startsWith("휴대폰: ")) {
+                    phone = line.substring(5).trim();
+                } else if (line.isEmpty() && !name.isEmpty() && !academicNumber.isEmpty() && !birthDate.isEmpty() && !phone.isEmpty()) {
                     academicInfoList.add(new AcademicInfo(name, academicNumber, birthDate, phone));
                     name = academicNumber = birthDate = phone = "";
                 }
@@ -640,20 +647,22 @@ private List<AcademicInfo> readAcademicInfoFromFile() {
         }
         return academicInfoList;
     }
-private void saveAcademicInfoToFile(List<AcademicInfo> academicInfoList) {
+
+    private void saveAcademicInfoToFile(List<AcademicInfo> academicInfoList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-        for (AcademicInfo info : academicInfoList) {
-            writer.write("학사담당자번호: " + info.getAcademicNumber() + "\n");
-            writer.write("이름: " + info.getName() + "\n");
-            writer.write("생년월일: " + info.getBirthDate() + "\n");
-            writer.write("휴대폰: " + info.getPhone() + "\n");
-            writer.write("비밀번호: " + info.getPassword() + "\n\n"); // 비밀번호 저장
+            for (AcademicInfo info : academicInfoList) {
+                writer.write("학사담당자번호: " + info.getAcademicNumber() + "\n");
+                writer.write("이름: " + info.getName() + "\n");
+                writer.write("생년월일: " + info.getBirthDate() + "\n");
+                writer.write("휴대폰: " + info.getPhone() + "\n");
+                writer.write("비밀번호: " + info.getPassword() + "\n\n"); // 비밀번호 저장
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 저장 오류: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "파일 저장 오류: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
-    }
-private String generateNewAcademicNumber(List<AcademicInfo> academicInfoList) {
+
+    private String generateNewAcademicNumber(List<AcademicInfo> academicInfoList) {
         int maxNumber = academicInfoList.stream()
                 .mapToInt(info -> Integer.parseInt(info.getAcademicNumber().substring(1)))
                 .max()
@@ -665,7 +674,7 @@ private String generateNewAcademicNumber(List<AcademicInfo> academicInfoList) {
         DefaultTableModel infoModel = (DefaultTableModel) S_info.getModel();
         infoModel.setRowCount(0);
 
-        String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
+        String filePath = Paths.get(System.getProperty("user.home"), "data", "Academic_info.txt").toString();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -715,7 +724,7 @@ private String generateNewAcademicNumber(List<AcademicInfo> academicInfoList) {
 
     private void updateStudentInfoInFile(String updatedName, String updatedStudentNumber, String updatedDepartment,
             String updatedGrade, String updatedBirthDate, String updatedPhone) {
-        String filePath = System.getProperty("user.home") + "\\data\\Academic_info.txt";
+        String filePath = Paths.get(System.getProperty("user.home"), "data", "Academic_info.txt").toString();
         StringBuilder updatedContent = new StringBuilder();
 
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {

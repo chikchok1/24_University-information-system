@@ -20,6 +20,7 @@ public class LoginService {
     private static final String PROFESSOR_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "professor_info.txt").toString();
     private static final String ACADEMIC_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "Academic_info.txt").toString();
     private static final String COURSE_MANAGER_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "Class_Manager.txt").toString();
+    private static final String ADMIN_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "user_data.txt").toString(); // Admin용 파일 경로
 
     /**
      * 사용자 인증 메서드: ID와 비밀번호가 각 역할의 파일에 존재하는지 확인.
@@ -37,38 +38,64 @@ public class LoginService {
         if (enteredId.startsWith("G")) { // 수업담당자
             return FileManager.verifyUserCredentials(COURSE_MANAGER_FILE_PATH, "수업담당자번호: ", "비밀번호: ", enteredId, enteredPassword);
         }
+        if (enteredId.equals("Admin")) { // Admin
+            return verifyAdminCredentials(enteredPassword);
+        }
         return false; // 알 수 없는 역할
     }
 
+    private static boolean verifyAdminCredentials(String enteredPassword) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ADMIN_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+
+                // ID와 Password를 한 줄에서 처리
+                if (line.equals("ID: Admin, Password: " + enteredPassword)) {
+                    return true; // Admin 인증 성공
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("파일 읽기 오류: " + e.getMessage());
+        }
+        return false; // Admin 인증 실패
+    }
+
     public static String getUserNameForId(String userId) {
+
+        if (userId.equals("Admin")) {
+            return "Admin"; // Admin의 이름은 고정
+        }
+
         String filePath = determineFilePath(userId); // ID에 따른 파일 경로 결정
         if (filePath == null) {
             System.err.println("잘못된 ID 형식: " + userId);
             return null; // 올바르지 않은 ID 형식
         }
 
-        String namePrefix = "이름: ";
-        String idPrefix = getIdPrefix(userId);
-
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
-            boolean isIdMatched = false;
-            String name = null;
+            String currentName = null;
+            boolean isMatchingBlock = false; // 현재 블록이 ID와 일치하는지 여부
 
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
 
-                // ID 매칭 확인
-                if (line.startsWith(idPrefix) && line.contains(userId)) {
-                    isIdMatched = true; // 현재 ID와 매칭
-                } else if (line.startsWith(idPrefix)) {
-                    isIdMatched = false; // 다른 ID가 시작되면 매칭 해제
+                // ID와 매칭 확인 (수업담당자, 학사담당자, 학생, 교수 모두 처리)
+                if (line.contains(userId)) {
+                    isMatchingBlock = true; // ID와 일치하는 블록 시작
+                } else if (line.isEmpty()) {
+                    isMatchingBlock = false; // 빈 줄로 블록 종료
                 }
 
-                // 이름 추출
-                if (line.startsWith(namePrefix) && isIdMatched) {
-                    name = line.substring(namePrefix.length()).trim();
-                    return name; // 매칭된 ID와 이름 반환
+                // 이름 찾기
+                if (line.startsWith("이름: ") && isMatchingBlock) {
+                    currentName = line.substring("이름: ".length()).trim();
+                }
+
+                // ID와 이름 모두 찾으면 반환
+                if (isMatchingBlock && currentName != null) {
+                    return currentName;
                 }
             }
         } catch (IOException e) {
@@ -128,6 +155,9 @@ public class LoginService {
         }
         if (userId.startsWith("G")) {
             return "COURSE_MANAGER"; // 수업담당자
+        }
+        if (userId.equals("Admin")) {
+            return "ADMIN"; // Admin 역할
         }
         return "UNKNOWN"; // 알 수 없는 역할
     }

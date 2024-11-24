@@ -3,7 +3,6 @@
      * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
      */
     package deu.UIS.Admin.Academic_Manager;
-import deu.UIS.Admin.*;
     import java.util.List;
     import javax.swing.table.DefaultTableModel;
 

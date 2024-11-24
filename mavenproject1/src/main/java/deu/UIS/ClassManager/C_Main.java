@@ -24,7 +24,7 @@ public class C_Main extends javax.swing.JFrame {
 
     private void displayUserInfo() {
         UserSession session = UserSession.getInstance();
-        System.out.println("환영합니다, " + session.getUserName() + " (" + session.getUserId() + ")");
+        //System.out.println("환영합니다, " + session.getUserName() + " (" + session.getUserId() + ")");
     }
 
     /**
@@ -41,6 +41,7 @@ public class C_Main extends javax.swing.JFrame {
         LogOut = new javax.swing.JButton();
         ChangePassword = new javax.swing.JButton();
         AddLecture = new javax.swing.JButton();
+        Bill = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -75,27 +76,37 @@ public class C_Main extends javax.swing.JFrame {
             }
         });
 
+        Bill.setText("수강료 청구서");
+        Bill.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BillActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(45, 45, 45)
-                .addComponent(ChangePassword)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(LogOut)
-                .addGap(45, 45, 45))
             .addGroup(layout.createSequentialGroup()
+                .addGap(45, 45, 45)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(121, 121, 121)
-                        .addComponent(Title))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(76, 76, 76)
+                                .addComponent(Title))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(AddCourse)
+                                .addGap(26, 26, 26)
+                                .addComponent(AddLecture)
+                                .addGap(18, 18, 18)
+                                .addComponent(Bill)))
+                        .addContainerGap(45, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addComponent(AddCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(54, 54, 54)
-                        .addComponent(AddLecture, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(70, Short.MAX_VALUE))
+                        .addComponent(ChangePassword)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(LogOut)
+                        .addGap(45, 45, 45))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -105,7 +116,8 @@ public class C_Main extends javax.swing.JFrame {
                 .addGap(57, 57, 57)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(AddCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(AddLecture, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(AddLecture, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Bill, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(LogOut)
@@ -136,6 +148,11 @@ public class C_Main extends javax.swing.JFrame {
         dispose();
         new AddLecture().setVisible(true);
     }//GEN-LAST:event_AddLectureActionPerformed
+
+    private void BillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BillActionPerformed
+        dispose();
+        new ClassBill().setVisible(true);
+    }//GEN-LAST:event_BillActionPerformed
 
     /**
      * @param args the command line arguments
@@ -175,6 +192,7 @@ public class C_Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddCourse;
     private javax.swing.JButton AddLecture;
+    private javax.swing.JButton Bill;
     private javax.swing.JButton ChangePassword;
     private javax.swing.JButton LogOut;
     private javax.swing.JLabel Title;

@@ -4,8 +4,6 @@
  */
 package deu.UIS.Admin.Class_Manager;
 
-import deu.UIS.Admin.*;
-
 public class ClassManager {
     private String name;
     private String classNumber;

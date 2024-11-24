@@ -4,7 +4,6 @@
  */
 package deu.UIS.AcademicManager.professor;
 
-import deu.UIS.AcademicManager.*;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 

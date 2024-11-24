@@ -15,7 +15,7 @@ import java.nio.file.*;
  */
 public class Class_Management extends javax.swing.JFrame {
 
-    private static final String CLASS_INFO_PATH = Paths.get(System.getProperty("user.home"), "data", "강좌정보.txt").toString();
+    private static final String CLASS_INFO_PATH = Paths.get(System.getProperty("user.home"), "data", "CourseInfo.txt").toString();
 
     /**
      * Creates new form Employee_Management

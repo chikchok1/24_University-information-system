@@ -4,8 +4,6 @@
  */
 package deu.UIS.AcademicManager.student;
 
-import deu.UIS.AcademicManager.*;
-
 public class Student {
     private String name;
     private String studentNumber;

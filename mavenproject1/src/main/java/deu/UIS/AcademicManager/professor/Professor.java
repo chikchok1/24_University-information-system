@@ -4,8 +4,6 @@
  */
 package deu.UIS.AcademicManager.professor;
 
-import deu.UIS.AcademicManager.*;
-
 /**
  *
  * @author YangJinWon

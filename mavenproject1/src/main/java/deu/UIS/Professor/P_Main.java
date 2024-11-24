@@ -4,7 +4,9 @@
  */
 package deu.UIS.Professor;
 
+import deu.UIS.ChangePassword.ChangePassword;
 import deu.UIS.Login.Login;
+import deu.UIS.Login.UserSession;
 
 /**
  *
@@ -17,6 +19,11 @@ public class P_Main extends javax.swing.JFrame {
      */
     public P_Main() {
         initComponents();
+        displayUserInfo();
+    }
+    private void displayUserInfo() {
+        UserSession session = UserSession.getInstance();
+       // System.out.println("환영합니다, " + session.getUserName() + " (" + session.getUserId() + ")");
     }
 
     /**
@@ -31,14 +38,14 @@ public class P_Main extends javax.swing.JFrame {
         Title = new javax.swing.JLabel();
         P_Course = new javax.swing.JButton();
         LogOut = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        changePassword = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         Title.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
         Title.setText("교수 메인페이지");
 
-        P_Course.setText("수강 관리");
+        P_Course.setText("출석부");
         P_Course.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 P_CourseActionPerformed(evt);
@@ -52,10 +59,10 @@ public class P_Main extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("출석부");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        changePassword.setText("비밀번호 변경");
+        changePassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                changePasswordActionPerformed(evt);
             }
         });
 
@@ -64,57 +71,53 @@ public class P_Main extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(55, 55, 55)
-                        .addComponent(P_Course)
-                        .addGap(36, 36, 36)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(89, 89, 89)
-                        .addComponent(Title)))
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addGap(89, 89, 89)
+                .addComponent(Title)
+                .addContainerGap(90, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(P_Course)
+                .addGap(118, 118, 118))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(changePassword)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(LogOut)
-                .addGap(15, 15, 15))
+                .addGap(39, 39, 39))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addComponent(Title)
-                .addGap(48, 48, 48)
+                .addGap(53, 53, 53)
+                .addComponent(P_Course)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(P_Course)
-                    .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 115, Short.MAX_VALUE)
-                .addComponent(LogOut)
-                .addGap(16, 16, 16))
+                    .addComponent(changePassword)
+                    .addComponent(LogOut))
+                .addGap(27, 27, 27))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void P_CourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_P_CourseActionPerformed
-
         // 교수 수강 관리 페이지로 이동
         this.dispose();  // 현재 메인 페이지 창 닫기
         new Professor_Management().setVisible(true);  // 교수 수강 관리 페이지 열기
     }//GEN-LAST:event_P_CourseActionPerformed
 
     private void LogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogOutActionPerformed
-        // TODO add your handling code here:
+       UserSession.getInstance().clearSession(); // 세션 초기화
         dispose();
         new Login().setVisible(true);
     }//GEN-LAST:event_LogOutActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
-        // 출석부 버튼 클릭 시 Professor_Lollbook 페이지로 이동
-        this.dispose();  // 현재 메인 페이지 창 닫기
-        new Professor_Lollbook().setVisible(true);  // 출석부 페이지 열기
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void changePasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changePasswordActionPerformed
+        // TODO add your handling code here:
+        new ChangePassword().setVisible(true);
+    }//GEN-LAST:event_changePasswordActionPerformed
 
     /**
      * @param args the command line arguments
@@ -156,6 +159,6 @@ public class P_Main extends javax.swing.JFrame {
     private javax.swing.JButton LogOut;
     private javax.swing.JButton P_Course;
     private javax.swing.JLabel Title;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton changePassword;
     // End of variables declaration//GEN-END:variables
 }
