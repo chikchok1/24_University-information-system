@@ -219,6 +219,9 @@ public class AddLecture extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        Day = new javax.swing.JComboBox<>();
+        Time = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -297,6 +300,21 @@ public class AddLecture extends javax.swing.JFrame {
         jLabel6.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
         jLabel6.setText("강의 목록");
 
+        jLabel7.setText("강의 시간");
+
+        Day.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "월요일", "화요일", "수요일", "목요일", "금요일" }));
+        Day.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DayActionPerformed(evt);
+            }
+        });
+
+        Time.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TimeActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -304,10 +322,6 @@ public class AddLecture extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(275, 275, 275)
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -324,27 +338,33 @@ public class AddLecture extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(delete)))))
                         .addGap(40, 40, 40))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(before)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(add))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(before)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(add)
+                        .addGap(494, 494, 494))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
                                     .addComponent(jLabel4)
                                     .addComponent(jLabel3))
+                                .addGap(6, 6, 6)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(professor, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(minStudent, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGap(6, 6, 6)
-                                        .addComponent(maxStudent, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                        .addGap(494, 494, 494))))
+                                    .addComponent(maxStudent, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(minStudent, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(professor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addGap(18, 18, 18)
+                                .addComponent(Day, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(Time, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(275, 275, 275)
+                                .addComponent(jLabel1)))
+                        .addGap(391, 391, 391))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -359,7 +379,7 @@ public class AddLecture extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(professor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -372,7 +392,12 @@ public class AddLecture extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(maxStudent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addGap(24, 24, 24)
+                .addGap(25, 25, 25)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(Day, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Time, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(before)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -387,50 +412,61 @@ public class AddLecture extends javax.swing.JFrame {
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         int selectedRow = jTable1.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "강좌를 선택하세요.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    if (selectedRow == -1) {
+        JOptionPane.showMessageDialog(this, "강좌를 선택하세요.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        // JTable에서 선택된 강좌 정보 가져오기
-        String courseNumber = jTable1.getValueAt(selectedRow, 0).toString();
-        String courseName = jTable1.getValueAt(selectedRow, 1).toString();
-        String courseDepartment = jTable1.getValueAt(selectedRow, 2).toString();
-        String courseCredits = jTable1.getValueAt(selectedRow, 3).toString();
+    // JTable에서 선택된 강좌 정보 가져오기
+    String courseNumber = jTable1.getValueAt(selectedRow, 0).toString();
+    String courseName = jTable1.getValueAt(selectedRow, 1).toString();
+    String courseDepartment = jTable1.getValueAt(selectedRow, 2).toString();
+    String courseCredits = jTable1.getValueAt(selectedRow, 3).toString();
 
-        // 추가 입력값 가져오기
-        String professorName = professor.getText().trim();
-        String minStudentCount = minStudent.getText().trim();
-        String maxStudentCount = maxStudent.getText().trim();
+    // 추가 입력값 가져오기
+    String professorName = professor.getText().trim();
+    String minStudentCount = minStudent.getText().trim();
+    String maxStudentCount = maxStudent.getText().trim();
+    String day = Day.getSelectedItem().toString(); // Day JComboBox에서 선택된 값
+    String time = Time.getText().trim(); // Time JTextField에서 입력된 값
 
-        // 입력값 확인
-        if (professorName.isEmpty() || minStudentCount.isEmpty() || maxStudentCount.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "모든 필드를 입력해주세요.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    // 입력값 확인
+    if (professorName.isEmpty() || minStudentCount.isEmpty() || maxStudentCount.isEmpty() || day.isEmpty() || time.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "모든 필드를 입력해주세요.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        // 강의 정보 문자열 생성
-        String lectureData = String.format("강좌 번호: %s, 강좌 이름: %s, 담당 학과: %s, 학점 수: %s, 담당 교수: %s, 최소 학생 수: %s, 최대 학생 수: %s",
-                courseNumber, courseName, courseDepartment, courseCredits, professorName, minStudentCount, maxStudentCount);
+    // 시간 형식 변환: "09:00-10:00" -> "09:00 - 10:00"
+    if (!time.matches("\\d{2}:\\d{2}-\\d{2}:\\d{2}")) {
+        JOptionPane.showMessageDialog(this, "시간 형식이 올바르지 않습니다. (예: 09:00-10:00)", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    time = time.replace("-", " - "); // "-"를 " - "로 변환
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LECTURE_INFO_PATH, true))) {
-            // 파일에 저장
-            writer.write(lectureData);
-            writer.newLine();
+    // 강의 정보 문자열 생성
+    String lectureData = String.format(
+            "강좌 번호: %s, 강좌 이름: %s, 담당 학과: %s, 학점 수: %s, 담당 교수: %s, 최소 학생 수: %s, 최대 학생 수: %s, 요일: %s, 시간: %s",
+            courseNumber, courseName, courseDepartment, courseCredits, professorName, minStudentCount, maxStudentCount, day, time);
 
-            // JTable2에 즉시 반영
-            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-            model.addRow(new Object[]{courseName, professorName, minStudentCount, maxStudentCount});
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(LECTURE_INFO_PATH, true))) {
+        // 파일에 저장
+        writer.write(lectureData);
+        writer.newLine();
 
-            JOptionPane.showMessageDialog(this, "강의 정보가 성공적으로 저장되고 테이블에 반영되었습니다!");
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        // JTable2에 즉시 반영
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        model.addRow(new Object[]{courseName, professorName, minStudentCount, maxStudentCount, day, time});
 
-        // 입력 필드 초기화
-        professor.setText("");
-        minStudent.setText("");
-        maxStudent.setText("");
+        JOptionPane.showMessageDialog(this, "강의 정보가 성공적으로 저장되고 테이블에 반영되었습니다!");
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    // 입력 필드 초기화
+    professor.setText("");
+    minStudent.setText("");
+    maxStudent.setText("");
+    Time.setText("");
     }//GEN-LAST:event_addActionPerformed
 
     private void professorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_professorActionPerformed
@@ -551,6 +587,14 @@ public class AddLecture extends javax.swing.JFrame {
 
     }//GEN-LAST:event_deleteActionPerformed
 
+    private void TimeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TimeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TimeActionPerformed
+
+    private void DayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DayActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DayActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -590,6 +634,8 @@ public class AddLecture extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> Day;
+    private javax.swing.JTextField Time;
     private javax.swing.JButton add;
     private javax.swing.JButton before;
     private javax.swing.JButton delete;
@@ -599,6 +645,7 @@ public class AddLecture extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;

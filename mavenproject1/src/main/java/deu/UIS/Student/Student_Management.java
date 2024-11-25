@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JOptionPane;
@@ -45,21 +46,40 @@ public class Student_Management extends javax.swing.JFrame {
         try (BufferedReader reader = new BufferedReader(new FileReader(LECTURE_FILE_PATH))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] lectureData = line.split(", ");
-                if (lectureData.length >= 7) {
-                    String courseNumber = lectureData[0].replace("강좌 번호: ", "").trim();
-                    String lectureName = lectureData[1].replace("강좌 이름: ", "").trim();
-                    String credits = lectureData[3].replace("학점 수: ", "").trim();
-                    String professor = lectureData[4].replace("담당 교수: ", "").trim();
-                    String maxStudents = lectureData[6].replace("최대 학생 수: ", "").trim();
+                // 기본값 초기화
+                String courseNumber = "미정";
+                String lectureName = "미정";
+                String credits = "0";
+                String professor = "미정";
+                String maxStudents = "0";
+                String currentStudents = "0";
+                String day = "미정"; // 요일 기본값
+                String time = "미정"; // 시간 기본값
 
-                    String currentStudents = "0"; // 기본값 설정
-                    if (lectureData.length > 7 && lectureData[7].contains("현재 학생 수: ")) {
-                        currentStudents = lectureData[7].replace("현재 학생 수: ", "").trim();
+                // 데이터를 쉼표로 나누고 필드별로 처리
+                String[] lectureData = line.split(", (?=[^:]+: )"); // 콜론과 공백을 기준으로 정확히 나눔
+                for (String field : lectureData) {
+                    if (field.startsWith("강좌 번호:")) {
+                        courseNumber = field.replace("강좌 번호: ", "").trim();
+                    } else if (field.startsWith("강좌 이름:")) {
+                        lectureName = field.replace("강좌 이름: ", "").trim();
+                    } else if (field.startsWith("학점 수:")) {
+                        credits = field.replace("학점 수: ", "").trim();
+                    } else if (field.startsWith("담당 교수:")) {
+                        professor = field.replace("담당 교수: ", "").trim();
+                    } else if (field.startsWith("최대 학생 수:")) {
+                        maxStudents = field.replace("최대 학생 수: ", "").trim();
+                    } else if (field.startsWith("현재 학생 수:")) {
+                        currentStudents = field.replace("현재 학생 수: ", "").trim();
+                    } else if (field.startsWith("요일:")) {
+                        day = field.replace("요일: ", "").trim();
+                    } else if (field.startsWith("시간:")) {
+                        time = field.replace("시간: ", "").trim();
                     }
-
-                    model.addRow(new Object[]{courseNumber, lectureName, credits, professor, maxStudents, currentStudents});
                 }
+
+                // JTable에 데이터 추가
+                model.addRow(new Object[]{courseNumber, lectureName, credits, professor, maxStudents, currentStudents, day, time});
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "강의 정보 파일 읽기 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -67,6 +87,7 @@ public class Student_Management extends javax.swing.JFrame {
     }
 
     private void loadStudentCoursesToTable() {
+        // 기존 JTable의 모델 가져오기
         DefaultTableModel model = (DefaultTableModel) lectureList.getModel();
         model.setRowCount(0); // 기존 데이터 초기화
 
@@ -74,7 +95,6 @@ public class Student_Management extends javax.swing.JFrame {
             String line;
             String loggedInStudentId = UserSession.getInstance().getUserId(); // 현재 로그인한 학생 ID
             while ((line = reader.readLine()) != null) {
-                // 각 줄을 파싱하여 키-값 구조로 읽기
                 String[] fields = line.split(", ");
                 Map<String, String> dataMap = new HashMap<>();
                 for (String field : fields) {
@@ -86,15 +106,26 @@ public class Student_Management extends javax.swing.JFrame {
 
                 // 현재 학생 ID와 일치하는 정보만 로드
                 if (loggedInStudentId.equals(dataMap.get("아이디"))) {
-                    String courseNumber = dataMap.get("강좌 번호");
-                    String lectureName = dataMap.get("강의 이름");
-                    String credits = dataMap.get("학점");
-                    String professor = dataMap.get("담당 교수");
-                    String maxStudents = dataMap.get("최대 수강 인원");
-                    String currentStudents = dataMap.get("현재 수강 인원");
+                    String courseNumber = dataMap.getOrDefault("강좌 번호", "미정");
+                    String lectureName = dataMap.getOrDefault("강의 이름", "미정");
+                    String credits = dataMap.getOrDefault("학점", "0");
+                    String professor = dataMap.getOrDefault("담당 교수", "미정");
+                    String maxStudents = dataMap.getOrDefault("최대 수강 인원", "0");
+                    String currentStudents = dataMap.getOrDefault("현재 수강 인원", "0");
+                    String day = "미정"; // 기본값 설정
+                    String time = "미정"; // 기본값 설정
 
-                    // JTable에 추가
-                    model.addRow(new Object[]{courseNumber, lectureName, credits, professor, maxStudents, currentStudents});
+                    // lectureList1에서 요일과 시간을 가져옴
+                    for (int i = 0; i < lectureList1.getRowCount(); i++) {
+                        if (lectureList1.getValueAt(i, 0).toString().equals(courseNumber)) {
+                            day = lectureList1.getValueAt(i, 6).toString(); // 요일
+                            time = lectureList1.getValueAt(i, 7).toString(); // 시간
+                            break;
+                        }
+                    }
+
+                    // JTable에 데이터 추가
+                    model.addRow(new Object[]{courseNumber, lectureName, credits, professor, maxStudents, currentStudents, day, time});
                 }
             }
         } catch (IOException e) {
@@ -185,11 +216,11 @@ public class Student_Management extends javax.swing.JFrame {
 
             },
             new String [] {
-                "강좌 번호", "강의 이름", "학점", "담당교수", "최대 수강 인원", "현재 수강 인원"
+                "강좌 번호", "강의 이름", "학점", "담당교수", "최대 수강 인원", "현재 수강 인원", "요일", "시간"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true, true, true, true
+                false, false, true, true, true, true, true, true
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -220,11 +251,11 @@ public class Student_Management extends javax.swing.JFrame {
 
             },
             new String [] {
-                "강좌 번호", "강의 이름", "학점", "담당교수", "최대 수강 인원", "현재 수강 인원"
+                "강좌 번호", "강의 이름", "학점", "담당교수", "최대 수강 인원", "현재 수강 인원", "요일", "시간"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, true, true, true, true
+                false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -255,7 +286,7 @@ public class Student_Management extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(S_RequestTitle)
                                     .addComponent(S_PreCourseTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 130, Short.MAX_VALUE))
+                                .addGap(0, 419, Short.MAX_VALUE))
                             .addComponent(S_Request)
                             .addComponent(S_Request1)
                             .addGroup(layout.createSequentialGroup()
@@ -314,6 +345,14 @@ public class Student_Management extends javax.swing.JFrame {
         String professor = model.getValueAt(selectedRow, 3).toString();
         String maxStudents = model.getValueAt(selectedRow, 4).toString();
         int currentStudents = Integer.parseInt(model.getValueAt(selectedRow, 5).toString()); // 현재 수강 인원
+        String day = model.getValueAt(selectedRow, 6).toString(); // 요일
+        String time = model.getValueAt(selectedRow, 7).toString(); // 시간
+
+        // 동일한 요일과 시간이 중복되는지 확인
+        if (isTimeSlotConflict(day, time)) {
+            JOptionPane.showMessageDialog(this, "이미 동일한 시간대에 다른 강의가 등록되어 있습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
         // 이미 수강 신청되었는지 확인
         if (isLectureAlreadyAdded(courseNumber)) {
@@ -332,6 +371,7 @@ public class Student_Management extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "총 수강 학점이 18학점을 초과할 수 없습니다.\n현재 총 학점: " + totalCredits + "학점", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
         // "현재 수강 인원" 증가
         currentStudents++;
         model.setValueAt(String.valueOf(currentStudents), selectedRow, 5); // JTable 업데이트
@@ -344,6 +384,110 @@ public class Student_Management extends javax.swing.JFrame {
 
         // 학생의 강좌 목록을 새로 로드
         loadStudentCoursesToTable();
+
+        // 현재 JTable 즉시 업데이트
+        refreshLectureList1();
+    }
+private boolean isTimeSlotConflict(String day, String time) {
+    String loggedInStudentId = UserSession.getInstance().getUserId(); // 현재 로그인한 학생 ID
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_COURSE_FILE_PATH))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] fields = line.split(", ");
+            Map<String, String> dataMap = new HashMap<>();
+            for (String field : fields) {
+                String[] keyValue = field.split(": ");
+                if (keyValue.length == 2) {
+                    dataMap.put(keyValue[0].trim(), keyValue[1].trim());
+                }
+            }
+
+            // 현재 학생 ID와 요일이 동일한 경우 확인
+            if (loggedInStudentId.equals(dataMap.get("아이디")) && day.equals(dataMap.get("요일"))) {
+                String existingTime = dataMap.get("시간");
+
+                if (existingTime != null && isTimeOverlap(existingTime, time)) {
+                    return true; // 시간이 겹치는 경우
+                }
+            }
+        }
+    } catch (IOException e) {
+        JOptionPane.showMessageDialog(this, "시간 중복 확인 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    return false; // 중복되지 않음
+}
+private boolean isTimeOverlap(String time1, String time2) {
+    int[] timeRange1 = parseTimeRange(time1);
+    int[] timeRange2 = parseTimeRange(time2);
+
+    // 두 시간 범위가 겹치는지 확인
+    return timeRange1[0] < timeRange2[1] && timeRange1[1] > timeRange2[0];
+}
+private int[] parseTimeRange(String time) {
+    String[] parts = time.split("-");
+    if (parts.length == 2) {
+        int start = convertTimeToMinutes(parts[0].trim());
+        int end = convertTimeToMinutes(parts[1].trim());
+        return new int[]{start, end};
+    }
+    return new int[]{0, 0}; // 유효하지 않은 시간대
+}
+
+private int convertTimeToMinutes(String time) {
+    String[] parts = time.split(":");
+    if (parts.length == 2) {
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        return hours * 60 + minutes;
+    }
+    return 0;
+}
+    private void refreshLectureList1() {
+        DefaultTableModel model = (DefaultTableModel) lectureList1.getModel();
+        model.setRowCount(0); // 기존 데이터 초기화
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(LECTURE_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String courseNumber = "미정";
+                String lectureName = "미정";
+                String credits = "0";
+                String professor = "미정";
+                String maxStudents = "0";
+                String currentStudents = "0";
+                String day = "미정"; // 요일 기본값
+                String time = "미정"; // 시간 기본값
+
+                // 데이터를 쉼표로 나누고 필드별로 처리
+                String[] lectureData = line.split(", (?=[^:]+: )");
+                for (String field : lectureData) {
+                    if (field.startsWith("강좌 번호:")) {
+                        courseNumber = field.replace("강좌 번호: ", "").trim();
+                    } else if (field.startsWith("강좌 이름:")) {
+                        lectureName = field.replace("강좌 이름: ", "").trim();
+                    } else if (field.startsWith("학점 수:")) {
+                        credits = field.replace("학점 수: ", "").trim();
+                    } else if (field.startsWith("담당 교수:")) {
+                        professor = field.replace("담당 교수: ", "").trim();
+                    } else if (field.startsWith("최대 학생 수:")) {
+                        maxStudents = field.replace("최대 학생 수: ", "").trim();
+                    } else if (field.startsWith("현재 학생 수:")) {
+                        currentStudents = field.replace("현재 학생 수: ", "").trim();
+                    } else if (field.startsWith("요일:")) {
+                        day = field.replace("요일: ", "").trim();
+                    } else if (field.startsWith("시간:")) {
+                        time = field.replace("시간: ", "").trim();
+                    }
+                }
+
+                // JTable에 데이터 추가
+                model.addRow(new Object[]{courseNumber, lectureName, credits, professor, maxStudents, currentStudents, day, time});
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "강의 정보 파일 읽기 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private boolean isLectureAlreadyAdded(String courseNumber) {
@@ -381,17 +525,35 @@ public class Student_Management extends javax.swing.JFrame {
 
             for (String line : lines) {
                 if (line.contains("강좌 번호: " + courseNumber)) {
-                    String[] lectureData = line.split(", ");
-                    if (lectureData.length <= 7) {
-                        line += ", 현재 학생 수: " + currentStudents;
-                    } else {
-                        lectureData[7] = "현재 학생 수: " + currentStudents;
-                        line = String.join(", ", lectureData);
+                    // 기존 데이터를 파싱
+                    String[] lectureData = line.split(", (?=[^:]+: )"); // 정확한 분리를 위한 정규식
+                    Map<String, String> dataMap = new LinkedHashMap<>();
+                    for (String field : lectureData) {
+                        String[] keyValue = field.split(": ", 2);
+                        if (keyValue.length == 2) {
+                            dataMap.put(keyValue[0].trim(), keyValue[1].trim());
+                        }
                     }
+
+                    // "현재 학생 수" 업데이트
+                    dataMap.put("현재 학생 수", String.valueOf(currentStudents));
+
+                    // 데이터 조합
+                    StringBuilder updatedLine = new StringBuilder();
+                    for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+                        updatedLine.append(entry.getKey()).append(": ").append(entry.getValue()).append(", ");
+                    }
+
+                    // 마지막 쉼표와 공백 제거
+                    updatedLine.setLength(updatedLine.length() - 2);
+
+                    updatedLines.add(updatedLine.toString());
+                } else {
+                    updatedLines.add(line); // 수정 대상이 아닌 줄은 그대로 추가
                 }
-                updatedLines.add(line);
             }
 
+            // 파일 덮어쓰기
             Files.write(Paths.get(LECTURE_FILE_PATH), updatedLines);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "파일 업데이트 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -402,10 +564,21 @@ public class Student_Management extends javax.swing.JFrame {
         String loggedInStudentId = UserSession.getInstance().getUserId(); // 로그인한 학생 ID
         String loggedInStudentName = UserSession.getInstance().getUserName(); // 로그인한 학생 이름
 
+        // lectureList1에서 선택된 강좌의 요일과 시간 가져오기
+        String day = "미정";
+        String time = "미정";
+        for (int i = 0; i < lectureList1.getRowCount(); i++) {
+            if (lectureList1.getValueAt(i, 0).toString().equals(courseNumber)) {
+                day = lectureList1.getValueAt(i, 6).toString(); // 요일
+                time = lectureList1.getValueAt(i, 7).toString(); // 시간
+                break;
+            }
+        }
+
         // 새로 추가할 데이터 형식을 "키: 값" 형태로 설정
         String newEntry = String.format(
-                "이름: %s, 아이디: %s, 강좌 번호: %s, 강의 이름: %s, 학점: %s, 담당 교수: %s, 최대 수강 인원: %s, 현재 수강 인원: %s",
-                loggedInStudentName, loggedInStudentId, courseNumber, lectureName, credits, professor, maxStudents, currentStudents
+                "이름: %s, 아이디: %s, 강좌 번호: %s, 강의 이름: %s, 학점: %s, 담당 교수: %s, 최대 수강 인원: %s, 현재 수강 인원: %s, 요일: %s, 시간: %s",
+                loggedInStudentName, loggedInStudentId, courseNumber, lectureName, credits, professor, maxStudents, currentStudents, day, time
         );
 
         try {
@@ -455,6 +628,9 @@ public class Student_Management extends javax.swing.JFrame {
 
         // JTable에서 데이터 삭제
         model.removeRow(selectedRow);
+
+        // 현재 JTable 즉시 업데이트
+        refreshLectureList1();
     }
 
     private void decreaseCurrentStudents(String courseNumber) {
@@ -465,13 +641,21 @@ public class Student_Management extends javax.swing.JFrame {
 
             for (String line : lines) {
                 if (line.contains("강좌 번호: " + courseNumber)) {
-                    String[] lectureData = line.split(", ");
-                    if (lectureData.length > 7 && lectureData[7].contains("현재 학생 수: ")) {
-                        // 현재 학생 수 감소
-                        int currentStudents = Integer.parseInt(lectureData[7].replace("현재 학생 수: ", "").trim());
+                    // 기존 데이터를 파싱
+                    String[] lectureData = line.split(", (?=[^:]+: )");
+                    Map<String, String> dataMap = new LinkedHashMap<>();
+                    for (String field : lectureData) {
+                        String[] keyValue = field.split(": ", 2);
+                        if (keyValue.length == 2) {
+                            dataMap.put(keyValue[0].trim(), keyValue[1].trim());
+                        }
+                    }
+
+                    // "현재 학생 수" 감소
+                    if (dataMap.containsKey("현재 학생 수")) {
+                        int currentStudents = Integer.parseInt(dataMap.get("현재 학생 수"));
                         currentStudents = Math.max(0, currentStudents - 1); // 0 이하로 내려가지 않도록 설정
-                        lectureData[7] = "현재 학생 수: " + currentStudents;
-                        line = String.join(", ", lectureData);
+                        dataMap.put("현재 학생 수", String.valueOf(currentStudents));
 
                         // JTable의 해당 강좌의 현재 수강 인원 업데이트
                         for (int i = 0; i < lectureModel.getRowCount(); i++) {
@@ -481,12 +665,24 @@ public class Student_Management extends javax.swing.JFrame {
                             }
                         }
                     }
+
+                    // 데이터 조합
+                    StringBuilder updatedLine = new StringBuilder();
+                    for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+                        updatedLine.append(entry.getKey()).append(": ").append(entry.getValue()).append(", ");
+                    }
+
+                    // 마지막 쉼표와 공백 제거
+                    updatedLine.setLength(updatedLine.length() - 2);
+                    updatedLines.add(updatedLine.toString());
+                } else {
+                    updatedLines.add(line); // 수정 대상이 아닌 줄은 그대로 추가
                 }
-                updatedLines.add(line);
             }
 
             // 파일 덮어쓰기
             Files.write(Paths.get(LECTURE_FILE_PATH), updatedLines);
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "강좌 정보 파일 업데이트 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
