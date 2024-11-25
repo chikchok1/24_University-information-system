@@ -4,8 +4,10 @@
  */
 package deu.UIS.ChangePassword;
 
+import deu.UIS.Login.UserSession;
 import javax.swing.*;
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,15 +23,16 @@ public class ChangePassword extends javax.swing.JFrame {
     private static final String ACADEMIC_INFO_PATH = Paths.get(System.getProperty("user.home"), "data", "Academic_info.txt").toString();
     private static final String CLASS_MANAGER_PATH = Paths.get(System.getProperty("user.home"), "data", "Class_Manager.txt").toString();
 
-    
-     // 파일 경로 목록
+    // 파일 경로 목록
     private static final String[] FILE_PATHS = {STUDENT_INFO_PATH, PROFESSOR_INFO_PATH, ACADEMIC_INFO_PATH, CLASS_MANAGER_PATH};
+    private final String loggedInUserId;
+
     /**
      * Creates new form ChangePassword
      */
     public ChangePassword() {
         initComponents();
-        // 엔터 키 이벤트 설정
+        this.loggedInUserId = UserSession.getInstance().getUserId(); // 로그인한 유저의 ID 가져오기
         configureEnterKey();
     }
 
@@ -125,18 +128,14 @@ public class ChangePassword extends javax.swing.JFrame {
         java.awt.event.KeyAdapter enterKeyListener = new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 if (evt.getKeyCode() == java.awt.event.KeyEvent.VK_ENTER) {
-                    // 현재 비밀번호와 새 비밀번호가 모두 입력되었는지 확인
-                    if (!PresentPassword.getText().trim().isEmpty() && !ChangePassword.getText().trim().isEmpty()) {
-                        Save.doClick(); // 저장 버튼 클릭
-                    }
+                    Save.doClick(); // 저장 버튼 클릭
                 }
             }
         };
-        // 두 입력 필드에 동일한 이벤트 리스너 추가
         PresentPassword.addKeyListener(enterKeyListener);
         ChangePassword.addKeyListener(enterKeyListener);
     }
-    
+
     private void PresentPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PresentPasswordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_PresentPasswordActionPerformed
@@ -146,68 +145,71 @@ public class ChangePassword extends javax.swing.JFrame {
     }//GEN-LAST:event_ChangePasswordActionPerformed
 
     private void SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SaveActionPerformed
-       String presentPassword = PresentPassword.getText().trim();
-        String newPassword = ChangePassword.getText().trim();
+        String presentPassword = PresentPassword.getText().trim();
+    String newPassword = ChangePassword.getText().trim();
 
-        if (presentPassword.isEmpty() || newPassword.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "모든 필드를 입력해주세요.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+    if (presentPassword.isEmpty() || newPassword.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "모든 필드를 입력해주세요.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
 
-        boolean isPasswordUpdated = false;
+    boolean isPasswordUpdated = false;
+    String loggedInUserId = UserSession.getInstance().getUserId(); // 로그인된 사용자 ID
 
-        // 파일 목록 순회
-        for (String filePath : FILE_PATHS) {
-            try {
-                List<String> lines = new ArrayList<>();
-                boolean fileUpdated = false;
+    // 파일 목록 순회
+    for (String filePath : FILE_PATHS) {
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(filePath)); // 파일 전체 읽기
+            List<String> updatedLines = new ArrayList<>();
 
-                // 파일 읽기 및 수정
-                try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-                    String line;
+            boolean isUserFound = false;
+            boolean isPasswordMatched = false;
 
-                    while ((line = reader.readLine()) != null) {
-                        if (line.startsWith("비밀번호: ")) {
-                            String currentPasswordInFile = line.split(":")[1].trim();
-                            if (currentPasswordInFile.equals(presentPassword)) {
-                                // 비밀번호를 새 비밀번호로 업데이트
-                                lines.add("비밀번호: " + newPassword);
-                                fileUpdated = true;
-                                isPasswordUpdated = true;
-                            } else {
-                                lines.add(line);
-                            }
-                        } else {
-                            lines.add(line);
-                        }
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
+
+                // 현재 줄에 ID가 포함되어 있는지 확인
+                if (line.startsWith("학번:") || line.startsWith("교수번호:") || line.startsWith("학사담당자번호:") || line.startsWith("수업담당자번호:")) {
+                    String id = line.split(":")[1].trim();
+                    if (id.equals(loggedInUserId)) {
+                        isUserFound = true; // 사용자 확인
                     }
                 }
 
-                // 수정된 내용을 해당 파일에 다시 쓰기
-                if (fileUpdated) {
-                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-                        for (String line : lines) {
-                            writer.write(line);
-                            writer.newLine();
-                        }
+                // 현재 줄에 비밀번호가 포함되어 있는지 확인
+                if (isUserFound && line.startsWith("비밀번호:")) {
+                    String currentPasswordInFile = line.split(":")[1].trim();
+                    if (currentPasswordInFile.equals(presentPassword)) {
+                        // 비밀번호를 새 비밀번호로 변경
+                        updatedLines.add("비밀번호: " + newPassword);
+                        isPasswordMatched = true;
+                        isPasswordUpdated = true;
+                    } else {
+                        updatedLines.add(line);
                     }
+                    isUserFound = false; // 사용자 처리 완료 후 초기화
+                } else {
+                    updatedLines.add(line);
                 }
-
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "파일 처리 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-        }
 
-        if (isPasswordUpdated) {
-            JOptionPane.showMessageDialog(this, "비밀번호가 성공적으로 변경되었습니다.");
-            
-            // 입력 필드 초기화
+            // 파일에 다시 쓰기
+            if (isPasswordMatched) {
+                Files.write(Paths.get(filePath), updatedLines);
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 처리 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    if (isPasswordUpdated) {
+        JOptionPane.showMessageDialog(this, "비밀번호가 성공적으로 변경되었습니다.");
         PresentPassword.setText("");
         ChangePassword.setText("");
-         dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "일치하는 비밀번호가 없습니다.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        dispose(); // 창 닫기
+    } else {
+        JOptionPane.showMessageDialog(this, "현재 비밀번호가 일치하지 않습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+    }
     }//GEN-LAST:event_SaveActionPerformed
 
     /**
