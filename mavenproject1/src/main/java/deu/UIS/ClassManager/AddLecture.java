@@ -412,62 +412,89 @@ public class AddLecture extends javax.swing.JFrame {
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         int selectedRow = jTable1.getSelectedRow();
-    if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "강좌를 선택하세요.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "강좌를 선택하세요.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    // JTable에서 선택된 강좌 정보 가져오기
-    String courseNumber = jTable1.getValueAt(selectedRow, 0).toString();
-    String courseName = jTable1.getValueAt(selectedRow, 1).toString();
-    String courseDepartment = jTable1.getValueAt(selectedRow, 2).toString();
-    String courseCredits = jTable1.getValueAt(selectedRow, 3).toString();
+        // JTable에서 선택된 강좌 정보 가져오기
+        String courseNumber = jTable1.getValueAt(selectedRow, 0).toString();
+        String courseName = jTable1.getValueAt(selectedRow, 1).toString();
+        String courseDepartment = jTable1.getValueAt(selectedRow, 2).toString();
+        String courseCredits = jTable1.getValueAt(selectedRow, 3).toString();
 
-    // 추가 입력값 가져오기
-    String professorName = professor.getText().trim();
-    String minStudentCount = minStudent.getText().trim();
-    String maxStudentCount = maxStudent.getText().trim();
-    String day = Day.getSelectedItem().toString(); // Day JComboBox에서 선택된 값
-    String time = Time.getText().trim(); // Time JTextField에서 입력된 값
+        // 추가 입력값 가져오기
+        String professorName = professor.getText().trim();
+        String minStudentCount = minStudent.getText().trim();
+        String maxStudentCount = maxStudent.getText().trim();
+        String day = Day.getSelectedItem().toString(); // Day JComboBox에서 선택된 값
+        String time = Time.getText().trim(); // Time JTextField에서 입력된 값
 
-    // 입력값 확인
-    if (professorName.isEmpty() || minStudentCount.isEmpty() || maxStudentCount.isEmpty() || day.isEmpty() || time.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "모든 필드를 입력해주세요.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
+        // 입력값 확인
+        if (professorName.isEmpty() || minStudentCount.isEmpty() || maxStudentCount.isEmpty() || day.isEmpty() || time.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "모든 필드를 입력해주세요.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    // 시간 형식 변환: "09:00-10:00" -> "09:00 - 10:00"
-    if (!time.matches("\\d{2}:\\d{2}-\\d{2}:\\d{2}")) {
-        JOptionPane.showMessageDialog(this, "시간 형식이 올바르지 않습니다. (예: 09:00-10:00)", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    time = time.replace("-", " - "); // "-"를 " - "로 변환
+        // 시간 형식 변환: "09:00-10:00" -> "09:00 - 10:00"
+        if (!time.matches("\\d{2}:\\d{2}-\\d{2}:\\d{2}")) {
+            JOptionPane.showMessageDialog(this, "시간 형식이 올바르지 않습니다. (예: 09:00-10:00)", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        time = time.replace("-", " - "); // "-"를 " - "로 변환
 
-    // 강의 정보 문자열 생성
-    String lectureData = String.format(
-            "강좌 번호: %s, 강좌 이름: %s, 담당 학과: %s, 학점 수: %s, 담당 교수: %s, 최소 학생 수: %s, 최대 학생 수: %s, 요일: %s, 시간: %s",
-            courseNumber, courseName, courseDepartment, courseCredits, professorName, minStudentCount, maxStudentCount, day, time);
+        // CourseInfo.txt에서 "강좌에 대한 설명" 읽기
+        String courseDescription = getCourseDescription(courseNumber);
+        if (courseDescription == null) {
+            JOptionPane.showMessageDialog(this, "강좌 설명을 찾을 수 없습니다.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(LECTURE_INFO_PATH, true))) {
-        // 파일에 저장
-        writer.write(lectureData);
-        writer.newLine();
+        // 강의 정보 문자열 생성
+        String lectureData = String.format(
+                "강좌 번호: %s, 강좌 이름: %s, 담당 학과: %s, 학점 수: %s, 담당 교수: %s, 최소 학생 수: %s, 최대 학생 수: %s, 요일: %s, 시간: %s, 강좌에 대한 설명: %s",
+                courseNumber, courseName, courseDepartment, courseCredits, professorName, minStudentCount, maxStudentCount, day, time, courseDescription);
 
-        // JTable2에 즉시 반영
-        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
-        model.addRow(new Object[]{courseName, professorName, minStudentCount, maxStudentCount, day, time});
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LECTURE_INFO_PATH, true))) {
+            // 파일에 저장
+            writer.write(lectureData);
+            writer.newLine();
 
-        JOptionPane.showMessageDialog(this, "강의 정보가 성공적으로 저장되고 테이블에 반영되었습니다!");
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-    }
+            // JTable2에 즉시 반영
+            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+            model.addRow(new Object[]{courseName, professorName, minStudentCount, maxStudentCount, day, time});
 
-    // 입력 필드 초기화
-    professor.setText("");
-    minStudent.setText("");
-    maxStudent.setText("");
-    Time.setText("");
+            JOptionPane.showMessageDialog(this, "강의 정보가 성공적으로 저장되고 테이블에 반영되었습니다!");
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        // 입력 필드 초기화
+        professor.setText("");
+        minStudent.setText("");
+        maxStudent.setText("");
+        Time.setText("");
     }//GEN-LAST:event_addActionPerformed
+
+    private String getCourseDescription(String courseNumber) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(CLASS_INFO_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("강좌 번호: " + courseNumber)) {
+                    // 강좌 정보에서 "강좌에 대한 설명" 추출
+                    String[] parts = line.split(", ");
+                    for (String part : parts) {
+                        if (part.startsWith("강좌에 대한 설명:")) {
+                            return part.replace("강좌에 대한 설명:", "").trim();
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "강좌 설명을 읽는 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return null; // 설명을 찾을 수 없으면 null 반환
+    }
 
     private void professorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_professorActionPerformed
         // TODO add your handling code here:
@@ -620,6 +647,10 @@ public class AddLecture extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AddLecture.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>

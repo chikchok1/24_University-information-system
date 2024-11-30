@@ -37,6 +37,7 @@ public class Student_Management extends javax.swing.JFrame {
         initComponents();
         loadLecturesToTable(); // 강의 정보를 테이블에 로드
         loadStudentCoursesToTable(); // 학생 수강 강좌를 테이블에 로드
+        addMouseListenerToLectureList1(); // MouseListener 추가
     }
 
     private void loadLecturesToTable() {
@@ -133,6 +134,50 @@ public class Student_Management extends javax.swing.JFrame {
         }
     }
 
+    private String getLectureDescription(String courseNumber) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(LECTURE_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] lectureData = line.split(", (?=[^:]+: )");
+                Map<String, String> dataMap = new LinkedHashMap<>();
+                for (String field : lectureData) {
+                    String[] keyValue = field.split(": ", 2);
+                    if (keyValue.length == 2) {
+                        dataMap.put(keyValue[0].trim(), keyValue[1].trim());
+                    }
+                }
+
+                // 강좌 번호가 일치하면 설명 반환
+                if (courseNumber.equals(dataMap.get("강좌 번호"))) {
+                    return dataMap.getOrDefault("강좌에 대한 설명", "설명이 없습니다.");
+                }
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "강좌 설명 로드 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return "설명을 찾을 수 없습니다.";
+    }
+
+    private void addMouseListenerToLectureList1() {
+        lectureList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int selectedRow = lectureList1.getSelectedRow();
+                if (selectedRow != -1) {
+                    // 선택된 강좌 번호 가져오기
+                    String courseNumber = lectureList1.getValueAt(selectedRow, 0).toString();
+
+                    // 강좌에 대한 설명 가져오기
+                    String description = getLectureDescription(courseNumber);
+
+                    // jTable1에 설명만 추가
+                    DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+                    model.setRowCount(0); // 기존 데이터 초기화
+                    model.addRow(new Object[]{description}); // 설명만 추가
+                }
+            }
+        });
+    }
+
     private int getTotalCredits() {
         int totalCredits = 0;
         String loggedInStudentId = UserSession.getInstance().getUserId(); // 현재 로그인한 학생 ID
@@ -192,6 +237,8 @@ public class Student_Management extends javax.swing.JFrame {
         delete = new javax.swing.JButton();
         S_Request1 = new javax.swing.JScrollPane();
         lectureList1 = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -267,45 +314,63 @@ public class Student_Management extends javax.swing.JFrame {
         lectureList1.setShowVerticalLines(true);
         S_Request1.setViewportView(lectureList1);
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "강좌에 대한 설명"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(add))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(199, 199, 199)
-                        .addComponent(Title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(Title, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(S_RequestTitle)
-                                    .addComponent(S_PreCourseTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 419, Short.MAX_VALUE))
-                            .addComponent(S_Request)
-                            .addComponent(S_Request1)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(S_RequestTitle)
+                                            .addComponent(S_PreCourseTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(Back)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(delete))))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(Back)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(delete)))))
-                .addGap(30, 30, 30))
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(add))
+                            .addComponent(S_Request, javax.swing.GroupLayout.DEFAULT_SIZE, 721, Short.MAX_VALUE)
+                            .addComponent(S_Request1))
+                        .addGap(18, 18, 18)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(10, 10, 10)
                 .addComponent(Title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(22, 22, 22)
+                .addGap(18, 18, 18)
                 .addComponent(S_RequestTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(S_Request1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(add)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(S_Request1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(add))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(5, 5, 5)
                 .addComponent(S_PreCourseTitle)
                 .addGap(9, 9, 9)
@@ -314,7 +379,7 @@ public class Student_Management extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(delete)
                     .addComponent(Back))
-                .addGap(18, 18, 18))
+                .addGap(43, 43, 43))
         );
 
         pack();
@@ -328,6 +393,7 @@ public class Student_Management extends javax.swing.JFrame {
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         addStudentToLecture(); // 추가 버튼 동작
+        loadLecturesToTable(); // lectureList1을 새로 고침
     }//GEN-LAST:event_addActionPerformed
 
     private void addStudentToLecture() {
@@ -388,62 +454,66 @@ public class Student_Management extends javax.swing.JFrame {
         // 현재 JTable 즉시 업데이트
         refreshLectureList1();
     }
-private boolean isTimeSlotConflict(String day, String time) {
-    String loggedInStudentId = UserSession.getInstance().getUserId(); // 현재 로그인한 학생 ID
 
-    try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_COURSE_FILE_PATH))) {
-        String line;
-        while ((line = reader.readLine()) != null) {
-            String[] fields = line.split(", ");
-            Map<String, String> dataMap = new HashMap<>();
-            for (String field : fields) {
-                String[] keyValue = field.split(": ");
-                if (keyValue.length == 2) {
-                    dataMap.put(keyValue[0].trim(), keyValue[1].trim());
+    private boolean isTimeSlotConflict(String day, String time) {
+        String loggedInStudentId = UserSession.getInstance().getUserId(); // 현재 로그인한 학생 ID
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_COURSE_FILE_PATH))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] fields = line.split(", ");
+                Map<String, String> dataMap = new HashMap<>();
+                for (String field : fields) {
+                    String[] keyValue = field.split(": ");
+                    if (keyValue.length == 2) {
+                        dataMap.put(keyValue[0].trim(), keyValue[1].trim());
+                    }
+                }
+
+                // 현재 학생 ID와 요일이 동일한 경우 확인
+                if (loggedInStudentId.equals(dataMap.get("아이디")) && day.equals(dataMap.get("요일"))) {
+                    String existingTime = dataMap.get("시간");
+
+                    if (existingTime != null && isTimeOverlap(existingTime, time)) {
+                        return true; // 시간이 겹치는 경우
+                    }
                 }
             }
-
-            // 현재 학생 ID와 요일이 동일한 경우 확인
-            if (loggedInStudentId.equals(dataMap.get("아이디")) && day.equals(dataMap.get("요일"))) {
-                String existingTime = dataMap.get("시간");
-
-                if (existingTime != null && isTimeOverlap(existingTime, time)) {
-                    return true; // 시간이 겹치는 경우
-                }
-            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "시간 중복 확인 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    } catch (IOException e) {
-        JOptionPane.showMessageDialog(this, "시간 중복 확인 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+        return false; // 중복되지 않음
     }
 
-    return false; // 중복되지 않음
-}
-private boolean isTimeOverlap(String time1, String time2) {
-    int[] timeRange1 = parseTimeRange(time1);
-    int[] timeRange2 = parseTimeRange(time2);
+    private boolean isTimeOverlap(String time1, String time2) {
+        int[] timeRange1 = parseTimeRange(time1);
+        int[] timeRange2 = parseTimeRange(time2);
 
-    // 두 시간 범위가 겹치는지 확인
-    return timeRange1[0] < timeRange2[1] && timeRange1[1] > timeRange2[0];
-}
-private int[] parseTimeRange(String time) {
-    String[] parts = time.split("-");
-    if (parts.length == 2) {
-        int start = convertTimeToMinutes(parts[0].trim());
-        int end = convertTimeToMinutes(parts[1].trim());
-        return new int[]{start, end};
+        // 두 시간 범위가 겹치는지 확인
+        return timeRange1[0] < timeRange2[1] && timeRange1[1] > timeRange2[0];
     }
-    return new int[]{0, 0}; // 유효하지 않은 시간대
-}
 
-private int convertTimeToMinutes(String time) {
-    String[] parts = time.split(":");
-    if (parts.length == 2) {
-        int hours = Integer.parseInt(parts[0]);
-        int minutes = Integer.parseInt(parts[1]);
-        return hours * 60 + minutes;
+    private int[] parseTimeRange(String time) {
+        String[] parts = time.split("-");
+        if (parts.length == 2) {
+            int start = convertTimeToMinutes(parts[0].trim());
+            int end = convertTimeToMinutes(parts[1].trim());
+            return new int[]{start, end};
+        }
+        return new int[]{0, 0}; // 유효하지 않은 시간대
     }
-    return 0;
-}
+
+    private int convertTimeToMinutes(String time) {
+        String[] parts = time.split(":");
+        if (parts.length == 2) {
+            int hours = Integer.parseInt(parts[0]);
+            int minutes = Integer.parseInt(parts[1]);
+            return hours * 60 + minutes;
+        }
+        return 0;
+    }
+
     private void refreshLectureList1() {
         DefaultTableModel model = (DefaultTableModel) lectureList1.getModel();
         model.setRowCount(0); // 기존 데이터 초기화
@@ -606,6 +676,7 @@ private int convertTimeToMinutes(String time) {
 
     private void deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteActionPerformed
         removeStudentFromLecture(); // 삭제 버튼 동작
+        loadLecturesToTable(); // lectureList1을 새로 고침
     }//GEN-LAST:event_deleteActionPerformed
     private void removeStudentFromLecture() {
         int selectedRow = lectureList.getSelectedRow();
@@ -749,6 +820,8 @@ private int convertTimeToMinutes(String time) {
         }
         //</editor-fold>
         //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(() -> {
@@ -765,6 +838,8 @@ private int convertTimeToMinutes(String time) {
     private javax.swing.JLabel Title;
     private javax.swing.JButton add;
     private javax.swing.JButton delete;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTable lectureList;
     private javax.swing.JTable lectureList1;
     // End of variables declaration//GEN-END:variables
