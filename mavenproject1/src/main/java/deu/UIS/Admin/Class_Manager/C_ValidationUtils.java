@@ -17,7 +17,7 @@ public class C_ValidationUtils {
             throw new IllegalArgumentException("전화번호 형식이 잘못되었습니다. (예: 010-1234-5678)");
         }
         if (!birthDate.matches("\\d{6}-\\d{7}")) {
-            throw new IllegalArgumentException("생년월일 형식이 잘못되었습니다. (예: 901010-1234567)");
+            throw new IllegalArgumentException("주민등록번호 형식이 잘못되었습니다. (예: 901010-1234567)");
         }
     }
 }

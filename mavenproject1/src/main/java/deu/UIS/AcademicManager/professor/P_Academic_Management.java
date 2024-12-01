@@ -164,7 +164,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
         department.setText("학과");
 
         birthdate.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        birthdate.setText("생년월일");
+        birthdate.setText("주민등록번호");
 
         phone.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
         phone.setText("휴대폰");
@@ -374,8 +374,7 @@ private void populateStudentDetails(String department, String studentNumber, Str
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGap(23, 23, 23)
-                                        .addComponent(jLabel2)
-                                        .addGap(409, 409, 409))
+                                        .addComponent(jLabel2))
                                     .addGroup(layout.createSequentialGroup()
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 634, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
@@ -492,9 +491,9 @@ private void populateStudentDetails(String department, String studentNumber, Str
         List<Professor> professors = professorFileManager.readProfessors();
         String newProfessorNumber = generateNewProfessorNumber(professors);
 
-        // 생년월일 뒷자리 7자리로 비밀번호 설정
+        // 주민등록번호 뒷자리 7자리로 비밀번호 설정
         String[] birthParts = birthDate.split("-");
-        String password = (birthParts.length == 2) ? birthParts[1] : "생년월일 형식 오류";
+        String password = (birthParts.length == 2) ? birthParts[1] : "주민등록번호 형식 오류";
 
         // 새 교수 객체 생성
         Professor newProfessor = new Professor(name, newProfessorNumber, department, birthDate, phone);
@@ -626,6 +625,7 @@ private String generateNewProfessorNumber(List<Professor> professors) {
     } catch (IOException e) {
         JOptionPane.showMessageDialog(this, "교수 정보를 불러오는 중 오류가 발생했습니다.", "Error", JOptionPane.ERROR_MESSAGE);
     }
+    
     }//GEN-LAST:event_modifyActionPerformed
 
     private void refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshActionPerformed
@@ -636,7 +636,7 @@ private String generateNewProfessorNumber(List<Professor> professors) {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
     int selectedRow = S_list.getSelectedRow();
     if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "수정할 교수를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(this, "저장할 교수를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
         return;
     }
 
@@ -661,7 +661,7 @@ private String generateNewProfessorNumber(List<Professor> professors) {
                 }
 
                 if (!updatedBirthDatePart1.matches("\\d{6}") || !updatedBirthDatePart2.matches("\\d{7}")) {
-                    JOptionPane.showMessageDialog(this, "생년월일 형식이 잘못되었습니다. (예: 123456-1234567)", "Warning", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "주민등록번호 형식이 잘못되었습니다. (예: 123456-1234567)", "Warning", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
 

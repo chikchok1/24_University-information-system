@@ -134,7 +134,7 @@ public class A_Management extends javax.swing.JFrame {
         name.setText("이름");
 
         birthdate.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        birthdate.setText("생년월일");
+        birthdate.setText("주민등록번호");
 
         phone.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
         phone.setText("휴대폰");
@@ -244,7 +244,7 @@ public class A_Management extends javax.swing.JFrame {
 
             },
             new String [] {
-                "이름", "학사담당자번호", "생년월일", "휴대폰"
+                "이름", "학사담당자번호", "주민등록번호", "휴대폰"
             }
         ) {
             Class[] types = new Class [] {
@@ -337,7 +337,7 @@ public class A_Management extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(361, 361, 361)
                         .addComponent(Title)))
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -465,6 +465,7 @@ public class A_Management extends javax.swing.JFrame {
         String birthDate = birthFirst + "-" + birthLast;
 
         try {
+            //AcademicValidator를 통해 입력값의 유효성을 검증
             AcademicValidator.validateInput(name, phone, birthDate);
 
             List<AcademicInfo> academicInfoList = readAcademicInfoFromFile();
@@ -517,7 +518,6 @@ public class A_Management extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "수정할 학사 담당자를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
-
         // 선택된 행에서 기본 정보를 가져옵니다.
         String selectedName = (String) S_list.getValueAt(selectedRow, 0);         // 이름
         String selectedStudentNumber = (String) S_list.getValueAt(selectedRow, 1); // 학사 담당자 번호
@@ -572,7 +572,7 @@ public class A_Management extends javax.swing.JFrame {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         int selectedRow = S_list.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "수정할 학사담당자를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "저장할 학사담당자를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 

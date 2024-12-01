@@ -562,7 +562,6 @@ private void populateStudentDetails(String department, String studentNumber, Str
     private void BeforeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BeforeActionPerformed
         // TODO add your handling code here:
         dispose();
-
         new A_Main().setVisible(true);
     }//GEN-LAST:event_BeforeActionPerformed
 
@@ -571,23 +570,24 @@ private void populateStudentDetails(String department, String studentNumber, Str
     }//GEN-LAST:event_birthActionPerformed
 
     private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
-int selectedRow = S_list.getSelectedRow();
+        int selectedRow = S_list.getSelectedRow();
 
-    if (selectedRow != -1) {
-        DefaultTableModel model = (DefaultTableModel) S_list.getModel();
-        String selectedStudentNumber = (String) model.getValueAt(selectedRow, 1);
+        if (selectedRow != -1) {
+            DefaultTableModel model = (DefaultTableModel) S_list.getModel();
+            String selectedStudentNumber = (String) model.getValueAt(selectedRow, 1);
 
-        String filePath = Paths.get(System.getProperty("user.home"), "data", "student_info.txt").toString();
-        StringBuilder updatedContent = new StringBuilder();
+            String filePath = Paths.get(System.getProperty("user.home"), "data", "student_info.txt").toString();
+            StringBuilder updatedContent = new StringBuilder();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "", password = "";
+            try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+                String line;
+                String department = "", studentNumber = "", name = "", grade = "", birthDate = "", phone = "", password = "";
 
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
 
-                if (line.startsWith("학과: ")) department = line.substring(4);
+                    if (line.startsWith("학과: "))
+                        department = line.substring(4);
                 else if (line.startsWith("학번: ")) studentNumber = line.substring(4);
                 else if (line.startsWith("이름: ")) name = line.substring(4);
                 else if (line.startsWith("학년: ")) grade = line.substring(4);
@@ -701,7 +701,7 @@ int selectedRow = S_list.getSelectedRow();
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
      int selectedRow = S_list.getSelectedRow();
     if (selectedRow == -1) {
-        JOptionPane.showMessageDialog(this, "수정할 학생을 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
+        JOptionPane.showMessageDialog(this, "저장할 학생을 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
         return;
     }
 

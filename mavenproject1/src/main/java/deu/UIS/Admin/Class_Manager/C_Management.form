@@ -88,7 +88,7 @@
                       <Component id="Title" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="41" max="32767" attributes="0"/>
+              <EmptySpace pref="13" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -185,7 +185,7 @@
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="&#xb9d1;&#xc740; &#xace0;&#xb515;" size="14" style="0"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="&#xc0dd;&#xb144;&#xc6d4;&#xc77c;"/>
+        <Property name="text" type="java.lang.String" value="&#xc8fc;&#xbbfc;&#xb4f1;&#xb85d;&#xbc88;&#xd638;"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="phone">
@@ -353,7 +353,7 @@
               <Table columnCount="4" rowCount="0">
                 <Column editable="true" title="&#xc774;&#xb984;" type="java.lang.String"/>
                 <Column editable="true" title="&#xc218;&#xc5c5;&#xb2f4;&#xb2f9;&#xc790;&#xbc88;&#xd638;" type="java.lang.String"/>
-                <Column editable="true" title="&#xc0dd;&#xb144;&#xc6d4;&#xc77c;" type="java.lang.String"/>
+                <Column editable="true" title="&#xc8fc;&#xbbfc;&#xb4f1;&#xb85d;&#xbc88;&#xd638;" type="java.lang.String"/>
                 <Column editable="true" title="&#xd734;&#xb300;&#xd3f0;" type="java.lang.String"/>
               </Table>
             </Property>

@@ -127,7 +127,7 @@ public class C_Management extends javax.swing.JFrame {
         name.setText("이름");
 
         birthdate.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
-        birthdate.setText("생년월일");
+        birthdate.setText("주민등록번호");
 
         phone.setFont(new java.awt.Font("맑은 고딕", 0, 14)); // NOI18N
         phone.setText("휴대폰");
@@ -237,7 +237,7 @@ public class C_Management extends javax.swing.JFrame {
 
             },
             new String [] {
-                "이름", "수업담당자번호", "생년월일", "휴대폰"
+                "이름", "수업담당자번호", "주민등록번호", "휴대폰"
             }
         ) {
             Class[] types = new Class [] {
@@ -326,7 +326,7 @@ public class C_Management extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(361, 361, 361)
                         .addComponent(Title)))
-                .addContainerGap(41, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -509,7 +509,7 @@ public class C_Management extends javax.swing.JFrame {
                 } else if (line.startsWith("휴대폰: ")) {
                     phone = line.substring(5);
                 } else if (line.isEmpty() && name.equals(selectedName) && studentNumber.equals(selectedStudentNumber)) {
-                    // 선택된 학생과 일치하는 정보를 찾았을 때 입력 필드에 채우기
+                    // 선택된 수업담당자와 일치하는 정보를 찾았을 때 입력 필드에 채우기
                     Name.setText(name);
 
                     // 주민등록번호를 앞 6자리와 뒤 7자리로 나눔
@@ -540,7 +540,7 @@ public class C_Management extends javax.swing.JFrame {
     private void saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveActionPerformed
         int selectedRow = S_list.getSelectedRow();
         if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "수정할 수업담당자를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "저장할 수업담당자를 선택해주세요.", "Warning", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
