@@ -19,12 +19,6 @@ public class C_Main extends javax.swing.JFrame {
      */
     public C_Main() {
         initComponents();
-        displayUserInfo();
-    }
-
-    private void displayUserInfo() {
-        UserSession session = UserSession.getInstance();
-        //System.out.println("환영합니다, " + session.getUserName() + " (" + session.getUserId() + ")");
     }
 
     /**

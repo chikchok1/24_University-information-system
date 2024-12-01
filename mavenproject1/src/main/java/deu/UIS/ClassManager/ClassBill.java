@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -22,6 +24,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ClassBill extends javax.swing.JFrame {
 
+    private static final String STUDENT_INFO_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "student_info.txt").toString();
     private static final String STUDENT_COURSE_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "student_courses.txt").toString();
     private static final String BILL_FILE_PATH = Paths.get(System.getProperty("user.home"), "data", "courses_bill.txt").toString();
 
@@ -83,6 +86,41 @@ public class ClassBill extends javax.swing.JFrame {
      * student_courses.txt 파일을 읽고 courses_bill.txt에 데이터를 저장 후 JTable에 표시
      */
     private void processAndLoadBillData() {
+        Map<String, String> studentDepartmentMap = new HashMap<>();
+
+        // student_info.txt에서 학생 정보 읽어오기
+        try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_INFO_FILE_PATH))) {
+            String line;
+            String studentId = "";
+            String department = "";
+
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.startsWith("학번:")) {
+                    studentId = line.split(":")[1].trim();
+                } else if (line.startsWith("학과:")) {
+                    department = line.split(":")[1].trim();
+                } else if (line.isEmpty()) {
+                    // 학번과 학과가 모두 채워졌다면 맵에 추가
+                    if (!studentId.isEmpty() && !department.isEmpty()) {
+                        studentDepartmentMap.put(studentId, department);
+                    }
+                    // 초기화
+                    studentId = "";
+                    department = "";
+                }
+            }
+
+            // 마지막 학생 정보 추가 (파일 끝날 때)
+            if (!studentId.isEmpty() && !department.isEmpty()) {
+                studentDepartmentMap.put(studentId, department);
+            }
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "student_info.txt 파일 읽기 오류: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+        // courses_bill.txt 데이터 처리
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(BILL_FILE_PATH))) {
             try (BufferedReader reader = new BufferedReader(new FileReader(STUDENT_COURSE_FILE_PATH))) {
                 String line;
@@ -93,12 +131,14 @@ public class ClassBill extends javax.swing.JFrame {
                         // 필요한 정보 추출
                         String name = getValue(parts, "이름");
                         String studentId = getValue(parts, "아이디");
-                        String department = "컴퓨터공학과"; // 학과를 파일에 없으면 기본값 설정
                         String courseNumber = getValue(parts, "강좌 번호");
                         String courseName = getValue(parts, "강의 이름");
                         int credits = Integer.parseInt(getValue(parts, "학점").replaceAll("[^0-9]", ""));
                         String professor = getValue(parts, "담당 교수");
                         int fee = credits * 45000; // 학점당 수강료 계산
+
+                        // 학과 정보 가져오기 (없으면 기본값 설정)
+                        String department = studentDepartmentMap.getOrDefault(studentId, "컴퓨터공학과");
 
                         // courses_bill.txt에 저장
                         writer.write(String.format("%s, %s, %s, %s, %s, %d, %s, %d", name, studentId, department, courseNumber, courseName, credits, professor, fee));
@@ -107,8 +147,8 @@ public class ClassBill extends javax.swing.JFrame {
                 }
             }
         } catch (IOException e) {
-            javax.swing.JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다: " + e.getMessage(),
-                    "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "courses_bill.txt 저장 중 오류가 발생했습니다: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
 
         // JTable에 데이터 로드
@@ -277,25 +317,23 @@ public class ClassBill extends javax.swing.JFrame {
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 60, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(270, 270, 270)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(170, 170, 170)
-                        .addComponent(select, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(field, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(search)))
+                .addGap(170, 170, 170)
+                .addComponent(select, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(field, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(search)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addGap(507, 507, 507))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(35, 35, 35)
+                .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(select, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(field, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -370,8 +408,8 @@ public class ClassBill extends javax.swing.JFrame {
     }//GEN-LAST:event_searchActionPerformed
 
     private void beforeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_beforeActionPerformed
-       dispose();
-       new C_Main().setVisible(true);
+        dispose();
+        new C_Main().setVisible(true);
     }//GEN-LAST:event_beforeActionPerformed
 
     /**
