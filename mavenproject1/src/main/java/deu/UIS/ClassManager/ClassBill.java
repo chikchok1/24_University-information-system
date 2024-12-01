@@ -138,7 +138,7 @@ public class ClassBill extends javax.swing.JFrame {
                         int fee = credits * 45000; // 학점당 수강료 계산
 
                         // 학과 정보 가져오기 (없으면 기본값 설정)
-                        String department = studentDepartmentMap.getOrDefault(studentId, "컴퓨터공학과");
+                        String department = studentDepartmentMap.getOrDefault(studentId, "컴퓨터소프트웨어공학과");
 
                         // courses_bill.txt에 저장
                         writer.write(String.format("%s, %s, %s, %s, %s, %d, %s, %d", name, studentId, department, courseNumber, courseName, credits, professor, fee));
