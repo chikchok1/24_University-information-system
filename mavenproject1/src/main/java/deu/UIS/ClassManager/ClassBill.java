@@ -368,7 +368,6 @@ public class ClassBill extends javax.swing.JFrame {
     private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
         // JTable 초기화
         DefaultTableModel tableModel = (DefaultTableModel) bill.getModel();
-        tableModel.setRowCount(0); // 기존 데이터 제거
 
         // select에서 선택된 검색 기준 (학번/이름)
         String selectedCriteria = select.getSelectedItem().toString();
@@ -376,8 +375,10 @@ public class ClassBill extends javax.swing.JFrame {
 
         if (searchValue.isEmpty()) {
             JOptionPane.showMessageDialog(this, "검색어를 입력하세요.", "Info", JOptionPane.INFORMATION_MESSAGE);
-            return;
+            return; // 검색어가 없으면 작업 종료
         }
+
+        tableModel.setRowCount(0); // 기존 데이터 제거 (검색 결과만 표시하기 위해 초기화)
 
         try (BufferedReader reader = new BufferedReader(new FileReader(BILL_FILE_PATH))) {
             String line;
