@@ -171,7 +171,7 @@ public class Professor_Management extends javax.swing.JFrame {
         setPreferredSize(new java.awt.Dimension(809, 510));
 
         jLabel1.setFont(new java.awt.Font("맑은 고딕", 0, 18)); // NOI18N
-        jLabel1.setText("교수 수강 관리");
+        jLabel1.setText("교수 출석부 관리");
 
         jLabel6.setFont(new java.awt.Font("맑은 고딕", 0, 16)); // NOI18N
         jLabel6.setText("학생 명단");
@@ -245,6 +245,8 @@ public class Professor_Management extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(246, 246, 246)
                         .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(50, 50, 50)
@@ -271,20 +273,16 @@ public class Professor_Management extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(290, 290, 290)
                 .addComponent(lectureName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(442, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(349, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addGap(349, 349, 349))
+                .addContainerGap(432, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel8)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1)
-                .addGap(15, 15, 15)
+                .addGap(0, 37, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8)
+                    .addComponent(jLabel1))
+                .addGap(33, 33, 33)
                 .addComponent(jLabel6)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -406,52 +404,66 @@ public class Professor_Management extends javax.swing.JFrame {
         String filePath = Paths.get(System.getProperty("user.home"), "data", "student_courses.txt").toString();
 
         try {
+            // 파일 읽기
             List<String> lines = Files.readAllLines(Paths.get(filePath));
             List<String> updatedLines = new ArrayList<>();
 
+            // 파일의 각 줄을 tempGrades와 비교해 업데이트
             for (String line : lines) {
                 boolean updated = false;
+
                 for (Map.Entry<String, String> entry : tempGrades.entrySet()) {
-                    String key = entry.getKey();
-                    String gradeAndCredits = entry.getValue(); // 성적과 취득 학점 (예: "A: 4.0")
+                    String key = entry.getKey(); // "학번:강의 이름:교수"
+                    String gradeAndCredits = entry.getValue(); // "C: 3.0"
                     String[] keyParts = key.split(":");
                     String studentId = keyParts[0];
                     String courseName = keyParts[1];
                     String professor = keyParts[2];
 
-                    // 고유 조합 (학번, 강의 이름, 담당 교수)으로 데이터 업데이트
-                    if (line.contains("아이디: " + studentId) && line.contains("강의 이름: " + courseName) && line.contains("담당 교수: " + professor)) {
-                        // 기존 줄에 성적 정보 추가 또는 업데이트
+                    // 고유 키로 매칭되는 줄 찾기
+                    if (line.contains("아이디: " + studentId)
+                            && line.contains("강의 이름: " + courseName)
+                            && line.contains("담당 교수: " + professor)) {
+
+                        // 갱신된 성적과 취득 학점 가져오기
+                        String updatedGrade = gradeAndCredits.split(":")[0]; // "C"
+                        String updatedCredits = gradeAndCredits.split(":")[1]; // "3.0"
+
+                        // 성적 갱신
                         if (line.contains("성적:")) {
-                            line = line.replaceAll("성적: [A-F]", "성적: " + gradeAndCredits.split(":")[0]);
-                            if (line.contains("취득 학점:")) {
-                                line = line.replaceAll("취득 학점: \\d+(\\.\\d+)?", "취득 학점: " + gradeAndCredits.split(":")[1]);
-                            } else {
-                                line += ", 취득 학점: " + gradeAndCredits.split(":")[1];
-                            }
+                            line = line.replaceAll("성적: \\w+", "성적: " + updatedGrade);
                         } else {
-                            line += ", 성적: " + gradeAndCredits.split(":")[0] + ", 취득 학점: " + gradeAndCredits.split(":")[1];
+                            line += ", 성적: " + updatedGrade;
                         }
+
+                        // 취득 학점 갱신
+                        if (line.contains("취득 학점:")) {
+                            // 빈칸을 포함한 정규식으로 갱신
+                            line = line.replaceAll("취득 학점:\\s*\\d+(\\.\\d+)?", "취득 학점:  " + updatedCredits);
+                        } else {
+                            // 빈칸이 포함된 취득 학점 필드 추가
+                            line += ", 취득 학점:  " + updatedCredits;
+                        }
+
                         updated = true;
                         break;
                     }
                 }
-                updatedLines.add(line);
+
+                updatedLines.add(line); // 수정된 줄 추가
             }
 
             // 파일 덮어쓰기
             Files.write(Paths.get(filePath), updatedLines);
 
             // 성공 메시지
-            JOptionPane.showMessageDialog(this, "모든 성적과 취득 학점이 저장되었습니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this, "성적과 취득 학점이 파일에 저장되었습니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
 
-            // 임시 저장소 초기화
+            // tempGrades 초기화 및 UI 갱신
             tempGrades.clear();
-
-            // JTable 데이터 다시 로드
             DefaultTableModel tableModel = (DefaultTableModel) S_list.getModel();
-            tableModel.setRowCount(0); // 기존 데이터 초기화
-            loadStudentData(); // 새로 로드된 데이터를 추가
+            tableModel.setRowCount(0);
+            loadStudentData();
 
         } catch (IOException e) {
             JOptionPane.showMessageDialog(this, "파일 저장 중 오류가 발생했습니다: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -479,10 +491,10 @@ public class Professor_Management extends javax.swing.JFrame {
 
         DefaultTableModel tableModel = (DefaultTableModel) S_list.getModel();
 
-        // 선택된 행에서 필요한 데이터 가져오기
-        String courseName = tableModel.getValueAt(selectedRow, 0).toString(); // 강의 이름
-        String studentId = tableModel.getValueAt(selectedRow, 1).toString(); // 학번
-        String professor = professorName; // 현재 로그인한 교수 이름
+        // 선택된 행 데이터 가져오기
+        String courseName = tableModel.getValueAt(selectedRow, 0).toString();
+        String studentId = tableModel.getValueAt(selectedRow, 1).toString();
+        String professor = professorName;
 
         // 성적 입력받기
         String grade = JOptionPane.showInputDialog(this, "성적을 입력하세요 (A, B, C, D, F):", "성적 입력", JOptionPane.PLAIN_MESSAGE);
@@ -505,13 +517,13 @@ public class Professor_Management extends javax.swing.JFrame {
         }
         double earnedCredits = gradeMap.get(grade.toUpperCase());
 
-        // 임시 저장소에 추가 (강의 이름 + 담당 교수 조합 사용)
-        String key = studentId + ":" + courseName + ":" + professor; // 고유 키 생성
+        // 임시 저장소에 추가
+        String key = studentId + ":" + courseName + ":" + professor; // 고유 키
         tempGrades.put(key, grade.toUpperCase() + ": " + earnedCredits);
 
         // JTable 업데이트
-        tableModel.setValueAt(earnedCredits, selectedRow, 3); // 취득 학점 열에 반영
-        tableModel.setValueAt(grade.toUpperCase(), selectedRow, 4); // 성적 열에 반영
+        tableModel.setValueAt(earnedCredits, selectedRow, 3); // 취득 학점
+        tableModel.setValueAt(grade.toUpperCase(), selectedRow, 4); // 성적
 
         // 확인 메시지
         JOptionPane.showMessageDialog(this, "성적과 취득 학점이 저장되었으며, 화면에 반영되었습니다. 저장 버튼을 눌러 파일에 반영하세요.", "Info", JOptionPane.INFORMATION_MESSAGE);
