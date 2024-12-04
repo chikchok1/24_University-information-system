@@ -419,18 +419,15 @@ public class Student_Management extends javax.swing.JFrame {
         JOptionPane.showMessageDialog(this, "이미 동일한 시간대에 다른 강의가 등록되어 있습니다.", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
-
     // 이미 수강 신청되었는지 확인
     if (isLectureAlreadyAdded(courseNumber)) {
         JOptionPane.showMessageDialog(this, "이미 수강 신청된 강좌입니다.", "Info", JOptionPane.INFORMATION_MESSAGE);
         return; // 이미 신청된 경우 메서드를 종료
     }
-
     if (currentStudents >= Integer.parseInt(maxStudents)) {
         JOptionPane.showMessageDialog(this, "최대 수강 인원을 초과할 수 없습니다.", "Error", JOptionPane.ERROR_MESSAGE);
         return;
     }
-
     // 총 학점 계산 및 18학점 초과 여부 확인
     int totalCredits = getTotalCredits();
     if (totalCredits + courseCredits > 18) {

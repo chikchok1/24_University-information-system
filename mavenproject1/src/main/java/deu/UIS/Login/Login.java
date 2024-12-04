@@ -155,49 +155,59 @@ public class Login extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
 
-        // 파일 경로 설정
-        String userHome = System.getProperty("user.home");
-        String dataFolderPath = Paths.get(userHome, "data").toString();
+         // 파일 경로 설정
+    String userHome = System.getProperty("user.home");
+    String dataFolderPath = Paths.get(userHome, "data").toString();
 
-        // 파일 이름 배열
-        String[] fileNames = {
-            "student_courses.txt",
-            "user_data.txt",
-            "student_info.txt",
-            "professor_info.txt",
-            "lecture.txt",
-            "courses_bill.txt",
-            "CourseInfo.txt",
-            "Class_Manager.txt",
-            "Academic_info.txt"
-        };
+    // 파일 이름 배열
+    String[] fileNames = {
+        "student_courses.txt",
+        "user_data.txt",
+        "student_info.txt",
+        "professor_info.txt",
+        "lecture.txt",
+        "courses_bill.txt",
+        "CourseInfo.txt",
+        "Class_Manager.txt",
+        "Academic_info.txt"
+    };
 
-        File dataFolder = new File(dataFolderPath);
+    File dataFolder = new File(dataFolderPath);
 
-        // 데이터 폴더 확인 및 생성
-        if (!dataFolder.exists()) {
-            if (dataFolder.mkdir()) {
-                System.out.println("data 폴더가 생성되었습니다: " + dataFolderPath);
-            } else {
-                System.err.println("data 폴더 생성에 실패했습니다.");
-            }
+    // 데이터 폴더 확인 및 생성
+    if (!dataFolder.exists()) {
+        if (dataFolder.mkdir()) {
+            System.out.println("data 폴더가 생성되었습니다: " + dataFolderPath);
+        } else {
+            System.err.println("data 폴더 생성에 실패했습니다.");
         }
+    }
 
-        // 각 파일 확인 및 생성
-        for (String fileName : fileNames) {
-            File file = new File(Paths.get(dataFolderPath, fileName).toString());
-            if (!file.exists()) {
-                try {
-                    if (file.createNewFile()) {
-                        System.out.println(fileName + " 파일이 생성되었습니다: " + file.getAbsolutePath());
-                    } else {
-                        System.err.println(fileName + " 파일 생성에 실패했습니다.");
+    // 각 파일 확인 및 생성
+    for (String fileName : fileNames) {
+        File file = new File(Paths.get(dataFolderPath, fileName).toString());
+        if (!file.exists()) {
+            try {
+                if (file.createNewFile()) {
+                    System.out.println(fileName + " 파일이 생성되었습니다: " + file.getAbsolutePath());
+
+                    // "user_data.txt" 파일에 기본 데이터 쓰기
+                    if ("user_data.txt".equals(fileName)) {
+                        try (java.io.FileWriter writer = new java.io.FileWriter(file)) {
+                            writer.write("ID: Admin, Password: 1234\n");
+                            System.out.println("기본 데이터가 user_data.txt에 저장되었습니다.");
+                        } catch (IOException e) {
+                            System.err.println("user_data.txt에 기본 데이터를 쓰는 중 오류가 발생했습니다: " + e.getMessage());
+                        }
                     }
-                } catch (IOException e) {
-                    System.err.println(fileName + " 파일 생성 중 오류가 발생했습니다: " + e.getMessage());
+                } else {
+                    System.err.println(fileName + " 파일 생성에 실패했습니다.");
                 }
+            } catch (IOException e) {
+                System.err.println(fileName + " 파일 생성 중 오류가 발생했습니다: " + e.getMessage());
             }
         }
+    }
 
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
